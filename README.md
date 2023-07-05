@@ -1,8 +1,9 @@
 # Rivers
+River model for CliMA.
 
 ## Engineering (Julia)
 1. Create a JSON mapping ERA5 grid points to HydroSHEDS basins with `grid_points_to_basins()`.
-2. Compute dynamical variables for all basins with `compute_basins_timeseries()`. Currently using netCDF files from ERA5 Land splitten by year and month.
+2. Compute dynamical variables for all basins with `compute_basins_timeseries()`. Currently using netCDF files from ERA5 Land divided by year and month.
 3. Ghift GRDC from local time to UTC with `shift_grdc_to_utc()`.
 4. Connect GRDC gauges to HydroSHEDS basins with `gauges_to_basins()`.
 5. Merge ERA5 timeseries for each HydroSHEDS basin with the corresponding GRDC gauge with `merge_era5_grdc()`.
@@ -22,7 +23,7 @@ pip install -e .
 ```
 as shown in the documentation of the package.
 
-A typical `config.yml` of the model in shown in `examples/neuralhydrology/NA_lv04`.
+A typical `config.yml` of the model in shown in `examples/neuralhydrology/NA_lv06`.
 
 It can be run with `nh-run train --config-file config.yml`.
 
