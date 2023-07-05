@@ -1,0 +1,17 @@
+name = "Rivers"
+uuid = "266d3e6f-dbf1-47cd-97d6-9d733c73723f"
+authors = ["maumlima "]
+version = "0.1.0"
+
+[deps]
+CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
+CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+Distributed = "8ba89e20-285c-5b6f-9357-94700520ee1b"
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+NCDatasets = "85f8d34a-cbdd-5861-8df4-14fed0d494ab"
+NetCDF = "30363a11-5582-574a-97bb-aa9a979735b9"
+ProgressMeter = "92933f4c-e287-5a05-a399-4b506db050ca"
+Shapefile = "8e980c4a-a4fe-5da2-b3a7-4b4b0353a2f4"
+Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"

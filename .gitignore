@@ -1,0 +1,12 @@
+# data
+attributes/
+timseries/
+xd_lv04/
+mapping_dicts/
+
+# file extensions
+*.nc
+*.csv
+
+# configuration for data engineering
+engineer_config.txt

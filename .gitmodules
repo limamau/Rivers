@@ -1,0 +1,3 @@
+[submodule "src/neuralhydrology"]
+	path = src/neuralhydrology
+	url = https://github.com/maumlima/neuralhydrology
