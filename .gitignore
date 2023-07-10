@@ -10,3 +10,6 @@ mapping_dicts/
 
 # configuration for data engineering
 engineer_config.txt
+
+# others
+.DS_Store

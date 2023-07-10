@@ -1,17 +1,18 @@
-# This script uses local files -> NEED TO CHANGE BEFORE PUSHING
-
 using Rivers
 using CairoMakie
 using Dates
 using NCDatasets
 using Random
 
-# Set up files to test
-input_file = "path/to/GRDC/nc.file"
-output_file = "path/to/GRDC/shifted/nc.file"
+# Parameters
+input_dir = "../data/GRDC-Globe"
+input_file = "../data/GRDC-Globe/GRDC-Daily-39118.nc"
+output_file = "../data/GRDC-Globe/grdc-merged.nc"
+initial_date = Date(2009, 07, 01)
+final_date = Date(2009, 07, 16)
 
-# Comput new shifted netCDF file
-shift_grdc_to_utc(input_file, output_file)
+# Merge and shift
+merge_and_shift_grdc_files(input_dir, output_file, 1990, 2019)
 
 # Read files
 original_ds = NCDataset(input_file, "r")
@@ -22,21 +23,26 @@ n_gauges = length(original_ds["id"][:])
 
 # Generate a random index
 Random.seed!(1234)
-random_index = rand(1:n_gauges)
+original_random_index = rand(1:n_gauges)
+shifted_random_index = findfirst(gauge_id -> gauge_id == original_ds["id"][original_random_index], shifted_ds["gauge_id"][:])
 
 # Select the random row to get streamflows
-original_streamflow = original_ds["runoff_mean"][random_index, :]
-shifted_streamflow = shifted_ds["streamflow"][random_index, :]
+original_streamflow = original_ds["runoff_mean"][original_random_index, :]
+shifted_streamflow = shifted_ds["streamflow"][shifted_random_index, :]
+
+# Select date indexes
+original_min_date_idx = findfirst(date -> date == initial_date, original_ds["time"][:])
+original_max_date_idx = findfirst(date -> date == final_date, original_ds["time"][:])
+shifted_min_date_idx = findfirst(date -> date == initial_date, shifted_ds["date"][:])
+shifted_max_date_idx = findfirst(date -> date == final_date, shifted_ds["date"][:])
 
 # Plot
 fig = Figure()
 ax = Axis(fig[1,1], title="Streamflow [m^3/s]")
 original_num_days = length(original_ds["time"][:])
-final_day = original_num_days - 365
-initial_day = final_day - 20
-lines!(ax, initial_day:final_day, original_streamflow[initial_day:final_day], label="Original data", transparency=true, color=:blue)
-lines!(ax, initial_day:final_day, shifted_streamflow[initial_day:final_day], label="Shifted data", transparency=true, color=:red)
-ax.xticks = (initial_day:5:final_day, string.(Date.(original_ds["time"][:]))[initial_day:5:final_day])
+lines!(ax, original_min_date_idx:original_max_date_idx, original_streamflow[original_min_date_idx:original_max_date_idx], label="Original data", transparency=true, color=:blue)
+lines!(ax, original_min_date_idx:original_max_date_idx, shifted_streamflow[shifted_min_date_idx:shifted_max_date_idx], label="Shifted data", transparency=true, color=:red)
+ax.xticks = (original_min_date_idx:5:original_max_date_idx, string.(Date.(original_ds["time"][:]))[original_min_date_idx:5:original_max_date_idx])
 ax.xticklabelrotation = π/4
 axislegend(ax)
 
