@@ -4,7 +4,7 @@ River model for CliMA.
 ## Engineering (Julia)
 1. Create a JSON mapping ERA5 grid points to HydroSHEDS basins with `grid_points_to_basins()`.
 2. Compute dynamical variables for all basins with `compute_basins_timeseries()`. Currently using netCDF files from ERA5 Land divided by year and month.
-3. Ghift GRDC from local time to UTC with `shift_grdc_to_utc()`.
+3. Merge and shift GRDC files from local time to UTC with `merge_and_shift_grdc_files()`.
 4. Connect GRDC gauges to HydroSHEDS basins with `gauges_to_basins()`.
 5. Merge ERA5 timeseries for each HydroSHEDS basin with the corresponding GRDC gauge with `merge_era5_grdc()`.
 6. Get the statical attributes for each basin with `attribute_attributes()`.
