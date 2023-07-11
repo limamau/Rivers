@@ -1,9 +1,4 @@
 using Distributed 
-
-# Define the number of workers
-num_workers = Sys.CPU_THREADS
-addprocs(num_workers, exeflags=`--project=$(Base.active_project())`)
-
 @everywhere using CSV, DataFrames, Dates, JSON, NCDatasets, ProgressMeter, Statistics
 
 @everywhere """
@@ -222,7 +217,7 @@ function compute_basins_timeseries(grid_to_basins_file::String,
     
     # Compute basins time series following the parallelization scheme
     println("Computing temporary directories...")
-    @showprogress pmap(compute_basins_year_month_wrapper, 1:1:length(nc_files))
+    @showprogress pmap(compute_basins_year_month_wrapper, 1:1:length(nc_files)) 
 
     # Merge all temporary directories
     merge_temporary_directories(length(nc_files), output_dir)
