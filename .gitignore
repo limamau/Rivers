@@ -8,8 +8,9 @@ mapping_dicts/
 *.nc
 *.csv
 
-# configuration for data engineering
+# engineering tests
 engineer_config.txt
+engineer_tests.jl
 
 # others
 .DS_Store

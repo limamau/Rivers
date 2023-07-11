@@ -1,9 +1,4 @@
-using Distributed 
-
-# Define the number of workers
-num_workers = Sys.CPU_THREADS
-addprocs(num_workers, exeflags=`--project=$(Base.active_project())`)
-
+using Distributed
 @everywhere using CSV, DataFrames, Dates, JSON, NCDatasets, ProgressMeter, Statistics
 
 @everywhere """
