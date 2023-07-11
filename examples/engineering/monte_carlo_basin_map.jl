@@ -7,15 +7,15 @@ using Random
 using Shapefile 
 
 ## Set up files and variables to test
-nc_file = "path/to/nc.file" 
-shp_file = "path/to/shp.file" 
+nc_file = "/central/scratch/mdemoura/data/ERA5/globe_year_month/era5_1990_01.nc" 
+shp_file = "/central/scratch/mdemoura/data/BasinATLAS_v10_shp/BasinATLAS_v10_lev04.shp" 
 basin_id_field = "HYBAS_ID"
-output_file = "path/to/json.file"
+output_file = "/central/scratch/mdemoura/data/mapping_dicts/grid_to_basins_dict_lv04.json"
 do_monte_carlo = true 
 num_mc_exp = 100
 
 ## Compute an save JSON dictionary
-grid_points_to_basins(nc_file, shp_file, basin_id_field, output_file, do_monte_carlo, num_mc_exp)
+# grid_points_to_basins(nc_file, shp_file, basin_id_field, output_file, do_monte_carlo, num_mc_exp)
 
 ## Plot random basin
 # Open the shapefile in DataFrame format
@@ -38,6 +38,8 @@ random_index = rand(1:n_rows)
 
 # Select the random row
 basin_id = string(shape_df[random_index, basin_id_field])
+println(basin_id)
+# basin_id = "6040527680"
 
 # Definition of the vectors to plot
 basin_longitudes = [longitudes[map_dict[basin_id][i][1]] for i in 1:length(map_dict[basin_id])]
@@ -69,4 +71,4 @@ Colorbar(fig[1,2], sc, label="Point weights")
 ax.title = "Basin " * basin_id * " with Monte Carlo"
 
 # Save Plot
-save("monte_carlo_basin_map.png", fig)
+save("examples/engineering/monte_carlo_basin_map.png", fig)
