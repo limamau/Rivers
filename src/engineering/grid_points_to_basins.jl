@@ -1,10 +1,27 @@
-using DataFrames
-using JSON
-using NetCDF
-using ProgressMeter
-using Shapefile
+using Distributed
+@everywhere using DataFrames, JSON, NetCDF, ProgressMeter, Shapefile
 
 """
+    subdivide_dataframe(df, num_parts)
+"""
+function subdivide_dataframe(df::DataFrame, num_parts::Int)
+    # Calculate the size of each part
+    part_size, remainder = divrem(size(df, 1), num_parts)
+
+    # Subdivide the DataFrame into equal parts
+    subdivisions = []
+    start_idx = 1
+    for i in 1:(num_parts-1)
+        end_idx = start_idx + part_size - 1
+        push!(subdivisions, df[start_idx:end_idx, :])
+        start_idx = end_idx + 1
+    end
+    push!(subdivisions, df[start_idx:end, :])
+
+    return subdivisions
+end
+
+@everywhere """
     find_min_max_lon_lat(points, margin)
 
 Finds the minimum and maximum longitude and latitude values from a list of `points`.
@@ -18,7 +35,7 @@ function find_min_max_lon_lat(points::Vector{Shapefile.Point}, margin::AbstractF
            minimum(polygon_latitudes) - margin, maximum(polygon_latitudes) + margin
 end
 
-"""
+@everywhere """
     find_indices_within_range(values, min_value, max_value)
 
 Finds the indices of values within a specified range.
@@ -28,32 +45,15 @@ function find_indices_within_range(values::Vector{<:Real}, min_value::Real, max_
     return indices
 end
 
-"""
+@everywhere """
     grid_points_to_basins(nc_file, shp_file, basin_id_field, output_file, do_monte_carlo=true, num_mc_exp=1000)
-
-Reads a netCDF file and assigns grid points within polygons from a shapefile to basin IDs.
-
-# Arguments
-- `nc_file::String`: path to the netCDF file containing the grid information.
-- `shp_file::String`: path to the shapefile containig the basins vector shapes.
-- `basin_id_field::String`: name of the field in the shapefile containing the basin IDs.
-- `output_file::String`: path to the output file to save the assigned points.
-- `do_monte_carlo::Bool`: whether to use Monte Carlo simulation for point assignment. Default is `true`.
-- `num_mc_exp::Int`: number of Monte Carlo experiments to perform. Default is 1000.
-
-# Output
-- Saves a dictionary with the assigned points to the output file in JSON format.
-- Common usage: **"path/to/grid_to_basin_dict_lvXX.json"** where "XX" is the level in HydroSHEDS.
 """
-function grid_points_to_basins(nc_file::String, 
-                               shp_file::String,
-                               basin_id_field::String,
-                               output_file::String, 
-                               do_monte_carlo=true::Bool, 
-                               num_mc_exp=1000::Int)
-    # Open the shapefile in DataFrame format
-    shape_df = Shapefile.Table(shp_file) |> DataFrame
-
+function grid_points_to_basins_in_parallel(nc_file::String, 
+                                           shape_df::DataFrame,
+                                           basin_id_field::String,
+                                           output_file::String,
+                                           do_monte_carlo=true::Bool,
+                                           num_mc_exp=1000::Int)
     # Create a dictionary to store the assigned points indexes and its weights
     map_dict = Dict{Int, Vector{Tuple{Int, Int, AbstractFloat}}}()
 
@@ -122,4 +122,49 @@ function grid_points_to_basins(nc_file::String,
     open(output_file, "w") do f
         JSON.print(f, map_dict)
     end
+end
+
+"""
+    grid_points_to_basins(nc_file, shp_file, basin_id_field, output_dir, do_monte_carlo=true, num_mc_exp=1000)
+
+Reads a netCDF file and assigns grid points within polygons from a shapefile to basin IDs.
+
+# Arguments
+- `nc_file::String`: path to the netCDF file containing the grid information.
+- `shp_file::String`: path to the shapefile containig the basins vector shapes.
+- `basin_id_field::String`: name of the field in the shapefile containing the basin IDs.
+- `output_dir::String`: path to the output directory to save the dictionaries (JSON files) with the assigned points.
+- `do_monte_carlo::Bool`: whether to use Monte Carlo simulation for point assignment. Default is `true`.
+- `num_mc_exp::Int`: number of Monte Carlo experiments to perform. Default is 1000.
+
+# Output
+- Saves a a set of dictionaries with the assigned points to the output directory in JSON format.
+- Common usage: **"path/to/grid_to_basin_dict_lvXX"** where "XX" is the level in HydroSHEDS.
+"""
+function grid_points_to_basins(nc_file::String, 
+                               shp_file::String,
+                               basin_id_field::String,
+                               output_dir::String,
+                               do_monte_carlo=true::Bool,
+                               num_mc_exp=1000::Int)
+    # Open the shapefile in DataFrame format
+    shape_df = Shapefile.Table(shp_file) |> DataFrame
+
+    # select the two used columns: geometry and basin_id_field
+    select!(shape_df, [:geometry, Symbol(basin_id_field)])
+
+    # Subdivide the DataFrame into equal parts
+    subdivisions = subdivide_dataframe(shape_df, num_workers)
+
+    # Wrapper function 
+    function grid_points_to_basins_in_parallel_wrapper(i)
+        output_file = joinpath(output_dir, "dict$i.json")
+        grid_points_to_basins_in_parallel(nc_file, subdivisions[i], basin_id_field, output_file, do_monte_carlo, num_mc_exp)
+    end
+
+    # Create direcoty
+    mkpath(output_dir)
+
+    # Exectute function with parallelization
+    pmap(grid_points_to_basins_in_parallel_wrapper, 1:1:num_workers)
 end

@@ -1,13 +1,17 @@
-using Rivers
-using JSON # to create the variables operations JSON file
 using Distributed
+
+# Launch worker processes
+num_workers = Sys.CPU_THREADS 
+addprocs(num_workers, exeflags=`--project=$(Base.active_project())`)
+
+@everywhere using Rivers, JSON
 
 ## Define files and directories names
 era5_nc_dir = # this can be downloaded following https://www.ecmwf.int/en/era5-land
 era5_nc_file = joinpath(era5_nc_dir, "era5_YYYY_MM.nc")
 hydrosheds_lvXX_shp_file = # this can be downloaded in https://www.hydrosheds.org
 mkpath("path/to/mapping_dicts")
-grid_to_basins_dict_lvXX_file = "path/to/mapping_dicts/grid_to_basins_dict_lvXX.json"
+grid_to_basins_dict_lvXX = "path/to/mapping_dicts/grid_to_basins_dict_lvXX"
 # Create a variable operation dict and save it as JSON to use in the example
 variables_operations_dict = Dict("sro"=>"sum",
                                  "ssro"=>"sum", 
@@ -29,9 +33,9 @@ attributes_lvXX_dir = "path/to/attributes/attributes_lvXX"
 
 ## Engineering process
 # 1. Create a JSON mapping ERA5 grid points to HydroSHEDS basins with
-grid_points_to_basins(era5_nc_file, hydrosheds_lvXX_shp_file, "HYBAS_ID", grid_to_basins_dict_lvXX_file)
+grid_points_to_basins(era5_nc_file, hydrosheds_lvXX_shp_file, "HYBAS_ID", grid_to_basins_dict_lvXX)
 # 2. Compute dynamical variables for all basins with
-@everywhere compute_basins_timeseries(grid_to_basins_dict_lvXX_file, era5_nc_dir, variables_operations_dict_file, xd_dir)
+compute_basins_timeseries(grid_to_basins_dict_lvXX_file, era5_nc_dir, variables_operations_dict_file, xd_dir)
 # 3. Ghift GRDC from local time to UTC with
 shift_grdc_to_utc(original_grdc_nc_file, shifted_grdc_nc_file)
 # 4. Connect GRDC gauges to HydroSHEDS basins with
