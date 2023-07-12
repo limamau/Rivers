@@ -4,8 +4,6 @@ using Distributed
 @everywhere """
     subdivide_dataframe(df, num_parts)
 """
-    subdivide_dataframe(df, num_parts)
-"""
 function subdivide_dataframe(df::DataFrame, num_parts::Int)
     # Calculate the size of each part
     part_size, remainder = divrem(size(df, 1), num_parts)
@@ -62,6 +60,7 @@ function grid_points_to_basins_in_parallel(nc_file::String,
     # Read the netCDF file
     dataset = NetCDF.open(nc_file)
     longitudes = dataset["longitude"][:]
+    standard_longitudes!(longitudes)
     latitudes = dataset["latitude"][:]
 
     # Define constants for the Monte Carlo Experiments
@@ -71,9 +70,8 @@ function grid_points_to_basins_in_parallel(nc_file::String,
     # Margin for the bounding box
     bb_margin = longitudes[2] - longitudes[1]
 
-    println("Computing points to basins...")
     # Iterate over the polygons
-    @showprogress for row in eachrow(shape_df)
+    for row in eachrow(shape_df)
         # Get the polygon's points array
         polygon_points = row.geometry.points
 
@@ -138,6 +136,7 @@ Reads a netCDF file and assigns grid points within polygons from a shapefile to 
 - `output_dir::String`: path to the output directory to save the dictionaries (JSON files) with the assigned points.
 - `do_monte_carlo::Bool`: whether to use Monte Carlo simulation for point assignment. Default is `true`.
 - `num_mc_exp::Int`: number of Monte Carlo experiments to perform. Default is 1000.
+- `num_parts::Int`: number of divisions on the original shapefile. Default is Sys.CPU_THREADS.
 
 # Output
 - Saves a a set of dictionaries with the assigned points to the output directory in JSON format.
@@ -148,7 +147,8 @@ function grid_points_to_basins(nc_file::String,
                                basin_id_field::String,
                                output_dir::String,
                                do_monte_carlo=true::Bool,
-                               num_mc_exp=1000::Int)
+                               num_mc_exp=1000::Int,
+                               num_parts=Sys.CPU_THREADS::Int)
     # Open the shapefile in DataFrame format
     shape_df = Shapefile.Table(shp_file) |> DataFrame
 
@@ -156,7 +156,7 @@ function grid_points_to_basins(nc_file::String,
     select!(shape_df, [:geometry, Symbol(basin_id_field)])
 
     # Subdivide the DataFrame into equal parts
-    subdivisions = subdivide_dataframe(shape_df, num_workers)
+    subdivisions = subdivide_dataframe(shape_df, num_parts)
 
     # Wrapper function 
     function grid_points_to_basins_in_parallel_wrapper(i)
@@ -168,5 +168,6 @@ function grid_points_to_basins(nc_file::String,
     mkpath(output_dir)
 
     # Exectute function with parallelization
-    pmap(grid_points_to_basins_in_parallel_wrapper, 1:1:num_workers)
+    println("Computing points to basins...")
+    @showprogress pmap(grid_points_to_basins_in_parallel_wrapper, 1:1:num_parts)
 end

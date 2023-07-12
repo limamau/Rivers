@@ -9,7 +9,7 @@ in the given output directory.
 """
 function compute_basins_year_month(grid_to_basins_dict_file::String, 
                                    ncfile::String, 
-                                   variables_operations_dict_file::String, 
+                                   variables_operations_dict_dir::String, 
                                    output_dir::String,
                                    year::Int16,
                                    month::Int16)
@@ -21,90 +21,96 @@ function compute_basins_year_month(grid_to_basins_dict_file::String,
     lat_dim = nc.dim["latitude"]
     time_dim = Int(nc.dim["time"])
 
-    # Read dictionnary from JSON file
-    grid_to_basins_dict = JSON.parsefile(grid_to_basins_dict_file)
-
     # Get the variables in the netCDF file to perform the operations
     variables_operations_dict = JSON.parsefile(variables_operations_dict_file)
 
     # Reshape the index list
     linear = LinearIndices((1:lon_dim, 1:lat_dim))
 
-    # Pre-create all the csv files with the date column
-    for (basin_id, _) in grid_to_basins_dict
-        # Create a new csv file for the basin with all the dates of the year
-        output_file = joinpath(output_dir, "basin_$(basin_id).csv")
-        
-        # Shift according to ECWMF definition of the aggregation
-        start_date = Date(year, month, 1) - Day(1) 
-        end_date = Date(year, month, time_dim) - Day(1)
-        dates = collect(start_date:Day(1):end_date)
-        CSV.write(output_file, DataFrame(date=dates))
-    end
+    # Read directory with dictionaries
+    grid_to_basins_dict_files = readdir(grid_to_basins_dir, join=true)
+    
+    # Iterate over each dictionary
+    for grid_to_basins_dict_file in grid_to_basins_dict_files
+        # Read dictionnary from JSON file
+        grid_to_basins_dict = JSON.parsefile(grid_to_basins_dict_file)
 
-    # Iterate over all the variables to compute operation
-    for (i, (var, operation)) in enumerate(variables_operations_dict)
-        # Reshape the original 3D array in 2D
-        # print("Reshaping variable ", var, "... [", i, "/", length(variables_operations_dict), "] -")
-        rsh_arr = reshape(nc[var][:,:,:], (lon_dim*lat_dim, time_dim))
-        # println(" Done!")
-        
-        # Iterate over each basin
-        # print("Computing ", var, " for all the basins... [", i, "/", length(variables_operations_dict), "] -")
-        for (basin_id, index_list) in grid_to_basins_dict
-            # Create a new netCDF file for the basin
+        # Pre-create all the csv files with the date column
+        for (basin_id, _) in grid_to_basins_dict
+            # Create a new csv file for the basin with all the dates of the year
             output_file = joinpath(output_dir, "basin_$(basin_id).csv")
-            output_df = CSV.read(output_file, DataFrame)
-        
-            # Linearize index_list
-            linear_index_list = [(linear[lon_i, lat_i], proba) for (lon_i, lat_i, proba) in index_list]
             
-            # Perform operation
-            if operation == "sum"
-                # Get the sum of the variable over the basin indices
-                # Get the sum of probabilities
-                var_operation = zeros(time_dim)
-                sum_proba = 0
-                for (i, proba) in linear_index_list
-                    if !any(ismissing, rsh_arr[i, :])
-                        var_operation += rsh_arr[i, :]*proba
-                        sum_proba += proba
-                    end
-                end
-                # Normalize the operation
-                var_operation /= sum_proba
-
-            elseif operation == "mean"
-                # Get the mean of the variable over the basin indices
-                var_operation = zeros(time_dim)
-                count = 0
-                for (i, proba) in linear_index_list
-                    if !any(ismissing, rsh_arr[i, :])
-                        var_operation += rsh_arr[i, :]*proba
-                        count += 1
-                    end
-                end
-                if count != 0
-                    var_operation /= count
-                end
-            
-            else
-                error("Not supported operation in variables operations dictionnary.")
-            end
-
-            # Name of the new column
-            new_column_name = string(var, "_", operation)
-
-            # Add a new column to the DataFrame with the specified name
-            output_df[!, new_column_name] = var_operation
-
-            # Write the updated DataFrame back to the CSV file
-            CSV.write(output_file, output_df)
+            # Shift according to ECWMF definition of the aggregation
+            start_date = Date(year, month, 1) - Day(1) 
+            end_date = Date(year, month, time_dim) - Day(1)
+            dates = collect(start_date:Day(1):end_date)
+            CSV.write(output_file, DataFrame(date=dates))
         end
-        # println(" Done!")
+
+        # Iterate over all the variables to compute operation
+        for (i, (var, operation)) in enumerate(variables_operations_dict)
+            # Reshape the original 3D array in 2D
+            # print("Reshaping variable ", var, "... [", i, "/", length(variables_operations_dict), "] -")
+            rsh_arr = reshape(nc[var][:,:,:], (lon_dim*lat_dim, time_dim))
+            # println(" Done!")
+            
+            # Iterate over each basin
+            # print("Computing ", var, " for all the basins... [", i, "/", length(variables_operations_dict), "] -")
+            for (basin_id, index_list) in grid_to_basins_dict
+                # Create a new netCDF file for the basin
+                output_file = joinpath(output_dir, "basin_$(basin_id).csv")
+                output_df = CSV.read(output_file, DataFrame)
+            
+                # Linearize index_list
+                linear_index_list = [(linear[lon_i, lat_i], proba) for (lon_i, lat_i, proba) in index_list]
+                
+                # Perform operation
+                if operation == "sum"
+                    # Get the sum of the variable over the basin indices
+                    # Get the sum of probabilities
+                    var_operation = zeros(time_dim)
+                    sum_proba = 0
+                    for (i, proba) in linear_index_list
+                        if !any(ismissing, rsh_arr[i, :])
+                            var_operation += rsh_arr[i, :]*proba
+                            sum_proba += proba
+                        end
+                    end
+                    # Normalize the operation
+                    var_operation /= sum_proba
+
+                elseif operation == "mean"
+                    # Get the mean of the variable over the basin indices
+                    var_operation = zeros(time_dim)
+                    count = 0
+                    for (i, proba) in linear_index_list
+                        if !any(ismissing, rsh_arr[i, :])
+                            var_operation += rsh_arr[i, :]*proba
+                            count += 1
+                        end
+                    end
+                    if count != 0
+                        var_operation /= count
+                    end
+                
+                else
+                    error("Not supported operation in variables operations dictionnary.")
+                end
+
+                # Name of the new column
+                new_column_name = string(var, "_", operation)
+
+                # Add a new column to the DataFrame with the specified name
+                output_df[!, new_column_name] = var_operation
+
+                # Write the updated DataFrame back to the CSV file
+                CSV.write(output_file, output_df)
+            end
+            # println(" Done!")
+        end
     end
 
-    # Close the input netCDF file
+    # Close netCDF file
     close(nc)
 end
 
@@ -170,20 +176,20 @@ function merge_temporary_directories(amount_of_files::Int, output_dir::String)
     println("Merging temporary directories...")
     prog = Progress(amount_of_files)
     for i in 1:amount_of_files
-        temp_dir = joinpath(dirname(@__FILE__), "temps", "temp$i")
+        temp_dir = joinpath(output_dir, "temps", "temp$i")
         merge_temp_output(temp_dir, output_dir)
         next!(prog)
     end
 end
 
 """
-    compute_basins_timeseries(grid_to_basins_file, nc_dir, variables_operations_dict_file, output_dir)
+    compute_basins_timeseries(grid_to_basins_dir, nc_dir, variables_operations_dict_file, output_dir)
 
 This function computes the time series for all basins based on the given inputs. It uses parallelization (`pmap`) to speed up
 the process calling a wrapper for `compute_basins_year_month()`.
 
 # Arguments:
-- `grid_to_basins_file::String`: path to the JSON file containing the dictionary mapping basins to grid points.
+- `grid_to_basins_dir::String`: path to the JSON directory containing the dictionaries (JSON files) mapping basins to grid points.
 The JSON must be in the format `{"basin_id":[[lon_idx,lat_idx,proba],...],...}`. It should be computed by `grid_points_to_basins()` 
 or other custom function.
 - `nc_dir::String`: path to the directory containing the NetCDF files. The files need to be in the format **"era5_YYYY_MM.nc"**.
@@ -195,7 +201,7 @@ The JSON must be in the format `{"var":"operation",...}` where `var` is a variab
 # Output:
 - Saves a CSV file for every basin inside `output_dir`.
 """
-function compute_basins_timeseries(grid_to_basins_file::String, 
+function compute_basins_timeseries(grid_to_basins_dir::String, 
                                    nc_dir::String, 
                                    variables_operations_dict_file::String,
                                    output_dir::String)
@@ -207,13 +213,13 @@ function compute_basins_timeseries(grid_to_basins_file::String,
         year, month = get_year_and_month(nc_files[i])
 
         # Create temp directory
-        temp_dir = joinpath(dirname(@__FILE__), "temps", "temp$i")
+        temp_dir = joinpath(output_dir, "temps", "temp$i")
         mkdir(temp_dir)
-        compute_basins_year_month(grid_to_basins_file, joinpath(nc_dir, nc_files[i]), variables_operations_dict_file, temp_dir, year, month)
+        compute_basins_year_month(grid_to_basins_dir, joinpath(nc_dir, nc_files[i]), variables_operations_dict_file, temp_dir, year, month)
     end
 
     # Create temporary directory
-    mkdir(joinpath(dirname(@__FILE__), "temps"))
+    mkdir(joinpath(output_dir, "temps"))
     
     # Compute basins time series following the parallelization scheme
     println("Computing temporary directories...")
@@ -223,5 +229,5 @@ function compute_basins_timeseries(grid_to_basins_file::String,
     merge_temporary_directories(length(nc_files), output_dir)
 
     # Remove the temporary directory
-    rm(joinpath(dirname(@__FILE__), "temps"))
+    rm(joinpath(output_dir, "temps"))
 end
