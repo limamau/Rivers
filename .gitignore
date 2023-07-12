@@ -7,10 +7,11 @@ mapping_dicts/
 # file extensions
 *.nc
 *.csv
+*.sh
+*.out
 
-# engineering tests
-engineer_config.txt
-engineer_tests.jl
+# engineering tests and simulations
+engineer_*
 
 # others
 .DS_Store

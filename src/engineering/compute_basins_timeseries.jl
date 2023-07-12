@@ -2,14 +2,14 @@ using Distributed
 @everywhere using CSV, DataFrames, Dates, JSON, NCDatasets, ProgressMeter, Statistics
 
 @everywhere """
-    compute_basins_year_month(grid_to_basins_dict_file, ncfile, variables_operations_dict_file output_dir, year, month)
+    compute_basins_year_month(grid_to_basins_dir, ncfile, variables_operations_dict_file output_dir, year, month)
 
 This function computes the time series of all given variables for all the basins over a month of a year and stores the results
 in the given output directory.
 """
-function compute_basins_year_month(grid_to_basins_dict_file::String, 
+function compute_basins_year_month(grid_to_basins_dir::String, 
                                    ncfile::String, 
-                                   variables_operations_dict_dir::String, 
+                                   variables_operations_dict_file::String, 
                                    output_dir::String,
                                    year::Int16,
                                    month::Int16)
@@ -219,11 +219,11 @@ function compute_basins_timeseries(grid_to_basins_dir::String,
     end
 
     # Create temporary directory
-    mkdir(joinpath(output_dir, "temps"))
+    mkpath(joinpath(output_dir, "temps"))
     
     # Compute basins time series following the parallelization scheme
     println("Computing temporary directories...")
-    @showprogress pmap(compute_basins_year_month_wrapper, 1:1:length(nc_files)) 
+    @showprogress pmap(compute_basins_year_month_wrapper, 1:1:length(nc_files))
 
     # Merge all temporary directories
     merge_temporary_directories(length(nc_files), output_dir)
