@@ -1,7 +1,9 @@
-using Distributed 
+using Distributed
 @everywhere using DataFrames, JSON, NetCDF, ProgressMeter, Shapefile
 
 @everywhere """
+    subdivide_dataframe(df, num_parts)
+"""
     subdivide_dataframe(df, num_parts)
 """
 function subdivide_dataframe(df::DataFrame, num_parts::Int)
