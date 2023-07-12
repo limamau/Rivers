@@ -6,40 +6,35 @@ using NetCDF
 using Random
 using Shapefile 
 
-## Set up files and variables to test
-nc_file = "/central/scratch/mdemoura/data/ERA5/globe_year_month/era5_1990_01.nc" 
-shp_file = "/central/scratch/mdemoura/data/BasinATLAS_v10_shp/BasinATLAS_v10_lev04.shp" 
+# Set up files and variables to test
+nc_file = "path/to/file.nc" 
+shp_file = "/path/to/file.shp" 
 basin_id_field = "HYBAS_ID"
-output_file = "/central/scratch/mdemoura/data/mapping_dicts/grid_to_basins_dict_lv04.json"
+output_dir = "/path/to/grid_to_basins_dict_lvXX/"
 do_monte_carlo = true 
 num_mc_exp = 100
 
-## Compute an save JSON dictionary
-# grid_points_to_basins(nc_file, shp_file, basin_id_field, output_file, do_monte_carlo, num_mc_exp)
+# Compute an save JSON dictionary
+grid_points_to_basins(nc_file, shp_file, basin_id_field, output_dir, do_monte_carlo, num_mc_exp)
 
-## Plot random basin
-# Open the shapefile in DataFrame format
-shape_df = Shapefile.Table(shp_file) |> DataFrame
+# Read directory with dictionaries
+grid_to_basins_dict_files = readdir(output_dir, join=true)
 
-# Create a dictionary to store the assigned points indexes and its weights
-map_dict = JSON.parsefile(output_file)
+# Choose one of the files randomly
+Random.seed!(42)
+random_file = rand(grid_to_basins_dict_files)
+
+# Read dictionary
+map_dict = JSON.parsefile(random_file)
+
+# Get random basin
+basin_id = rand(keys(map_dict))
 
 # Read the netCDF file
 dataset = NetCDF.open(nc_file)
-longitudes = dataset["longitude"][:]
+longitudes = (dataset["longitude"][:])
+standard_longitudes!(longitudes)
 latitudes = dataset["latitude"][:]
-
-# Get the total number of rows in the DataFrame
-n_rows = size(shape_df, 1)
-
-# Generate a random index
-Random.seed!(42)
-random_index = rand(1:n_rows)
-
-# Select the random row
-basin_id = string(shape_df[random_index, basin_id_field])
-println(basin_id)
-# basin_id = "6040527680"
 
 # Definition of the vectors to plot
 basin_longitudes = [longitudes[map_dict[basin_id][i][1]] for i in 1:length(map_dict[basin_id])]
@@ -50,8 +45,11 @@ probas = [map_dict[basin_id][i][3] for i in 1:length(map_dict[basin_id])]
 fig = Figure()
 ax = Axis(fig[1, 1])
 
+# Open the shapefile in DataFrame format
+shape_df = Shapefile.Table(shp_file) |> DataFrame
+
 # Basin
-for polygon in shape_df[shape_df[:, basin_id_field] .== parse(Int, basin_id), :].geometry
+for polygon in shape_df[shape_df.HYBAS_ID .==parse(Int, basin_id), :].geometry
     polygon_x = [point.x for point in polygon.points]
     polygon_y = [point.y for point in polygon.points]
     points = Point2f.(polygon_x, polygon_y)

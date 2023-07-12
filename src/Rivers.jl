@@ -3,6 +3,8 @@ module Rivers
 export grid_points_to_basins, compute_basins_timeseries, merge_and_shift_grdc_files,
        gauges_to_basins, merge_era5_grdc, attribute_attributes
 
+export standard_longitudes! # used for plotting in the monte carlo example
+
 include("engineering/geo_utils.jl")
 
 include("engineering/grid_points_to_basins.jl")
