@@ -4,14 +4,9 @@ timseries/
 xd_lv04/
 mapping_dicts/
 
-# file extensions
-*.nc
-*.csv
-*.sh
-*.out
-
 # engineering tests and simulations
 engineer_*
+simulations/
 
 # others
 .DS_Store
