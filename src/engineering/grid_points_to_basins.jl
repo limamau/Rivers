@@ -3,6 +3,8 @@ using Distributed
 
 @everywhere """
     subdivide_dataframe(df, num_parts)
+
+Subdivide a dataframe in an array of parts.
 """
 function subdivide_dataframe(df::DataFrame, num_parts::Int)
     # Calculate the size of each part
@@ -160,7 +162,7 @@ function grid_points_to_basins(nc_file::String,
 
     # Wrapper function 
     function grid_points_to_basins_in_parallel_wrapper(i)
-        output_file = joinpath(output_dir, "dict$i.json")
+        output_file = joinpath(output_dir, "dict" * lpad(i,2,"0") * ".json")
         grid_points_to_basins_in_parallel(nc_file, subdivisions[i], basin_id_field, output_file, do_monte_carlo, num_mc_exp)
     end
 

@@ -24,7 +24,11 @@ function in_polygon(vertices::Vector{Shapefile.Point}, x::Real, y::Real)
     end
     return inside
 end
+"""
+    standard_longitudes!(longitudes)
 
+Transforms an array of longitudes to the [-180,180] limit range.
+"""
 function standard_longitudes!(longitudes::Vector{<:Real})
     for i in 1:length(longitudes)
         if longitudes[i] > 180
