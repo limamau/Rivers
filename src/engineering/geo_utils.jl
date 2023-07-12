@@ -24,3 +24,11 @@ function in_polygon(vertices::Vector{Shapefile.Point}, x::Real, y::Real)
     end
     return inside
 end
+
+function standard_longitudes!(longitudes::Vector{<:Real})
+    for i in 1:length(longitudes)
+        if longitudes[i] > 180
+          longitudes[i] -= 360
+        end
+      end
+end
