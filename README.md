@@ -23,7 +23,7 @@ pip install -e .
 ```
 as shown in the documentation of the package.
 
-A typical `config.yml` of the model in shown in `examples/neuralhydrology/NA_lv06`.
+A typical `config.yml` of the model is shown in `examples/neuralhydrology/NA_lv06`.
 
 It can be run with `nh-run train --config-file config.yml`.
 
