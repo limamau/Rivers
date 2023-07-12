@@ -14,7 +14,7 @@ function subdivide_dataframe(df::DataFrame, num_parts::Int)
     subdivisions = []
     start_idx = 1
     for i in 1:(num_parts-1)
-        end_idx = start_idx + part_size - 1
+        end_idx = start_idx + part_size - 1 + (remainder!=0)
         push!(subdivisions, df[start_idx:end_idx, :])
         start_idx = end_idx + 1
     end
