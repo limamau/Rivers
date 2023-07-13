@@ -148,24 +148,20 @@ end
 Merge timeseries in the output directory and temporary directory.
 """
 function merge_temp_output(temp_dir::String, output_dir::String)
-    # Check if output directory exists
-    if isdir(output_dir) # Concatenate currently files and temporary files
-        # Get a list of all files in the directory
-        csvfiles = readdir(temp_dir)
-        for csvfile in csvfiles
-            # Concatenate old output file and temporary file
-            output_df = CSV.read(joinpath(output_dir, csvfile), DataFrame)
-            temp_df = CSV.read(joinpath(temp_dir, csvfile), DataFrame)
-            output_df = vcat(output_df, temp_df)
-            
-            # Write the updated DataFrame back to the CSV file
-            CSV.write(joinpath(output_dir, csvfile), output_df)
-        end
-        # Remove temporary directory
-        rm(temp_dir; recursive=true)
-    else # Change the name of the directory from temporary name to output name
-        mv(temp_dir, output_dir)
+    # Get a list of all files in the directory
+    csvfiles = readdir(temp_dir)
+    # Iterate over each of them
+    for csvfile in csvfiles
+        # Concatenate old output file and temporary file
+        output_df = CSV.read(joinpath(output_dir, csvfile), DataFrame)
+        temp_df = CSV.read(joinpath(temp_dir, csvfile), DataFrame)
+        output_df = vcat(output_df, temp_df)
+        
+        # Write the updated DataFrame back to the CSV file
+        CSV.write(joinpath(output_dir, csvfile), output_df)
     end
+    # Remove temporary directory
+    rm(temp_dir; recursive=true)
 end
 
 """
@@ -173,9 +169,23 @@ end
 Merge all temporary directories into the output directory.
 """
 function merge_temporary_directories(amount_of_files::Int, output_dir::String)
+    # Create base DataFrame
+    temp_dir = joinpath(output_dir, "temps", "temp" * lpad(1,4,"0"))
+    csvfiles = readdir(temp_dir)
+    column_names = names(CSV.read(joinpath(temp_dir, csvfiles[1]), DataFrame))
+    df = DataFrame()
+    for column_name in column_names
+        df[!, Symbol(column_name)] = String[]
+    end
+
+    # Assign the created DataFrame to each file in the output directory
+    for csvfile in csvfiles
+        CSV.write(joinpath(output_dir, csvfile), df)
+    end
+
     println("Merging temporary directories...")
     @showprogress for i in 1:amount_of_files
-        temp_dir = joinpath(output_dir, "temps", "temp" * lpad(i,2,"0"))
+        temp_dir = joinpath(output_dir, "temps", "temp" * lpad(i,4,"0"))
         merge_temp_output(temp_dir, output_dir)
     end
 end
@@ -213,7 +223,7 @@ function compute_basins_timeseries(grid_to_basins_dir::String,
         year, month = get_year_and_month(nc_files[i])
 
         # Create temp directory
-        temp_dir = joinpath(output_dir, "temps" , "temp" * lpad(i,2,"0"))
+        temp_dir = joinpath(output_dir, "temps" , "temp" * lpad(i,4,"0"))
         mkdir(temp_dir)
         compute_basins_year_month(grid_to_basins_dir, joinpath(nc_dir, nc_files[i]), variables_operations_dict_file, temp_dir, year, month)
     end
