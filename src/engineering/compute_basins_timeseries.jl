@@ -174,11 +174,9 @@ Merge all temporary directories into the output directory.
 """
 function merge_temporary_directories(amount_of_files::Int, output_dir::String)
     println("Merging temporary directories...")
-    prog = Progress(amount_of_files)
-    for i in 1:amount_of_files
-        temp_dir = joinpath(output_dir, "temps", "temp$i")
+    @showprogress for i in 1:amount_of_files
+        temp_dir = joinpath(output_dir, "temps", "temp" * lpad(i,2,"0"))
         merge_temp_output(temp_dir, output_dir)
-        next!(prog)
     end
 end
 
@@ -197,6 +195,7 @@ or other custom function.
 The JSON must be in the format `{"var":"operation",...}` where `var` is a variable in the ERA5 netCDF files and `operation` can be
 **"sum"** or **"mean"** operations.
 - `output_dir::String`: path to the output directory where the computed time series will be stored.
+- `checkpoint::Int`: if provided, starts computing the time series from folder temp{checkpoint}. Standard is 1 (no checkpoint).
 
 # Output:
 - Saves a CSV file for every basin inside `output_dir`.
@@ -204,7 +203,8 @@ The JSON must be in the format `{"var":"operation",...}` where `var` is a variab
 function compute_basins_timeseries(grid_to_basins_dir::String, 
                                    nc_dir::String, 
                                    variables_operations_dict_file::String,
-                                   output_dir::String)
+                                   output_dir::String,
+                                   checkpoint=1::Int)
     nc_files = readdir(nc_dir)
 
     # Wrapper function 
@@ -213,7 +213,7 @@ function compute_basins_timeseries(grid_to_basins_dir::String,
         year, month = get_year_and_month(nc_files[i])
 
         # Create temp directory
-        temp_dir = joinpath(output_dir, "temps", "temp$i")
+        temp_dir = joinpath(output_dir, "temps" , "temp" * lpad(i,2,"0"))
         mkdir(temp_dir)
         compute_basins_year_month(grid_to_basins_dir, joinpath(nc_dir, nc_files[i]), variables_operations_dict_file, temp_dir, year, month)
     end
@@ -223,7 +223,7 @@ function compute_basins_timeseries(grid_to_basins_dir::String,
     
     # Compute basins time series following the parallelization scheme
     println("Computing temporary directories...")
-    @showprogress pmap(compute_basins_year_month_wrapper, 1:1:length(nc_files))
+    @showprogress pmap(compute_basins_year_month_wrapper, checkpoint:1:length(nc_files))
 
     # Merge all temporary directories
     merge_temporary_directories(length(nc_files), output_dir)
