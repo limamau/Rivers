@@ -126,7 +126,7 @@ function create_other_attributes(grdc_ds::NCDataset,
     complete_areas = grdc_ds["area"][:]
     
     # Get grdc IDs
-    gauge_ids = grdc_ds["id"][:]
+    gauge_ids = grdc_ds["gauge_id"][:]
 
     selected_areas = Vector{Float64}(undef, length(basin_ids))
 
