@@ -25,6 +25,8 @@ as shown in the documentation of the package.
 
 A typical `config.yml` of the model is shown in `examples/neuralhydrology/NA_lv06`.
 
+Use `extractbasins()` to get the list of basins in .txt format.
+
 It can be run with `nh-run train --config-file config.yml`.
 
 ## Analysis (Julia)
