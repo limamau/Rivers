@@ -78,7 +78,7 @@ function gauges_to_basins(nc_file::String,
 
     # Read the netCDF file
     dataset = NetCDF.open(nc_file)
-    grdc_ids = dataset["id"][:]
+    grdc_ids = dataset["gauge_id"][:]
     longitudes = dataset["geo_x"][:]
     latitudes = dataset["geo_y"][:]
     grdc_areas = dataset["area"]
