@@ -43,8 +43,8 @@ function merge_era5_grdc(timeseries_dir::String, grdc_nc_file::String, basin_gau
     # Create output directory
     mkpath(output_dir)
 
-    println("Merging basins dynamical inputs and streamflow series...")
-    @showprogress for basin_file in basin_files
+    statement = "Merging basins dynamical inputs and streamflow series..."
+    @showprogress statement for basin_file in basin_files
         basin_id = split(basename(basin_file), "_")[end][1:end-4]
         basin_df = CSV.read(joinpath(timeseries_dir, basin_file), DataFrame)
     
