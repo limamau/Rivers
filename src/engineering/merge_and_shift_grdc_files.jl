@@ -48,7 +48,7 @@ function merge_and_shift_grdc_files(input_dir::String, output_file::String, init
     # areas
     areas = Vector{Float32}(undef, num_gauges)
     # country
-    countries = Vector{String}(undef, num_gauges)
+    countries = fill("-", num_gauges)
     # geographical coordinates
     geo_Xs = Vector{Float32}(undef, num_gauges)
     geo_Ys = Vector{Float32}(undef, num_gauges)
@@ -125,10 +125,9 @@ function merge_and_shift_grdc_files(input_dir::String, output_file::String, init
     # Create a streamflow variable
     defVar(output_dataset, "streamflow", streamflows, ("gauge_id", "date",), fillvalue=-999.0)
 
-
     # Add variables
     defVar(output_dataset, "area", areas, ("gauge_id",))
-    # defVar(output_dataset, "country", countries, ("gauge_id",))
+    defVar(output_dataset, "country", countries, ("gauge_id",))
     defVar(output_dataset, "geo_x", geo_Xs, ("gauge_id",))
     defVar(output_dataset, "geo_y", geo_Ys, ("gauge_id",))
     defVar(output_dataset, "geo_z", geo_Zs, ("gauge_id",))
