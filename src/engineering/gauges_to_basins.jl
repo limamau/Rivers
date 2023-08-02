@@ -87,8 +87,8 @@ function gauges_to_basins(nc_file::String,
     map_dict = Dict{Int, Array{Int}}()  # {HYBAS_ID: [GRDC_ID, ...], ...}
     
     # Iterate over the selected points
-    statement = "Assigning gauges to basins..."
-    @showprogress statement for i in eachindex(grdc_ids)
+    msg = "Assigning gauges to basins..."
+    @showprogress msg for i in eachindex(grdc_ids)
             x = longitudes[i]
             y = latitudes[i]
 

@@ -170,6 +170,6 @@ function grid_points_to_basins(nc_file::String,
     mkpath(output_dir)
 
     # Exectute function with parallelization
-    println("Computing points to basins...")
-    @showprogress pmap(grid_points_to_basins_in_parallel_wrapper, 1:1:num_parts)
+    msg = "Computing points to basins..."
+    @showprogress msg pmap(grid_points_to_basins_in_parallel_wrapper, 1:1:num_parts)
 end
