@@ -186,7 +186,9 @@ function merge_temporary_directories(amount_of_files::Int, output_dir::String)
     println("Merging temporary directories...")
     @showprogress for i in 1:amount_of_files
         temp_dir = joinpath(output_dir, "temps", "temp" * lpad(i,4,"0"))
-        merge_temp_output(temp_dir, output_dir)
+        if isdir(temp_dir)
+            merge_temp_output(temp_dir, output_dir)
+        end
     end
 end
 
@@ -231,9 +233,9 @@ function compute_basins_timeseries(grid_to_basins_dir::String,
     # Create temporary directory
     mkpath(joinpath(output_dir, "temps"))
     
-    # Compute basins time series following the parallelization scheme
-    println("Computing temporary directories...")
-    @showprogress pmap(compute_basins_year_month_wrapper, checkpoint:1:length(nc_files))
+    # # Compute basins time series following the parallelization scheme
+    # println("Computing temporary directories...")
+    # @showprogress pmap(compute_basins_year_month_wrapper, checkpoint:1:length(nc_files))
 
     # Merge all temporary directories
     merge_temporary_directories(length(nc_files), output_dir)
