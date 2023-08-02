@@ -6,12 +6,13 @@ using Shapefile
 using Statistics
 
 """
-    create_hydroatlas_attributes(hydroatlas_df, basins_ids, output_dir)
+    create_hydroatlas_attributes(hydroatlas_df, basins_ids, graph_dict, output_dir)
 
 Creates a CSV file containing the attributes from the HydroAtlas shapefile for the specified basins.
 """
 function create_hydroatlas_attributes(hydroatlas_df::DataFrame,
                                       basins_ids::Vector{Int},
+                                      graph_dict::Dict,
                                       output_dir::String)
     # Join DataFrames
     attributes_df = hydroatlas_df[findall(in(basins_ids), hydroatlas_df.HYBAS_ID), :]
@@ -24,6 +25,32 @@ function create_hydroatlas_attributes(hydroatlas_df::DataFrame,
 
     # Sort
     sort!(attributes_df)
+
+    # Instantiate new columns
+    min_dists = zeros(length(attributes_df.basin_id))
+    max_dists = zeros(length(attributes_df.basin_id))
+    mean_dists = zeros(length(attributes_df.basin_id))
+    
+    # Get dists list
+    for (i,basin_id) in enumerate(attributes_df.basin_id)
+        if !isempty(graph_dict[string(basin_id)])
+            dists = []
+            down_dist = hydroatlas_df[hydroatlas_df.HYBAS_ID .== basin_id, :DIST_MAIN][1]
+            for up_basin in graph_dict[string(basin_id)]
+                up_dist = hydroatlas_df[hydroatlas_df.HYBAS_ID .== up_basin, :DIST_MAIN][1]
+                dist = down_dist - up_dist
+                push!(dists, dist)
+            end
+            min_dists[i] = minimum(dists)
+            max_dists[i] = maximum(dists)
+            mean_dists[i] = mean(dists)
+        end
+    end
+
+    # Add columns
+    attributes_df[!, "min_dist"] = min_dists
+    attributes_df[!, "max_dist"] = max_dists
+    attributes_df[!, "mean_dist"] = mean_dists
 
     # Write csv
     CSV.write(joinpath(output_dir, "hydroatlas_attributes.csv"), attributes_df)
@@ -124,11 +151,13 @@ function create_other_attributes(grdc_ds::NCDataset,
 
     # Get areas
     complete_areas = grdc_ds["area"][:]
+    complete_countries = grdc_ds["country"][:]
     
     # Get grdc IDs
     gauge_ids = grdc_ds["gauge_id"][:]
 
     selected_areas = Vector{Float64}(undef, length(basin_ids))
+    selected_countries = fill("-", length(basin_ids))
 
     for (i, basin_id) in enumerate(basin_ids)
         # Get gauge ID
@@ -139,10 +168,13 @@ function create_other_attributes(grdc_ds::NCDataset,
 
         # Add the area to selected areas vector
         selected_areas[i] = complete_areas[grdc_idx]
+
+        # Add the country
+        selected_countries[i] = complete_countries[grdc_idx]
     end
 
     # Create DataFrame
-    attributes_df = DataFrame(basin_id = basin_ids, area = selected_areas)
+    attributes_df = DataFrame(basin_id = basin_ids, area = selected_areas, country = selected_countries)
 
     # Sort
     sort!(attributes_df)
@@ -161,6 +193,7 @@ This function attributes the target attributes in CSV files to each basin for a 
 - `timeseries_dir`: directory path containing the ERA5 timeseries data files for each basin.
 - `grdc_ncfile`: path to the GRDC NetCDF file.
 - `basin_gauge_dict_file`: path to the JSON file containing the mapping between basin IDs and corresponding GRDC gauge IDs.
+- `graph_dict_file::String`: path to the JSON file containing the graph dictionary.
 - `output_dir`: directory path where the output CSV files will be saved.
 
 # Output
@@ -171,7 +204,8 @@ This function attributes the target attributes in CSV files to each basin for a 
 function attribute_attributes(hydroatlas_shapefile::String, 
                               timeseries_dir::String, 
                               grdc_ncfile::String, 
-                              basin_gauge_dict_file::String, 
+                              basin_gauge_dict_file::String,
+                              graph_dict_file::String,
                               output_dir::String)
     # Read Hydro Atlas shapefile
     hydroatlas_df = Shapefile.Table(hydroatlas_shapefile) |> DataFrame
@@ -188,11 +222,14 @@ function attribute_attributes(hydroatlas_shapefile::String,
     # Read matching dictionary
     basin_gauge_dict = JSON.parsefile(basin_gauge_dict_file)
 
+    # Read graph dictionary
+    graph_dict = JSON.parsefile(graph_dict_file)
+
     # Create output directory
     mkpath(output_dir)
 
     # Create Hydro Atlas attributes csv
-    create_hydroatlas_attributes(hydroatlas_df, basin_ids, output_dir)
+    create_hydroatlas_attributes(hydroatlas_df, basin_ids, graph_dict, output_dir)
 
     # Create ERA5 attributes csv
     create_era5_attributes(timeseries_dir, basin_files, basin_ids, output_dir)
