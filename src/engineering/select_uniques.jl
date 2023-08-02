@@ -2,16 +2,16 @@ using DataFrames
 using Dates
 using ProgressMeter
 
-function select_uniques(input_dir::String, output_dir::String, limit_date::Date=nothing)
+function select_uniques(input_dir::String, output_dir::String, limit_date::Union{Date, Nothing}=nothing)
     # Read csv files
     csv_files = readdir(input_dir)
 
     # Cretae output directory
-    mkdir(output_dir)
+    mkpath(output_dir)
 
     # Iterate over csv files
-    statement = "Selecting uniques rows..."
-    @showprogress 1 statement for csv_file in csv_files
+    msg = "Selecting uniques rows..."
+    @showprogress msg for csv_file in csv_files
         if csv_file != "temps"
             df = CSV.read(joinpath(input_dir, csv_file), DataFrame)
             if !isnothing(limit_date)

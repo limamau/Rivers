@@ -26,8 +26,8 @@ function create_graph(shape_file::String, output_file::String)
     end
 
     # Iterate over all basins
-    statement = "Creating graph..."
-    @showprogress statement for i in 1:length(df.HYBAS_ID)
+    msg = "Creating graph..."
+    @showprogress msg for i in 1:length(df.HYBAS_ID)
         # Check if downstream exists in the graph
         if df.NEXT_DOWN[i] != 0
             # Add basin to the list of upstreams
