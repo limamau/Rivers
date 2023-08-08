@@ -47,19 +47,26 @@ key_gauges = [arr[1] for arr in values(merge(basin_gauge_dict_lv05, basin_gauge_
 
 # Write csvs
 grdc_arr = Vector{Union{Missing, Float32}}(missing, pcr_max_date_idx-pcr_min_date_idx+1)
-output_dir = "/central/scratch/mdemoura/data/pcr-globwb2/pcr_timeseries_averaged"
+output_dir = "/central/scratch/mdemoura/data/pcr-globwb2/pcr_timeseries"
 mkpath(output_dir)
 msg = "Writing PCR-GLOBWB2 timeseries..."
+# Iterate over each gauge
 @showprogress msg for i in eachindex(grdc_ids)
+    # Check if gauge has a corresponding basin
     if grdc_ids[i] in key_gauges
+        # Check if (lon,lat) is valid
         if !ismissing(closest_lons[i]) & !ismissing(closest_lats[i])
+            # Get PCR-GLOBWB2 array
             pcr_arr = pcr_streamflows[closest_lons[i], closest_lats[i], pcr_min_date_idx:pcr_max_date_idx]
+            # Get the sum of grdc streamflow over each moth and save it in the corresponding array
             for j in pcr_min_date_idx:pcr_max_date_idx
                 grdc_min_date_idx = findfirst(date -> date == pcr_bnds[1,j], grdc_dates)
                 grdc_max_date_idx = findfirst(date -> date == pcr_bnds[2,j], grdc_dates)
-                grdc_arr[j-pcr_min_date_idx+1] = sum(grdc_streamflows[i,grdc_max_date_idx:grdc_max_date_idx])
+                grdc_arr[j-pcr_min_date_idx+1] = sum(grdc_streamflows[i, grdc_max_date_idx:grdc_max_date_idx])
             end
             gauge_id = grdc_ids[i]
+            
+            # Save csv
             CSV.write(joinpath(output_dir, "gauge_$gauge_id.csv"), DataFrame(date=dates, grdc_streamflow=grdc_arr, pcr_streamflow=pcr_arr))
         end
     end

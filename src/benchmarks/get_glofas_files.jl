@@ -61,7 +61,9 @@ msg = "Writing GloFAS timeseries..."
 
     # Iterate over each gauge
     for i in eachindex(grdc_ids)
+        # Check if gauge has a corresponding basin
         if grdc_ids[i] in key_gauges
+            # Check if (lon,lat) is valid
             if !ismissing(closest_lons[i]) & !ismissing(closest_lats[i])
                 glofas_arr = glofas_streamflows[closest_lons[i], closest_lats[i], glofas_min_date_idx:glofas_max_date_idx]
                 grdc_arr = grdc_streamflows[i, grdc_min_date_idx:grdc_max_date_idx]
