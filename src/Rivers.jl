@@ -19,9 +19,9 @@ include("engineering/gauges_to_basins.jl")
 
 include("engineering/create_graph.jl")
 
-include("engineering/merge_era5_grdc.jl")
+include("engineering/merge_era5_grdc_single.jl")
 
-include("engineering/merge_era5_grdc_old.jl")
+include("engineering/merge_era5_grdc_graph.jl")
 
 include("engineering/attribute_attributes.jl")
 
