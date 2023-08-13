@@ -39,7 +39,7 @@ msg = "Writing GloFAS timeseries..."
 @showprogress msg for file in readdir("/central/scratch/mdemoura/data/era5/river_year_month/", join=true)
 
     # Get year and month
-    year, month = get_year_and_month(file)
+    year, month = get_year_and_month_river(file)
 
     # Define min and max dates
     min_date = Date(year, month, 1)
