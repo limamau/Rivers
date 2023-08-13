@@ -44,7 +44,7 @@ function first_dates_of_months(min_date, max_date)
     return first_dates
 end
 
-function get_year_and_month(nc_file::String)
+function get_year_and_month_river(nc_file::String)
     # Check if the filename has the correct format
     if occursin("river_", nc_file) && occursin(".nc", nc_file)
         # Extract year and month as strings
