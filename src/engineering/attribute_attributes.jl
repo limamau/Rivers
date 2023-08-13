@@ -30,10 +30,13 @@ function create_hydroatlas_attributes(hydroatlas_df::DataFrame,
     min_dists = zeros(length(attributes_df.basin_id))
     max_dists = zeros(length(attributes_df.basin_id))
     mean_dists = zeros(length(attributes_df.basin_id))
+    is_routings = zeros(length(attributes_df.basin_id))
     
     # Get dists list
     for (i,basin_id) in enumerate(attributes_df.basin_id)
+        is_routing = 0
         if !isempty(graph_dict[string(basin_id)])
+            is_routing = 1
             dists = []
             down_dist = hydroatlas_df[hydroatlas_df.HYBAS_ID .== basin_id, :DIST_MAIN][1]
             for up_basin in graph_dict[string(basin_id)]
@@ -44,6 +47,7 @@ function create_hydroatlas_attributes(hydroatlas_df::DataFrame,
             min_dists[i] = minimum(dists)
             max_dists[i] = maximum(dists)
             mean_dists[i] = mean(dists)
+            is_routings[i] = is_routing
         end
     end
 
@@ -51,6 +55,7 @@ function create_hydroatlas_attributes(hydroatlas_df::DataFrame,
     attributes_df[!, "min_dist"] = min_dists
     attributes_df[!, "max_dist"] = max_dists
     attributes_df[!, "mean_dist"] = mean_dists
+    attributes_df[!, "is_routing"] = is_routings
 
     # Write csv
     CSV.write(joinpath(output_dir, "hydroatlas_attributes.csv"), attributes_df)
