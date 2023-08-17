@@ -17,19 +17,14 @@ function create_hydroatlas_attributes(hydroatlas_df::DataFrame,
     # Join DataFrames
     attributes_df = hydroatlas_df[findall(in(basins_ids), hydroatlas_df.HYBAS_ID), :]
 
-    # Discar some columns
-    select!(attributes_df, Not([:geometry]))
-
     # Rename HYBAS_ID column to basin_id
     rename!(attributes_df, :HYBAS_ID => :basin_id)
-
-    # Sort
-    sort!(attributes_df)
 
     # Instantiate new columns
     min_dists = zeros(length(attributes_df.basin_id))
     max_dists = zeros(length(attributes_df.basin_id))
     mean_dists = zeros(length(attributes_df.basin_id))
+    max_sides = zeros(length(attributes_df.basin_id))
     is_routings = zeros(length(attributes_df.basin_id))
     
     # Get dists list
@@ -49,13 +44,22 @@ function create_hydroatlas_attributes(hydroatlas_df::DataFrame,
             mean_dists[i] = mean(dists)
             is_routings[i] = is_routing
         end
+        min_lon, max_lon, min_lat, max_lat = find_min_max_lon_lat(hydroatlas_df[hydroatlas_df.HYBAS_ID .== basin_id, :geometry][1].points, 0.0)
+        max_sides[i] = max(max_lon-min_lon, max_lat-min_lat)
     end
 
     # Add columns
     attributes_df[!, "min_dist"] = min_dists
     attributes_df[!, "max_dist"] = max_dists
     attributes_df[!, "mean_dist"] = mean_dists
+    attributes_df[!, "max_side"] = max_sides
     attributes_df[!, "is_routing"] = is_routings
+
+    # Discard geomtry column
+    select!(attributes_df, Not([:geometry]))
+
+    # Sort
+    sort!(attributes_df)
 
     # Write csv
     CSV.write(joinpath(output_dir, "hydroatlas_attributes.csv"), attributes_df)
