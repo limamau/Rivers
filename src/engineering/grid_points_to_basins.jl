@@ -24,20 +24,6 @@ function subdivide_dataframe(df::DataFrame, num_parts::Int)
 end
 
 @everywhere """
-    find_min_max_lon_lat(points, margin)
-
-Finds the minimum and maximum longitude and latitude values from a list of `points`.
-The `margin` is given to increase the range of the minimum and maximum.
-"""
-function find_min_max_lon_lat(points::Vector{Shapefile.Point}, margin::AbstractFloat)
-    polygon_longitudes = [point.x for point in points]
-    polygon_latitudes = [point.y for point in points]
-
-    return minimum(polygon_longitudes) - margin, maximum(polygon_longitudes) + margin,
-           minimum(polygon_latitudes) - margin, maximum(polygon_latitudes) + margin
-end
-
-@everywhere """
     find_indices_within_range(values, min_value, max_value)
 
 Finds the indices of values within a specified range.
