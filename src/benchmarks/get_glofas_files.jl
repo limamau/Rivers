@@ -8,7 +8,7 @@ using ProgressMeter
 include("utils.jl")
 
 # Read GloFAS base dataset
-glofas_ds = NCDataset("/central/scratch/mdemoura/data/era5/river_year_month/river_1999_01.nc")
+glofas_ds = NCDataset("/central/scratch/mdemoura/data/era5/river_year_month_nc/river_1999_01.nc")
 glofas_lons = glofas_ds["longitude"][:]
 glofas_lats = glofas_ds["latitude"][:]
 
@@ -36,16 +36,15 @@ key_gauges = [arr[1] for arr in values(merge(basin_gauge_dict_lv05, basin_gauge_
 output_dir = "/central/scratch/mdemoura/data/era5/glofas_timeseries"
 mkdir(output_dir) # Make sure to have this directory uncreated as we're appending csvs
 msg = "Writing GloFAS timeseries..."
-@showprogress msg for file in readdir("/central/scratch/mdemoura/data/era5/river_year_month/", join=true)
+@showprogress msg for file in readdir("/central/scratch/mdemoura/data/era5/river_year_month_nc/", join=true)
 
     # Get year and month
     year, month = get_year_and_month_river(file)
 
     # Define min and max dates
     min_date = Date(year, month, 1)
-    max_date = Dates.lastdayofmonth(min_date) - Day(1)
-    dates = collect(min_date-Day(1) : Day(1) : max_date-Day(1)) # ERA5 defines the aggregation of a date with the next date (*)
-
+    max_date = Dates.lastdayofmonth(min_date)
+    dates = collect(min_date : Day(1) : max_date)
     # Read key arrays from GloFAS
     global glofas_ds = NCDataset(file)
     glofas_streamflows = glofas_ds["dis24"][:,:,:]
@@ -56,7 +55,7 @@ msg = "Writing GloFAS timeseries..."
     glofas_max_date_idx = findfirst(date -> date == max_date, glofas_dates)
 
     # Find GRDC dates index
-    grdc_min_date_idx = findfirst(date -> date == min_date-Day(1), grdc_dates) # (*)
+    grdc_min_date_idx = findfirst(date -> date == min_date-Day(1), grdc_dates) # ERA5 defines the aggregation of a date with the next date (*)
     grdc_max_date_idx = findfirst(date -> date == max_date-Day(1), grdc_dates) # (*)
 
     # Iterate over each gauge
@@ -68,8 +67,9 @@ msg = "Writing GloFAS timeseries..."
                 glofas_arr = glofas_streamflows[closest_lons[i], closest_lats[i], glofas_min_date_idx:glofas_max_date_idx]
                 grdc_arr = grdc_streamflows[i, grdc_min_date_idx:grdc_max_date_idx]
                 gauge_id = grdc_ids[i]
+                shifted_dates = collect(min_date - Day(1): Day(1) : max_date - Day(1)) # (*)
                 CSV.write(joinpath(output_dir, "gauge_$gauge_id.csv"), 
-                          DataFrame(date=dates, grdc_streamflow=grdc_arr, glofas_streamflow=glofas_arr), 
+                          DataFrame(date=shifted_dates, obs=grdc_arr, sim=glofas_arr), 
                           append=true)
             end
         end
@@ -81,8 +81,8 @@ end
 column_names = ["date", "grdc_streamflow", "glofas_streamflow"]
 
 # Define the specific date range
-min_global_date = Date(1999, 10, 1)
-max_global_date = Date(2009, 9, 30)
+min_global_date = Date(1990, 10, 1)
+max_global_date = Date(1999, 9, 30)
 
 # Get a list of all CSV files in the directory
 csv_files = readdir(output_dir, join=true)
