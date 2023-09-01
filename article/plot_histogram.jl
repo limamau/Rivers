@@ -15,12 +15,12 @@ let
         q_hat = sum(glofas_df[glo_min_date_idx:glo_max_date_idx, "glofas_streamflow"]) * 24*60*60
         q = sum(glofas_df[glo_min_date_idx:glo_max_date_idx, "grdc_streamflow"]) * 24*60*60
         relativ_diff = (q_hat - q) / q
-        if !ismissing(relativ_diff)
+        if !ismissing(relativ_diff) & (relativ_diff < 100)
             push!(relative_diffs, relativ_diff)
         end
     end
 
-    fig = Figure()
+    fig = Figure(title="q-q_hat/q")
     ax = Axis(fig[1,1])
     hist!(ax, relative_diffs, bins=100)
     save("article/png_files/mass_hist.png", fig)
