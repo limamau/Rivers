@@ -6,7 +6,7 @@ using Statistics
 
 let 
     # Define basin
-    basin_id = 7070437950
+    basin_id = 2070510690
     ddf = CSV.read("/central/scratch/mdemoura/data/timeseries/timeseries_lv07/basin_$basin_id.csv", DataFrame)
     transform!(ddf, :date => ByRow(yearmonth) => :month)
     mdf = combine(groupby(ddf, :month), :sro_sum => sum => :sro_sum, 

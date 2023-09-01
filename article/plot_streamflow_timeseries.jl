@@ -8,7 +8,7 @@ using Statistics
 let 
     # Define figure and axis
     fig = Figure(resolution = (1600, 1600))
-    basins = [1050014920, 2070510690, 1060030310, 7070343660]
+    basins = [1050014920, 2070510690, 1060030310, 7070437950]
 
     # LSTM scores DataFrame
     lstm_scores_df = CSV.read("article/csv_files/globe_all_daily.csv", DataFrame)
