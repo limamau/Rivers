@@ -1,3 +1,29 @@
+using Rivers
+
+function is_box_inside_basin(longitude::Real, latitude::Real, vertices::Vector{Shapefile.Point}, box_size::Real)
+    if in_polygon(vertices, longitude-box_size/2, latitude-box_size/2) &&
+       in_polygon(vertices, longitude+box_size/2, latitude-box_size/2) &&
+       in_polygon(vertices, longitude-box_size/2, latitude+box_size/2) &&
+       in_polygon(vertices, longitude+box_size/2, latitude+box_size/2)
+        return true
+    else
+        return false
+    end 
+end
+
+function get_basin_from_gauge(target_gauge_id::Integer, dict_list::Vector{Dict{String, Any}})::Tuple{Int, String}
+    for basin_gauge_dict in dict_list
+        lv = first(basin_gauge_dict)[1][2:3]
+        for (basin_id, gauge_id) in basin_gauge_dict
+            if gauge_id[1] == target_gauge_id
+                return parse(Int, basin_id), lv
+            end
+        end
+    end
+
+    return error("Basin not find.")
+end
+
 function isvalid(coord)
     return -180 <= coord <= 360
 end
