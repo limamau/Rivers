@@ -6,7 +6,7 @@ using Statistics
 
 let 
     # Define basin
-    basin_id = 2070510690
+    basin_id = 8070332000
     ddf = CSV.read("/central/scratch/mdemoura/data/timeseries/timeseries_lv07/basin_$basin_id.csv", DataFrame)
     transform!(ddf, :date => ByRow(yearmonth) => :month)
     mdf = combine(groupby(ddf, :month), :sro_sum => sum => :sro_sum, 
@@ -18,7 +18,7 @@ let
 
     # Select date indexes
     min_date_idx = findfirst(date -> date == Date(1995, 01, 01), ddf[:, "date"])
-    max_date_idx = findfirst(date -> date == Date(1996, 12, 31), ddf[:, "date"])
+    max_date_idx = findfirst(date -> date == Date(1997, 12, 31), ddf[:, "date"])
 
     # Plot - Daily
     fig = Figure()
