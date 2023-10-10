@@ -59,7 +59,7 @@ end
 # Start run here
 let
     # Empty array to store values to plot in the histogram
-    histogram_diffs = []
+    histogram_diffs::Vector{Float64} = Float64[]
 
     # Define threshold for n_outliers
     threshold = 5
