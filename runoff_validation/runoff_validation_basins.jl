@@ -14,7 +14,7 @@ function plot_histogram(diffs::Vector{Float64}, threshold::Real, n_outliers::Int
     text!(-threshold+0.1, 200, text="N of outliers: $n_outliers")
 
     # Save figure
-    save("simulations/runoff_validation/histogram_basins.png", fig)
+    save("runoff_validation/png_files/histogram_basins.png", fig)
 end
 
 function plot_map(global_shapefile::String, shapefile::String, diffs_df::DataFrame, lv::String, output_file::String)

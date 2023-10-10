@@ -44,7 +44,7 @@ end
 
 function convolute_array(length_size, arr)
     weights = Float32.(ones(length_size, length_size, 1, 1) ./ (length_size^2))
-    bias = zeros(1)
+    bias = Float32.(zeros(1))
     convolution_layer = Conv(weights, bias, identity)
     lon, lat = size(arr)
     replaced_arr = replace(arr, missing => NaN)
@@ -91,8 +91,7 @@ function plot_histogram(diffs::Matrix{Union{Missing, Float64}}, threshold::Real,
 
     # Plot histogram
     hist!(ax, histogram_diffs, bins=100)
-    text!(-threshold+0.1, 200, text="N of outliers: $n_outliers")
-    println("Number of outliers: ", n_outliers)
+    text!(-threshold+0.1, 200, text="N of outliers: $n_outliers") # TODO: fix text position
 
     # Save figure
     save(output_file, fig)
@@ -191,7 +190,7 @@ let
     # Plot histogram
     output_file = "runoff_validation/png_files/histogram_grid.png"
     threshold = 5.0
-    # plot_histogram(diffs, threshold, output_file) # TODO: uncomment
+    plot_histogram(diffs, threshold, output_file) # TODO: uncomment
 
     # Get latitude and longitude arrays
     global_shapefile = "/central/scratch/mdemoura/data/BasinATLAS_v10_shp/BasinATLAS_v10_lev01.shp"
@@ -201,7 +200,7 @@ let
     
     # Plot original map
     output_file = "runoff_validation/png_files/map_grid.png"
-    # plot_map(global_shapefile, longitudes, latitudes, diffs, output_file) # TODO: uncomment
+    plot_map(global_shapefile, longitudes, latitudes, diffs, output_file) # TODO: uncomment
 
     # Convolute the mass balance
     length_size = 10
