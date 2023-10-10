@@ -168,19 +168,21 @@ end
     merge_temporary_directories(amount_of_files, output_dir)
 Merge all temporary directories into the output directory.
 """
-function merge_temporary_directories(amount_of_files::Int, output_dir::String)
-    # Create base DataFrame
-    temp_dir = joinpath(output_dir, "temps", "temp" * lpad(1,4,"0"))
-    csvfiles = readdir(temp_dir)
-    column_names = names(CSV.read(joinpath(temp_dir, csvfiles[1]), DataFrame))
-    df = DataFrame()
-    for column_name in column_names
-        df[!, Symbol(column_name)] = String[]
-    end
+function merge_temporary_directories(amount_of_files::Int, output_dir::String, continue_merge::Bool)
+    if !continue_merge
+        # Create base DataFrame
+        temp_dir = joinpath(output_dir, "temps", "temp" * lpad(1,4,"0"))
+        csvfiles = readdir(temp_dir)
+        column_names = names(CSV.read(joinpath(temp_dir, csvfiles[1]), DataFrame))
+        df = DataFrame()
+        for column_name in column_names
+            df[!, Symbol(column_name)] = String[]
+        end
 
-    # Assign the created DataFrame to each file in the output directory
-    for csvfile in csvfiles
-        CSV.write(joinpath(output_dir, csvfile), df)
+        # Assign the created DataFrame to each file in the output directory
+        for csvfile in csvfiles
+            CSV.write(joinpath(output_dir, csvfile), df)
+        end
     end
 
     msg = "Merging temporary directories..."
@@ -208,7 +210,7 @@ The JSON must be in the format `{"var":"operation",...}` where `var` is a variab
 **"sum"** or **"mean"** operations.
 - `output_dir::String`: path to the output directory where the computed time series will be stored.
 - `checkpoint::Int`: if provided, starts computing the time series from folder temp{checkpoint}. Standard is 1 (no checkpoint).
-
+- `continue_merge::Bool`: if true, goes directly to the merging part of the code. Standard is false (runs all the code).
 # Output:
 - Saves a CSV file for every basin inside `output_dir`.
 """
@@ -216,7 +218,8 @@ function compute_basins_timeseries(grid_to_basins_dir::String,
                                    nc_dir::String, 
                                    variables_operations_dict_file::String,
                                    output_dir::String,
-                                   checkpoint=1::Int)
+                                   checkpoint=1::Int,
+                                   continue_merge=false::Bool)
     nc_files = readdir(nc_dir)
 
     # Wrapper function 
@@ -230,15 +233,17 @@ function compute_basins_timeseries(grid_to_basins_dir::String,
         compute_basins_year_month(grid_to_basins_dir, joinpath(nc_dir, nc_files[i]), variables_operations_dict_file, temp_dir, year, month)
     end
 
-    # Create temporary directory
-    mkpath(joinpath(output_dir, "temps"))
-    
-    # Compute basins time series following the parallelization scheme
-    msg = "Computing temporary directories..."
-    @showprogress msg pmap(compute_basins_year_month_wrapper, checkpoint:1:length(nc_files))
+    if !continue_merge
+        # Create temporary directory
+        mkpath(joinpath(output_dir, "temps"))
+        
+        # Compute basins time series following the parallelization scheme
+        msg = "Computing temporary directories..."
+        @showprogress msg pmap(compute_basins_year_month_wrapper, checkpoint:1:length(nc_files))
+    end
 
     # Merge all temporary directories
-    merge_temporary_directories(length(nc_files), output_dir)
+    merge_temporary_directories(length(nc_files), output_dir, continue_merge)
 
     # Remove the temporary directory
     rm(joinpath(output_dir, "temps"))
