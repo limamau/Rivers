@@ -1,13 +1,9 @@
-# data
-attributes/
-timseries/
-xd_lv04/
-mapping_dicts/
-
 # engineering tests
-engineer_*
-simulations/
 eng_*
+
+# images and csvs
+*/png_files/
+*/csv_files/
 
 # dev
 dev/
