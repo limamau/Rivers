@@ -2,8 +2,8 @@
 eng_*
 
 # images and csvs
-*/png_files/
-*/csv_files/
+*/png_files/*
+*/csv_files/*
 
 # dev
 dev/
