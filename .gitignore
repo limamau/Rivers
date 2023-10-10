@@ -4,10 +4,13 @@ timseries/
 xd_lv04/
 mapping_dicts/
 
-# engineering tests and simulations
+# engineering tests
 engineer_*
 simulations/
 eng_*
+
+# dev
+dev/
 
 # others
 .DS_Store

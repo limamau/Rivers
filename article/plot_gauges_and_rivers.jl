@@ -14,20 +14,22 @@ let
     grid_to_basins_dir = "/central/scratch/mdemoura/data/mapping_dicts/grid_to_basins_dict_lv07"
     basin_gauge_json_file = "/central/scratch/mdemoura/data/mapping_dicts/gauge_to_basin_dict_lv07_max_list.json"
     grdc_nc_file = "/central/scratch/mdemoura/data/GRDC-Globe/grdc-merged.nc"
-    basin = 7070437950
-    x_min, x_max, y_min, y_max = -117.3, -114.7, 43.6, 45.4
-
+    basin = 8070332000
+    
     # Open shapefiles in DataFrame format
     basins_df = Shapefile.Table(basins_shp_file) |> DataFrame
-    rivers_df = Shapefile.Table(rivers_shp_file) |> DataFrame
+    rivers_df = Shapefile.Table(rivers_shp_file) |> DataFrame # This will only work in NA
+    
+    # Find the basin's bounding box with a 1° margin
+    basin_points =  basins_df[basins_df.HYBAS_ID .== basin, :geometry][1].points
+    x_min, x_max, y_min, y_max = find_min_max_lon_lat(basin_points, 1)
 
     # Define plot
     fig = Figure()
     ax = Axis(fig[1,1], 
               xlabel = "Longitude",
               ylabel = "Latitude",
-              limits = (x_min, x_max, y_min, y_max)
-              )
+              limits = (x_min, x_max, y_min, y_max))
 
     # Surroundings
     for row in eachrow(basins_df)
@@ -74,21 +76,28 @@ let
         push!(gauge_idxs, findfirst(id -> id == gauge_id, grdc_ids))
     end
 
-    if grdc_areas[gauge_idxs[1]] > grdc_areas[gauge_idxs[2]]
+    if length(gauge_idxs) == 2
+        if grdc_areas[gauge_idxs[1]] > grdc_areas[gauge_idxs[2]]
+            big_idx = gauge_idxs[1]
+            small_idx = gauge_idxs[2]
+        else
+            small_idx = gauge_idxs[1]
+            big_idx = gauge_idxs[2]
+        end
+    elseif length(gauge_idxs) == 1
         big_idx = gauge_idxs[1]
-        small_idx = gauge_idxs[2]
-    else
-        small_idx = gauge_idxs[1]
-        big_idx = gauge_idxs[2]
+    else 
+        error("More than 2 gauges in basin.")
     end
 
     scatter!([grdc_lons[big_idx]], [grdc_lats[big_idx]], strokewidth=2.5, strokecolor=:black, color=:white, markersize=15, label="Chosen gauge")
-    scatter!([grdc_lons[small_idx]], [grdc_lats[small_idx]], strokewidth=1, strokecolor=:black, color=:black, label="Other gauge")
+    if length(gauge_idxs) == 2
+        scatter!([grdc_lons[small_idx]], [grdc_lats[small_idx]], strokewidth=1, strokecolor=:black, color=:black, label="Other gauge")
+    end
     
     axislegend(ax)
 
-    # Plot catchment areas
-    #TODO
+    # TODO: Plot catchment areas
 
     # Save Plot
     save("article/png_files/gauges_and_rivers.png", fig, px_per_unit=4)
