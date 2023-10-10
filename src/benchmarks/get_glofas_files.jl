@@ -14,6 +14,10 @@ let
     glofas_lons = glofas_ds["longitude"][:]
     glofas_lats = glofas_ds["latitude"][:]
 
+    # Read upstream area used by GloFAS
+    areas_ds = NCDataset("/central/scratch/mdemoura/data/era5/uparea_glofas_v4_0.nc")
+    up_areas = areas_ds["uparea"][:,:]
+
     # Read GRDC dataset
     grdc_ds = NCDataset("/central/scratch/mdemoura/data/GRDC-Globe/grdc-merged.nc")
     grdc_lons = grdc_ds["geo_x"][:]
@@ -41,6 +45,9 @@ let
 
     # Get key gauges
     key_gauges = [arr[1] for arr in values(merge(basin_gauge_dict_lv05, basin_gauge_dict_lv06, basin_gauge_dict_lv07))]
+
+    # Dictionary to save upstream area of each gauge
+    gauge_area_dict = Dict()
 
     # Write csvs
     output_dir = "/central/scratch/mdemoura/data/era5/glofas_timeseries"
@@ -76,6 +83,13 @@ let
                 gauge_id = grdc_ids[i]
                 if !ismissing(closest_lons[i]) & !ismissing(closest_lats[i])
                     basin_id, lv = get_basin_from_gauge(gauge_id, [basin_gauge_dict_lv05, basin_gauge_dict_lv06, basin_gauge_dict_lv07])
+                    # Check outlier
+                    if basin_id == 8070332000
+                        println("lon: ", glofas_lons[closest_lons[i]])
+                        println("lat: ", glofas_lats[closest_lats[i]])
+                        println("gauge id: ", gauge_id)
+                        error("STOP")
+                    end
                     
                     # Get the right Data Frame for the basin
                     if lv == "05"
@@ -85,16 +99,21 @@ let
                     elseif lv == "07"
                         basin_vertices = hydroatlas_lv07[hydroatlas_lv07.HYBAS_ID .== basin_id, :geometry][1].points
                     else
-                        error("Level $lv is not known.") # DO river_1997_05.nc
+                        error("Level $lv is not known.")
                     end
 
                     if is_box_inside_basin(glofas_lons[closest_lons[i]], glofas_lats[closest_lats[i]], basin_vertices, glofas_lons[2]-glofas_lons[1])
                         glofas_arr = glofas_streamflows[closest_lons[i], closest_lats[i], glofas_min_date_idx:glofas_max_date_idx]
                         grdc_arr = grdc_streamflows[i, grdc_min_date_idx:grdc_max_date_idx]
                         shifted_dates = collect(min_date - Day(1): Day(1) : max_date - Day(1)) # (*)
+                        
+                        # Write csv
                         CSV.write(joinpath(output_dir, "gauge_$gauge_id.csv"), 
                                 DataFrame(date=shifted_dates, obs=grdc_arr, sim=glofas_arr), 
                                 append=true)
+
+                        # Write area in the json
+                        gauge_area_dict[string(gauge_id)] = up_areas[closest_lons[i], closest_lats[i]]
                     end
                 end
             end
@@ -125,5 +144,11 @@ let
 
         # Write the modified DataFrame back to the CSV file
         CSV.write(csv_file, df)
+    end
+
+    # Save dictionary areas as JSON file
+    json_output_file = "/central/scratch/mdemoura/data/era5/gauge_area_dict.json"
+    open(json_output_file, "w") do f
+        JSON.print(f, gauge_area_dict)
     end
 end

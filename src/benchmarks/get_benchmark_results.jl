@@ -53,6 +53,9 @@ let
     basin_gauge_dict_lv06 = JSON.parsefile("/central/scratch/mdemoura/data/mapping_dicts/gauge_to_basin_dict_lv06_max.json")
     basin_gauge_dict_lv07 = JSON.parsefile("/central/scratch/mdemoura/data/mapping_dicts/gauge_to_basin_dict_lv07_max.json")
 
+    # Get GloFAS upstreams areas
+    gauge_area_dict = JSON.parsefile("/central/scratch/mdemoura/data/era5/gauge_area_dict.json")
+
     # Merge mapping dictionaries
     mapping_dict = merge(basin_gauge_dict_lv05, basin_gauge_dict_lv06, basin_gauge_dict_lv07)
 
@@ -64,6 +67,7 @@ let
         nses = []
         kges = []
         selected_basins = []
+        up_areas = []
 
         # Define directory
         if model == "glofas"
@@ -88,10 +92,15 @@ let
                 push!(nses, get_nse(obs, sim))
                 push!(kges, get_kge(obs, sim))
                 push!(selected_basins, basins[i])
+
+                # Add area from the JSON file
+                if model == "glofas"
+                    push!(up_areas, gauge_area_dict[string(gauge_id)])
+                end
             end
         end
 
-        # Choose not NaN and not Infvalues
+        # Choose not NaN and not Inf values
         idx = Vector{Bool}(undef, length(nses))
         for i in eachindex(nses)
             idx[i] = !isnan(nses[i]) & !isinf(nses[i]) & !isnan(kges[i])
@@ -108,7 +117,10 @@ let
         if model == "pcr"
             CSV.write("article/csv_files/pcr_monthly.csv", DataFrame(basin=selected_basins[idx], nse=nses[idx], kge=kges[idx]))
         elseif model == "glofas"
-            CSV.write("article/csv_files/glofas_daily.csv", DataFrame(basin=selected_basins[idx], nse=nses[idx], kge=kges[idx]))
+            CSV.write("article/csv_files/glofas_daily.csv", DataFrame(basin=selected_basins[idx], 
+                                                                      nse=nses[idx], 
+                                                                      kge=kges[idx], 
+                                                                      up_area=up_areas[idx]))
         end
     end
 end
