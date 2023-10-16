@@ -10,16 +10,16 @@ include("utils.jl")
 
 let
     # Read GloFAS base dataset
-    glofas_ds = NCDataset("/central/scratch/mdemoura/data/era5/river_year_month_nc/river_1999_01.nc")
+    glofas_ds = NCDataset("/central/scratch/mdemoura/Rivers/source_data/era5/river_year_month_nc/river_1999_01.nc")
     glofas_lons = glofas_ds["longitude"][:]
     glofas_lats = glofas_ds["latitude"][:]
 
     # Read upstream area used by GloFAS
-    areas_ds = NCDataset("/central/scratch/mdemoura/data/era5/uparea_glofas_v4_0.nc")
+    areas_ds = NCDataset("/central/scratch/mdemoura/Rivers/source_data/era5/uparea_glofas_v4_0.nc")
     up_areas = areas_ds["uparea"][:,:]
 
     # Read GRDC dataset
-    grdc_ds = NCDataset("/central/scratch/mdemoura/data/GRDC-Globe/grdc-merged.nc")
+    grdc_ds = NCDataset("/central/scratch/mdemoura/Rivers/midway_data/GRDC-Globe/grdc-merged.nc")
     grdc_lons = grdc_ds["geo_x"][:]
     grdc_lats = grdc_ds["geo_y"][:]
     grdc_ids = grdc_ds["gauge_id"][:]
@@ -31,16 +31,16 @@ let
     closest_lats = find_closest_index(grdc_lats, glofas_lats, glofas_lats[1]-glofas_lats[2])
 
     # Get gauges list
-    basin_gauge_dict_lv05 = JSON.parsefile("/central/scratch/mdemoura/data/mapping_dicts/gauge_to_basin_dict_lv05_max.json")
-    basin_gauge_dict_lv06 = JSON.parsefile("/central/scratch/mdemoura/data/mapping_dicts/gauge_to_basin_dict_lv06_max.json")
-    basin_gauge_dict_lv07 = JSON.parsefile("/central/scratch/mdemoura/data/mapping_dicts/gauge_to_basin_dict_lv07_max.json")
+    basin_gauge_dict_lv05 = JSON.parsefile("/central/scratch/mdemoura/Rivers/midway_data/mapping_dicts/gauge_to_basin_dict_lv05_max.json")
+    basin_gauge_dict_lv06 = JSON.parsefile("/central/scratch/mdemoura/Rivers/midway_data/mapping_dicts/gauge_to_basin_dict_lv06_max.json")
+    basin_gauge_dict_lv07 = JSON.parsefile("/central/scratch/mdemoura/Rivers/midway_data/mapping_dicts/gauge_to_basin_dict_lv07_max.json")
 
     # Get basins shapefiles DataFrame
-    hydrosheds_lv05_shp_file = "/central/scratch/mdemoura/data/BasinATLAS_v10_shp/BasinATLAS_v10_lev05.shp"
+    hydrosheds_lv05_shp_file = "/central/scratch/mdemoura/Rivers/source_data/BasinATLAS_v10_shp/BasinATLAS_v10_lev05.shp"
     hydroatlas_lv05 = Shapefile.Table(hydrosheds_lv05_shp_file) |> DataFrame
-    hydrosheds_lv06_shp_file = "/central/scratch/mdemoura/data/BasinATLAS_v10_shp/BasinATLAS_v10_lev06.shp"
+    hydrosheds_lv06_shp_file = "/central/scratch/mdemoura/Rivers/source_data/BasinATLAS_v10_shp/BasinATLAS_v10_lev06.shp"
     hydroatlas_lv06 = Shapefile.Table(hydrosheds_lv06_shp_file) |> DataFrame
-    hydrosheds_lv07_shp_file = "/central/scratch/mdemoura/data/BasinATLAS_v10_shp/BasinATLAS_v10_lev07.shp"
+    hydrosheds_lv07_shp_file = "/central/scratch/mdemoura/Rivers/source_data/BasinATLAS_v10_shp/BasinATLAS_v10_lev07.shp"
     hydroatlas_lv07 = Shapefile.Table(hydrosheds_lv07_shp_file) |> DataFrame
 
     # Get key gauges
@@ -50,10 +50,10 @@ let
     gauge_area_dict = Dict()
 
     # Write csvs
-    output_dir = "/central/scratch/mdemoura/data/era5/glofas_timeseries"
-    mkpath(output_dir) # Make sure to have this directory uncreated as we're appending csvs
+    output_dir = "/central/scratch/mdemoura/Rivers/post_data/glofas_timeseries"
+    mkdir(output_dir)
     msg = "Writing GloFAS timeseries..."
-    @showprogress msg for file in readdir("/central/scratch/mdemoura/data/era5/river_year_month_nc/", join=true)
+    @showprogress msg for file in readdir("/central/scratch/mdemoura/Rivers/source_data/era5/river_year_month_nc/", join=true)
 
         # Get year and month
         year, month = get_year_and_month_river(file)
@@ -83,13 +83,6 @@ let
                 gauge_id = grdc_ids[i]
                 if !ismissing(closest_lons[i]) & !ismissing(closest_lats[i])
                     basin_id, lv = get_basin_from_gauge(gauge_id, [basin_gauge_dict_lv05, basin_gauge_dict_lv06, basin_gauge_dict_lv07])
-                    # Check outlier
-                    if basin_id == 8070332000
-                        println("lon: ", glofas_lons[closest_lons[i]])
-                        println("lat: ", glofas_lats[closest_lats[i]])
-                        println("gauge id: ", gauge_id)
-                        error("STOP")
-                    end
                     
                     # Get the right Data Frame for the basin
                     if lv == "05"
@@ -122,7 +115,7 @@ let
 
     # Adjust csvs (this could be done inside the first for loop for better performance)
     # Define your specific names for columns
-    column_names = ["date", "grdc_streamflow", "glofas_streamflow"]
+    column_names = ["date", "obs", "sim"]
 
     # Define the specific date range
     min_global_date = Date(1990, 10, 1)
@@ -147,7 +140,7 @@ let
     end
 
     # Save dictionary areas as JSON file
-    json_output_file = "/central/scratch/mdemoura/data/era5/gauge_area_dict.json"
+    json_output_file = "/central/scratch/mdemoura/Rivers/midway_data/era5/gauge_area_dict.json"
     open(json_output_file, "w") do f
         JSON.print(f, gauge_area_dict)
     end
