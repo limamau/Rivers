@@ -49,12 +49,12 @@ let
     base_df = CSV.read(base_csv, DataFrame)
 
     # Get gauges list
-    basin_gauge_dict_lv05 = JSON.parsefile("/central/scratch/mdemoura/data/mapping_dicts/gauge_to_basin_dict_lv05_max.json")
-    basin_gauge_dict_lv06 = JSON.parsefile("/central/scratch/mdemoura/data/mapping_dicts/gauge_to_basin_dict_lv06_max.json")
-    basin_gauge_dict_lv07 = JSON.parsefile("/central/scratch/mdemoura/data/mapping_dicts/gauge_to_basin_dict_lv07_max.json")
+    basin_gauge_dict_lv05 = JSON.parsefile("/central/scratch/mdemoura/Rivers/midway_data/mapping_dicts/gauge_to_basin_dict_lv05_max.json")
+    basin_gauge_dict_lv06 = JSON.parsefile("/central/scratch/mdemoura/Rivers/midway_data/mapping_dicts/gauge_to_basin_dict_lv06_max.json")
+    basin_gauge_dict_lv07 = JSON.parsefile("/central/scratch/mdemoura/Rivers/midway_data/mapping_dicts/gauge_to_basin_dict_lv07_max.json")
 
     # Get GloFAS upstreams areas
-    gauge_area_dict = JSON.parsefile("/central/scratch/mdemoura/data/era5/gauge_area_dict.json")
+    gauge_area_dict = JSON.parsefile("/central/scratch/mdemoura/Rivers/midway_data/era5/gauge_area_dict.json")
 
     # Merge mapping dictionaries
     mapping_dict = merge(basin_gauge_dict_lv05, basin_gauge_dict_lv06, basin_gauge_dict_lv07)
@@ -62,7 +62,7 @@ let
     # Define basins to calculate scores
     basins = base_df.basin
 
-    for model in ["glofas"] # , "pcr"] # TODO: include the pcr part once its code is fixed.
+    for model in ["glofas"]#, "pcr"]
         # Define array to allocate scores
         nses = []
         kges = []
@@ -71,9 +71,9 @@ let
 
         # Define directory
         if model == "glofas"
-            base_dir = "/central/scratch/mdemoura/data/era5/glofas_timeseries"
+            base_dir = "/central/scratch/mdemoura/Rivers/post_data/glofas_timeseries_old"
         else
-            base_dir = "/central/scratch/mdemoura/data/pcr-globwb2/pcr_timeseries"
+            base_dir = "/central/scratch/mdemoura/Rivers/post_data/pcr_timeseries_old"
         end
 
         for i in eachindex(basins)
