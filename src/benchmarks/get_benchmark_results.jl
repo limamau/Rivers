@@ -62,7 +62,7 @@ let
     # Define basins to calculate scores
     basins = base_df.basin
 
-    for model in ["glofas"]#, "pcr"]
+    for model in ["glofas"] # , "pcr"]
         # Define array to allocate scores
         nses = []
         kges = []
@@ -71,18 +71,19 @@ let
 
         # Define directory
         if model == "glofas"
-            base_dir = "/central/scratch/mdemoura/Rivers/post_data/glofas_timeseries_old"
+            base_dir = "/central/scratch/mdemoura/Rivers/post_data/glofas_timeseries"
         else
             base_dir = "/central/scratch/mdemoura/Rivers/post_data/pcr_timeseries_old"
         end
 
         for i in eachindex(basins)
-            gauge_id = mapping_dict[string(basins[i])][1]
-            gauge_file = joinpath(base_dir, "gauge_$gauge_id.csv")
+            basin_id = basins[i]
+            gauge_id = mapping_dict[string(basin_id)][1]
+            file = joinpath(base_dir, "sim_$basin_id.csv")
 
             # Get timeseries as Data Frame if the file exists
-            if isfile(gauge_file)
-                df = CSV.read(gauge_file, DataFrame)
+            if isfile(file)
+                df = CSV.read(file, DataFrame)
 
                 # Define observation and simulation series from DataFrame
                 obs = replace(df[:,2], missing => NaN)
@@ -92,11 +93,6 @@ let
                 push!(nses, get_nse(obs, sim))
                 push!(kges, get_kge(obs, sim))
                 push!(selected_basins, basins[i])
-
-                # Add area from the JSON file
-                if model == "glofas"
-                    push!(up_areas, gauge_area_dict[string(gauge_id)])
-                end
             end
         end
 
@@ -119,8 +115,7 @@ let
         elseif model == "glofas"
             CSV.write("article/csv_files/glofas_daily.csv", DataFrame(basin=selected_basins[idx], 
                                                                       nse=nses[idx], 
-                                                                      kge=kges[idx], 
-                                                                      up_area=up_areas[idx]))
+                                                                      kge=kges[idx]))
         end
     end
 end

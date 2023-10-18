@@ -25,6 +25,7 @@ let
     grdc_ids = grdc_ds["gauge_id"][:]
     grdc_streamflows = grdc_ds["streamflow"][:,:]
     grdc_dates = grdc_ds["date"][:]
+    grdc_areas = grdc_ds["area"][:]
 
     # Get closests (lon and lat) index from base GloFAS dataset to each GRDC gauge
     closest_lons = find_closest_index(grdc_lons, glofas_lons, glofas_lons[2]-glofas_lons[1])
@@ -50,7 +51,7 @@ let
     gauge_area_dict = Dict()
 
     # Write csvs
-    output_dir = "/central/scratch/mdemoura/Rivers/post_data/glofas_timeseries"
+    output_dir = "/central/scratch/mdemoura/Rivers/post_data/glofas_timeseries_alt"
     mkdir(output_dir)
     msg = "Writing GloFAS timeseries..."
     @showprogress msg for file in readdir("/central/scratch/mdemoura/Rivers/source_data/era5/river_year_month_nc/", join=true)
@@ -62,6 +63,7 @@ let
         min_date = Date(year, month, 1)
         max_date = Dates.lastdayofmonth(min_date)
         dates = collect(min_date : Day(1) : max_date)
+        
         # Read key arrays from GloFAS
         glofas_ds = NCDataset(file)
         glofas_streamflows = glofas_ds["dis24"][:,:,:]
@@ -95,18 +97,23 @@ let
                         error("Level $lv is not known.")
                     end
 
-                    if is_box_inside_basin(glofas_lons[closest_lons[i]], glofas_lats[closest_lats[i]], basin_vertices, glofas_lons[2]-glofas_lons[1])
+                    # Get upstream areas in km²
+                    glofas_up_area = up_areas[closest_lons[i], closest_lats[i]] / 10^6
+                    grdc_up_area = grdc_areas[i]
+
+                    # if is_box_inside_basin(glofas_lons[closest_lons[i]], glofas_lats[closest_lats[i]], basin_vertices, glofas_lons[2]-glofas_lons[1]) &&
+                    if is_area_within_threshold(glofas_up_area, grdc_up_area)
                         glofas_arr = glofas_streamflows[closest_lons[i], closest_lats[i], glofas_min_date_idx:glofas_max_date_idx]
                         grdc_arr = grdc_streamflows[i, grdc_min_date_idx:grdc_max_date_idx]
                         shifted_dates = collect(min_date - Day(1): Day(1) : max_date - Day(1)) # (*)
                         
                         # Write csv
-                        CSV.write(joinpath(output_dir, "gauge_$gauge_id.csv"), 
+                        CSV.write(joinpath(output_dir, "sim_$basin_id.csv"), 
                                 DataFrame(date=shifted_dates, obs=grdc_arr, sim=glofas_arr), 
                                 append=true)
 
                         # Write area in the json
-                        gauge_area_dict[string(gauge_id)] = up_areas[closest_lons[i], closest_lats[i]]
+                        gauge_area_dict[string(gauge_id)] = glofas_up_area
                     end
                 end
             end
@@ -118,7 +125,7 @@ let
     column_names = ["date", "obs", "sim"]
 
     # Define the specific date range
-    min_global_date = Date(1990, 10, 1)
+    min_global_date = Date(1989, 10, 1)
     max_global_date = Date(1999, 9, 30)
 
     # Get a list of all CSV files in the directory

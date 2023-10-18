@@ -1,5 +1,9 @@
 using Rivers
 
+function is_area_within_threshold(area1::Real, area2::Real, threshold=0.2::Real)::Bool
+    return abs(area1-area2)/max(area1, area2) <= threshold
+end
+
 function is_box_inside_basin(longitude::Real, latitude::Real, vertices::Vector{Shapefile.Point}, box_size::Real)
     if in_polygon(vertices, longitude-box_size/2, latitude-box_size/2) &&
        in_polygon(vertices, longitude+box_size/2, latitude-box_size/2) &&
