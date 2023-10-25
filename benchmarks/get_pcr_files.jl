@@ -56,7 +56,7 @@ key_gauges = [arr[1] for arr in values(merge(basin_gauge_dict_lv05, basin_gauge_
 
 # Write csvs
 grdc_arr = Vector{Union{Missing, Float32}}(missing, pcr_max_date_idx-pcr_min_date_idx+1)
-output_dir = "/central/scratch/mdemoura/Rivers/post_data/pcr_timeseries"
+output_dir = "/central/scratch/mdemoura/Rivers/post_data/pcr_timeseries_test"
 mkdir(output_dir)
 msg = "Writing PCR-GLOBWB2 timeseries..."
 # Iterate over each gauge

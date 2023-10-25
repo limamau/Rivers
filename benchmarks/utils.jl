@@ -1,5 +1,3 @@
-using Rivers
-
 function is_area_within_threshold(area1::Real, area2::Real, threshold=0.2::Real)::Bool
     return abs(area1-area2)/max(area1, area2) <= threshold
 end
@@ -26,6 +24,24 @@ function get_basin_from_gauge(target_gauge_id::Integer, dict_list::Vector{Dict{S
     end
 
     return error("Basin not find.")
+end
+
+function in_polygon(vertices::Vector{Shapefile.Point}, x::Real, y::Real)
+    n = length(vertices)
+    inside = false
+    j = n
+    for i in 1:n
+        xi = vertices[i].x
+        yi = vertices[i].y
+        xj = vertices[j].x
+        yj = vertices[j].y
+        intersect = ((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi)
+        if intersect
+            inside = !inside
+        end
+        j = i
+    end
+    return inside
 end
 
 function isvalid(coord)
