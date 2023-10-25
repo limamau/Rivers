@@ -62,11 +62,13 @@ let
     # Define basins to calculate scores
     basins = base_df.basin
 
+    # Basins used in all simulations (from LSTM, and GloFAS)
+    selected_basins = []
+
     for model in ["glofas"] # , "pcr"]
         # Define array to allocate scores
         nses = []
         kges = []
-        selected_basins = []
         up_areas = []
 
         # Define directory
@@ -118,4 +120,11 @@ let
                                                                       kge=kges[idx]))
         end
     end
+
+    # Write selected basins in article/ folder
+    selected_basins_file = open("article/selected_basins.txt", "w")
+    for basin_id in selected_basins
+        write(selected_basins_file, "$basin_id\n")
+    end
+    close(selected_basins_file)
 end

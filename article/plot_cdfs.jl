@@ -16,7 +16,7 @@ for metric in ["nse", "kge"]
 
      # Read used basins from the article folder
     used_basins = Int[]
-    file_path = "article/used_basins.txt" 
+    file_path = "article/selected_basins.txt" 
     open(file_path) do file
         for line in eachline(file)
             push!(used_basins, parse(Int, line))
@@ -92,6 +92,7 @@ for metric in ["nse", "kge"]
           end
      end
 
+     # Deprecated, but leaving it here
      # Get PCR-GLOBWB2 scores
      # csv_file = "article/csv_files/pcr_monthly.csv"
      # pcr_results_df = CSV.read(csv_file, DataFrame)
