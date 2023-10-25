@@ -35,8 +35,8 @@ function get_kge(obs::Vector{Float64}, sim::Vector{Float64})::Union{Missing, Flo
     if isempty(obs) | isempty(sim)
         return missing
     else
-        alpha = std(sim) / std(sim)
-        beta = mean(sim) / mean(sim)
+        alpha = std(sim) / std(obs)
+        beta = mean(sim) / mean(obs)
         r = cor(sim, obs)
 
         return 1 - sqrt((alpha-1)^2 + (beta-1)^2 + (r-1)^2)
