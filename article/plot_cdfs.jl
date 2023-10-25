@@ -15,11 +15,11 @@ for metric in ["nse", "kge"]
           yticks = 0:0.2:1)
 
      # Read used basins from the article folder
-    used_basins = Int[]
+    selected_basins = Int[]
     file_path = "article/selected_basins.txt" 
     open(file_path) do file
         for line in eachline(file)
-            push!(used_basins, parse(Int, line))
+            push!(selected_basins, parse(Int, line))
         end
     end
 
@@ -71,23 +71,23 @@ for metric in ["nse", "kge"]
      # Get LSTM scores
      csv_file = "article/csv_files/globe_all_daily.csv"
      time_lstm_results_df = CSV.read(csv_file, DataFrame)
-     time_lstm_results_df = filter(row -> row.basin in used_basins, time_lstm_results_df)
+     time_lstm_results_df = filter(row -> row.basin in selected_basins, time_lstm_results_df)
      time_lstm_metric_values = time_lstm_results_df[:,metric]
 
      # Get LSTM scores
      csv_file = "article/csv_files/globe_split_daily.csv"
      basin_lstm_results_df = CSV.read(csv_file, DataFrame)
-     basin_lstm_results_df = filter(row -> row.basin in used_basins, basin_lstm_results_df)
+     basin_lstm_results_df = filter(row -> row.basin in selected_basins, basin_lstm_results_df)
      basin_lstm_metric_values = basin_lstm_results_df[:,metric]
 
      # Get GloFAS scores
      csv_file = "article/csv_files/glofas_daily.csv"
      glofas_results_df = CSV.read(csv_file, DataFrame)
-     glofas_results_df = filter(row -> row.basin in used_basins, glofas_results_df)
+     glofas_results_df = filter(row -> row.basin in selected_basins, glofas_results_df)
      glofas_metric_values = glofas_results_df[:,metric]
 
      for i in eachindex(glofas_metric_values)
-          if glofas_metric_values[i] < -1000
+          if glofas_metric_values[i] < -10000
                glofas_metric_values[i] = -1
           end
      end
