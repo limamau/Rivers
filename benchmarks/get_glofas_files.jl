@@ -51,7 +51,7 @@ let
     gauge_area_dict = Dict()
 
     # Write csvs
-    output_dir = "/central/scratch/mdemoura/Rivers/post_data/glofas_timeseries_alt"
+    output_dir = "/central/scratch/mdemoura/Rivers/post_data/glofas_timeseries_2constraints"
     mkdir(output_dir)
     msg = "Writing GloFAS timeseries..."
     @showprogress msg for file in readdir("/central/scratch/mdemoura/Rivers/source_data/era5/river_year_month_nc/", join=true)
@@ -101,7 +101,7 @@ let
                     glofas_up_area = up_areas[closest_lons[i], closest_lats[i]] / 10^6
                     grdc_up_area = grdc_areas[i]
 
-                    # if is_box_inside_basin(glofas_lons[closest_lons[i]], glofas_lats[closest_lats[i]], basin_vertices, glofas_lons[2]-glofas_lons[1]) &&
+                    # is_box_inside_basin(glofas_lons[closest_lons[i]], glofas_lats[closest_lats[i]], basin_vertices, glofas_lons[2]-glofas_lons[1])
                     if is_area_within_threshold(glofas_up_area, grdc_up_area)
                         glofas_arr = glofas_streamflows[closest_lons[i], closest_lats[i], glofas_min_date_idx:glofas_max_date_idx]
                         grdc_arr = grdc_streamflows[i, grdc_min_date_idx:grdc_max_date_idx]
@@ -109,8 +109,8 @@ let
                         
                         # Write csv
                         CSV.write(joinpath(output_dir, "sim_$basin_id.csv"), 
-                                DataFrame(date=shifted_dates, obs=grdc_arr, sim=glofas_arr), 
-                                append=true)
+                                  DataFrame(date=shifted_dates, obs=grdc_arr, sim=glofas_arr), 
+                                  append=true)
 
                         # Write area in the json
                         gauge_area_dict[string(gauge_id)] = glofas_up_area
