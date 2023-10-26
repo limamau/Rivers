@@ -9,7 +9,7 @@ let
     # Define figure and axis
     fig = Figure(resolution = (1600, 1600))
     # bad, median, good LSTM, good GloFAS
-    basins = [2050030260, 6050344660, 7070250410, 7060363050]
+    basins = [1061638580, 6050344660, 7070250410, 7060363050]
 
     # LSTM scores DataFrame
     lstm_scores_df = CSV.read("article/csv_files/globe_all_daily.csv", DataFrame)
@@ -65,5 +65,5 @@ let
     end
 
     # Save figure
-    save("article/png_files/streamflows.png", fig, px_per_unit=4)
+    save("article/png_files/streamflows.png", fig, px_per_unit=8)
 end
