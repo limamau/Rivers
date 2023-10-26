@@ -27,7 +27,4 @@ include("engineering/attribute_attributes.jl")
 
 include("engineering/select_uniques.jl")
 
-# benchmarks
-include("benchmarks/utils.jl")
-
 end # Rivers module
