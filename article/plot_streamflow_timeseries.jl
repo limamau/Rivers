@@ -8,7 +8,8 @@ using Statistics
 let 
     # Define figure and axis
     fig = Figure(resolution = (1600, 1600))
-    basins = [1050014920, 7050042740, 1060030310, 8070332000]
+    # bad, median, good LSTM, good GloFAS
+    basins = [2050030260, 6050344660, 7070250410, 7060363050]
 
     # LSTM scores DataFrame
     lstm_scores_df = CSV.read("article/csv_files/globe_all_daily.csv", DataFrame)
@@ -22,27 +23,23 @@ let
             basin_id = basins[2*(i-1) + j]
             lv = string(basin_id)[2:3]
 
-            # Read file
-            sdf = CSV.read("/central/scratch/mdemoura/data/lstm_simulations/sim_$basin_id.csv", DataFrame)
+            # Read files
+            sdf = CSV.read("/central/scratch/mdemoura/Rivers/post_data/lstm_simulations/sim_$basin_id.csv", DataFrame)
+            gdf = CSV.read("/central/scratch/mdemoura/Rivers/post_data/glofas_timeseries/sim_$basin_id.csv", DataFrame)
 
-            # Read basin gauge dictionary
-            basin_gauge_dict = JSON.parsefile("/central/scratch/mdemoura/data/mapping_dicts/gauge_to_basin_dict_lv$lv"*"_max.json")
-            gauge_id = basin_gauge_dict[string(basin_id)][1]
-            gdf = CSV.read("/central/scratch/mdemoura/data/era5/glofas_timeseries/gauge_$gauge_id.csv", DataFrame)
-
-            ax = Axis(fig[i,j], ylabel="m^3/day")
+            ax = Axis(fig[i,j], ylabel="m³/day")
             hidedecorations!(ax, ticklabels=false, ticks=false, label=false)
 
             # Select date indexes
-            lstm_min_date_idx = findfirst(date -> date == Date(1995, 01, 01), sdf[:, "date"])
-            lstm_max_date_idx = findfirst(date -> date == Date(1997, 12, 31), sdf[:, "date"])
+            lstm_min_date_idx = findfirst(date -> date == Date(1996, 01, 01), sdf[:, "date"])
+            lstm_max_date_idx = findfirst(date -> date == Date(1998, 12, 31), sdf[:, "date"])
 
             # Select date indexes
-            glofas_min_date_idx = findfirst(date -> date == Date(1995, 01, 01), gdf[:, "date"])
-            glofas_max_date_idx = findfirst(date -> date == Date(1997, 12, 31), gdf[:, "date"])
+            glofas_min_date_idx = findfirst(date -> date == Date(1996, 01, 01), gdf[:, "date"])
+            glofas_max_date_idx = findfirst(date -> date == Date(1998, 12, 31), gdf[:, "date"])
 
             # Plot lines
-            lines!(ax, lstm_min_date_idx:lstm_max_date_idx, gdf[glofas_min_date_idx:glofas_max_date_idx, "glofas_streamflow"] .* 24*60*60, label="GloFAS ERA5", transparency=true, color=:goldenrod1, linewidth=2)
+            lines!(ax, lstm_min_date_idx:lstm_max_date_idx, gdf[glofas_min_date_idx:glofas_max_date_idx, "sim"] .* 24*60*60, label="GloFAS ERA5", transparency=true, color=:goldenrod1, linewidth=2)
             lines!(ax, lstm_min_date_idx:lstm_max_date_idx, sdf[lstm_min_date_idx:lstm_max_date_idx, "sim"] .* 24*60*60, label="LSTM", transparency=true, color=:orchid, linewidth=2)
             lines!(ax, lstm_min_date_idx:lstm_max_date_idx, sdf[lstm_min_date_idx:lstm_max_date_idx, "obs"] .* 24*60*60, label="Observed", transparency=true, color=:darkseagreen3, linewidth=2)
             ax.xticks = (lstm_min_date_idx+30:365:lstm_max_date_idx+30, string.(sdf[:, "date"])[lstm_min_date_idx+30:365:lstm_max_date_idx+30])

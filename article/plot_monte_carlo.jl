@@ -8,11 +8,17 @@ using Shapefile
 
 let
     # Select files and constants
-    era5_nc_file = "/central/scratch/mdemoura/data/era5/globe_year_month/era5_1990_01.nc"
-    shp_file = "/central/scratch/mdemoura/data/BasinATLAS_v10_shp/BasinATLAS_v10_lev07.shp"
-    grid_to_basins_dir = "/central/scratch/mdemoura/data/mapping_dicts/grid_to_basins_dict_lv07"
-    basin = 7070437950
-    x_min, x_max, y_min, y_max = -117.3, -114.7, 43.6, 45.4
+    era5_nc_file = "/central/scratch/mdemoura/Rivers/source_data/era5/globe_year_month/era5_1990_01.nc"
+    shp_file = "/central/scratch/mdemoura/Rivers/source_data/BasinATLAS_v10_shp/BasinATLAS_v10_lev07.shp"
+    grid_to_basins_dir = "/central/scratch/mdemoura/Rivers/midway_data/mapping_dicts/grid_to_basins_dict_lv07"
+    basin = 2070017000
+    
+    # Open shapefiles in DataFrame format
+    basins_df = Shapefile.Table(shp_file) |> DataFrame
+    
+    # Find the basin's bounding box with a 0.2° margin
+    basin_points =  basins_df[basins_df.HYBAS_ID .== basin, :geometry][1].points
+    x_min, x_max, y_min, y_max = find_min_max_lon_lat(basin_points, 0.2)
 
     # Read directory with dictionaries
     grid_to_basins_dict_files = readdir(grid_to_basins_dir, join=true)
@@ -34,9 +40,14 @@ let
     latitudes = dataset["latitude"][:]
 
     # Definition of the vectors to plot
-    basin_longitudes = [longitudes[map_arr[i][1]] for i in eachindex(map_arr)]
-    basin_latitudes = [latitudes[map_arr[i][2]] for i in eachindex(map_arr)]
-    basin_probas = [map_arr[i][3] for i in eachindex(map_arr)]
+    basin_longitudes = Float64[]
+    basin_latitudes = Float64[]
+    basin_probas = Float64[]
+    for i in eachindex(map_arr)
+        push!(basin_longitudes, longitudes[map_arr[i][1]])
+        push!(basin_latitudes, latitudes[map_arr[i][2]])
+        push!(basin_probas, map_arr[i][3])
+    end
 
     # Open the shapefile in DataFrame format
     shape_df = Shapefile.Table(shp_file) |> DataFrame
@@ -55,7 +66,7 @@ let
             polygon_x = [point.x for point in polygon.points]
             polygon_y = [point.y for point in polygon.points]
             points = Point2f.(polygon_x, polygon_y)
-            poly!(ax=ax, points, color=(:whitesmoke, 1), strokewidth=2, strokecolor=:black)
+            poly!(ax=ax, points, color=(:snow2, 1), strokewidth=2, strokecolor=:black)
         end
     end
 

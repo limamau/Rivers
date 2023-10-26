@@ -9,12 +9,12 @@ using Shapefile
 
 let
     # Select files and constants
-    basins_shp_file = "/central/scratch/mdemoura/data/BasinATLAS_v10_shp/BasinATLAS_v10_lev07.shp"
-    rivers_shp_file = "/central/scratch/mdemoura/data/HydroRIVERS_v10_na_shp/HydroRIVERS_v10_na_shp/HydroRIVERS_v10_na.shp"
-    grid_to_basins_dir = "/central/scratch/mdemoura/data/mapping_dicts/grid_to_basins_dict_lv07"
-    basin_gauge_json_file = "/central/scratch/mdemoura/data/mapping_dicts/gauge_to_basin_dict_lv07_max_list.json"
-    grdc_nc_file = "/central/scratch/mdemoura/data/GRDC-Globe/grdc-merged.nc"
-    basin = 8070332000
+    basins_shp_file = "/central/scratch/mdemoura/Rivers/source_data/BasinATLAS_v10_shp/BasinATLAS_v10_lev07.shp"
+    rivers_shp_file = "/central/scratch/mdemoura/Rivers/source_data/HydroRIVERS_v10_eu_shp/HydroRIVERS_v10_eu.shp"
+    grid_to_basins_dir = "/central/scratch/mdemoura/Rivers/midway_data/mapping_dicts/grid_to_basins_dict_lv07"
+    basin_gauge_json_file = "/central/scratch/mdemoura/Rivers/midway_data/mapping_dicts/gauge_to_basin_dict_lv07_max_list.json"
+    grdc_nc_file = "/central/scratch/mdemoura/Rivers/midway_data/GRDC-Globe/grdc-merged.nc"
+    basin = 2070017000
     
     # Open shapefiles in DataFrame format
     basins_df = Shapefile.Table(basins_shp_file) |> DataFrame
@@ -22,7 +22,7 @@ let
     
     # Find the basin's bounding box with a 1° margin
     basin_points =  basins_df[basins_df.HYBAS_ID .== basin, :geometry][1].points
-    x_min, x_max, y_min, y_max = find_min_max_lon_lat(basin_points, 1)
+    x_min, x_max, y_min, y_max = find_min_max_lon_lat(basin_points, 0.2)
 
     # Define plot
     fig = Figure()
@@ -38,7 +38,7 @@ let
             polygon_x = [point.x for point in polygon.points]
             polygon_y = [point.y for point in polygon.points]
             points = Point2f.(polygon_x, polygon_y)
-            poly!(ax=ax, points, color=(:whitesmoke, 1), strokewidth=2, strokecolor=:black)
+            poly!(ax=ax, points, color=(:snow2, 1), strokewidth=2, strokecolor=:black)
         end
     end
 
