@@ -30,4 +30,6 @@ Use `extractbasins()` to get the list of basins in .txt format.
 It can be run with `nh-run train --config-file config.yml`.
 
 ## Analysis (Julia)
-In development.
+Illustrations of the engineering process and model scores are made in the article/ folder.
+
+Considerations about precipitation, evaporation and runoff balance as well as the mass conservation of the different river models used on this work can be found in the mass_balance/ folder.
