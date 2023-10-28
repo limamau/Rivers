@@ -96,7 +96,11 @@ function gauges_to_basins(nc_file::String,
     end
 
     # Create a dictionary to store the assigned points
-    map_dict = Dict{Int, Array{Int}}()  # {HYBAS_ID: [GRDC_ID, ...], ...}
+    if select_best_gauge
+        map_dict = Dict{Int, Tuple{String, Float64}}()  # {HYBAS_ID: (GAUGE_ID, GAUGE_AREA), ...}
+    else
+        map_dict = Dict{Int, Array{String}}()  # {HYBAS_ID: [GAUGE_ID, ...], ...}
+    end
     
     # Iterate over the selected points
     msg = "Assigning gauges to basins..."
@@ -129,14 +133,18 @@ function gauges_to_basins(nc_file::String,
                 if verifies
                     if haskey(map_dict, shape_df[polygon_id, "HYBAS_ID"])
                         if select_best_gauge
-                            if grdc_areas[i] > map_dict[shape_df[polygon_id, "HYBAS_ID"]][1]
-                                map_dict[shape_df[polygon_id, "HYBAS_ID"]] = [grdc_ids[i]]
+                            if grdc_areas[i] > map_dict[shape_df[polygon_id, "HYBAS_ID"]][2]
+                                map_dict[shape_df[polygon_id, "HYBAS_ID"]] = (grdc_ids[i], grdc_areas[i])
                             end
                         else
                             push!(map_dict[shape_df[polygon_id, "HYBAS_ID"]], grdc_ids[i])
                         end
                     else
-                        map_dict[shape_df[polygon_id, "HYBAS_ID"]] = [grdc_ids[i]]
+                        if select_best_gauge
+                            map_dict[shape_df[polygon_id, "HYBAS_ID"]] = (grdc_ids[i], grdc_areas[i])
+                        else
+                            map_dict[shape_df[polygon_id, "HYBAS_ID"]] = [grdc_ids[i]]
+                        end
                     end
                 end
             end

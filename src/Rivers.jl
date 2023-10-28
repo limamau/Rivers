@@ -1,7 +1,8 @@
 module Rivers
 
 export grid_points_to_basins, compute_basins_timeseries, merge_and_shift_grdc_files,
-       gauges_to_basins, create_graph, merge_era5_grdc, attribute_attributes, select_uniques
+       gauges_to_basins, caravan_to_basins, create_graph, merge_era5_grdc, attribute_attributes, 
+       select_uniques
 
 export standard_longitudes! # used for plotting in the monte carlo example
 
@@ -16,6 +17,8 @@ include("engineering/compute_basins_timeseries.jl")
 include("engineering/merge_and_shift_grdc_files.jl")
 
 include("engineering/gauges_to_basins.jl")
+
+include("engineering/caravan_to_basins.jl")
 
 include("engineering/create_graph.jl")
 
