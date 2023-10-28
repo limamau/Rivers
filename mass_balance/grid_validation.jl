@@ -42,6 +42,12 @@ function calculate_relative_difference(arr1, arr2)
     return (arr1 .- arr2) ./ arr1
 end
 
+function calculate_absolute_difference_mm_per_year(arr1, arr2)
+    m_to_mm = 1000
+    number_of_years = 10
+    return (arr1 .- arr2) / number_of_years * m_to_mm # TODO: solve this hard coding
+end
+
 function convolute_array(length_size, arr)
     weights = Float32.(ones(length_size, length_size, 1, 1) ./ (length_size^2))
     bias = Float32.(zeros(1))
@@ -87,7 +93,7 @@ function plot_histogram(diffs::Matrix{Union{Missing, Float64}}, threshold::Real,
 
     # Define figure and axis
     fig = Figure()
-    ax = Axis(fig[1,1], title="Relative (P-E) - (Rs+Rss) from grid", ylabel="N of points", xlabel="Relative difference")
+    ax = Axis(fig[1,1], title="(P-E) - (Rs+Rss)", ylabel="N of points", xlabel="mm/yr")
 
     # Plot histogram
     hist!(ax, histogram_diffs, bins=100)
@@ -109,14 +115,14 @@ function plot_map(global_shapefile::String, longitudes::Vector{Float32}, latitud
     end
 
     # Define color range
-    color_range = (-2,2)
+    color_range = (-100,100)
 
     # Plot heatmap
     heatmap!(longitudes, latitudes, arr, colormap=:RdBu, colorrange=color_range)
     Colorbar(fig[1,2], colormap = :RdBu, limits=color_range)
 
     # Define title of the plot
-    ax.title = "Relative differences between P-E and Rs+Rss in the grid"
+    ax.title = "(P-E) - (Rs+Rss) in mm/yr"
     
     # Save
     save(output_file, fig, px_per_unit=4)
@@ -127,7 +133,7 @@ function read_mass_aggregates(mass_aggregate_file)
     return ds["mass_in"][:,:], ds["mass_out"][:,:]
 end
 
-function save_mass_balance_netcdf(mass_in, mass_out, diffs, evaporation_dir, output_dir)
+function save_mass_balance_netcdf(mass_in, mass_out, evaporation_dir, output_dir)
     mkpath(output_dir)
 
     # Read base first file in evaporation directory
@@ -153,7 +159,6 @@ function save_mass_balance_netcdf(mass_in, mass_out, diffs, evaporation_dir, out
     # Create mass variables
     defVar(mass_ds, "mass_in", mass_in, ("longitude", "latitude",))
     defVar(mass_ds, "mass_out", mass_out, ("longitude", "latitude",))
-    defVar(mass_ds, "relative_diff", diffs, ("longitude", "latitude",))
 
     # Close output dataset
     close(mass_ds)
@@ -170,46 +175,50 @@ end
 # Start run here
 let
     # Directories with NetCDF files information
-    others_dir = "/central/scratch/mdemoura/data/era5/globe_year_month"
-    evaporation_dir = "/central/scratch/mdemoura/data/era5/evaporation_year_month"
+    others_dir = "/central/scratch/mdemoura/Rivers/source_data/era5/globe_year_month"
+    evaporation_dir = "/central/scratch/mdemoura/Rivers/source_data/era5/evaporation_year_month"
 
     # Calculate mass aggregates -- run if first time (slow)
     # mass_in, mass_out = calculate_mass_aggregates(others_dir, evaporation_dir)
 
+    # Save mass_in and mass_out as NetCDF files -- use if first time
+    # output_dir = "/central/scratch/mdemoura/Rivers/midway_data/era5/mass_balance/"
+    # save_mass_balance_netcdf(mass_in, mass_out, evaporation_dir, output_dir)
+
     # Read mass balance -- default (fast)
-    mass_aggregate_file = "/central/scratch/mdemoura/data/era5/mass_balance/mass_balance.nc"
+    mass_aggregate_file = "/central/scratch/mdemoura/Rivers/midway_data/era5/mass_balance/mass_balance.nc"
     mass_in, mass_out = read_mass_aggregates(mass_aggregate_file)
 
-    # Get relative difference
-    diffs = calculate_relative_difference(mass_in, mass_out)
+    # Get relative difference 
+    # This is deprecated but I'm leaving it here
+    # rel_diffs = calculate_relative_difference(mass_in, mass_out)
 
-    # Save mass_in and mass_out as NetCDF files -- use if first time
-    # output_dir = "/central/scratch/mdemoura/data/era5/mass_balance/"
-    # save_mass_balance_netcdf(mass_in, mass_out, diffs, evaporation_dir, output_dir)
+    # Get absolute difference
+    abs_diffs = calculate_absolute_difference_mm_per_year(mass_in, mass_out)
 
     # Plot histogram
-    output_file = "runoff_validation/png_files/histogram_grid.png"
+    output_file = "mass_balance/png_files/histogram_grid.png"
     threshold = 5.0
-    plot_histogram(diffs, threshold, output_file)
+    plot_histogram(abs_diffs, threshold, output_file)
 
     # Get latitude and longitude arrays
-    global_shapefile = "/central/scratch/mdemoura/data/BasinATLAS_v10_shp/BasinATLAS_v10_lev01.shp"
+    global_shapefile = "/central/scratch/mdemoura/Rivers/source_data/BasinATLAS_v10_shp/BasinATLAS_v10_lev01.shp"
     file = readdir(evaporation_dir)[1]
     nc_file = joinpath(evaporation_dir, file)
     longitudes, latitudes = get_longitudes_and_latitudes(nc_file)
     
     # Plot original map
-    output_file = "runoff_validation/png_files/map_grid.png"
-    plot_map(global_shapefile, longitudes, latitudes, diffs, output_file)
+    output_file = "mass_balance/png_files/map_grid.png"
+    plot_map(global_shapefile, longitudes, latitudes, abs_diffs, output_file)
 
     # Convolute the mass balance
     length_size = 10
     convoluted_mass_in = convolute_array(length_size, mass_in)
     convoluted_mass_out = convolute_array(length_size, mass_out)
-    convoluted_diffs = calculate_relative_difference(convoluted_mass_in, convoluted_mass_out)
-    output_file = "runoff_validation/png_files/map_grid_conv.png"
+    convoluted_diffs = calculate_absolute_difference_mm_per_year(convoluted_mass_in, convoluted_mass_out)
+    output_file = "mass_balance/png_files/map_grid_conv.png"
     plot_map(global_shapefile, 
-             longitudes[Int(length_size/2):Int(end-length_size/2)], 
+             longitudes[Int(length_size/2):Int(end-length_size/2)],
              latitudes[Int(length_size/2):Int(end-length_size/2)],
              convoluted_diffs, 
              output_file)
