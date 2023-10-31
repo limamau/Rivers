@@ -4,6 +4,7 @@ eng_*
 # images and csvs
 */png_files/*
 */csv_files/*
+*/model/*
 
 # dev
 dev/
