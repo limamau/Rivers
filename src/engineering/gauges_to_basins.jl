@@ -97,9 +97,9 @@ function gauges_to_basins(nc_file::String,
 
     # Create a dictionary to store the assigned points
     if select_best_gauge
-        map_dict = Dict{Int, Tuple{String, Float64}}()  # {HYBAS_ID: (GAUGE_ID, GAUGE_AREA), ...}
+        map_dict = Dict{Int, Tuple{Int, Float64}}()  # {HYBAS_ID: (GAUGE_ID, GAUGE_AREA), ...}
     else
-        map_dict = Dict{Int, Array{String}}()  # {HYBAS_ID: [GAUGE_ID, ...], ...}
+        map_dict = Dict{Int, Array{Int}}()  # {HYBAS_ID: [GAUGE_ID, ...], ...}
     end
     
     # Iterate over the selected points
