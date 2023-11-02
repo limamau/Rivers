@@ -25,7 +25,7 @@ let
     x_min, x_max, y_min, y_max = find_min_max_lon_lat(basin_points, 0.2)
 
     # Define plot
-    fig = Figure()
+    fig = Figure(resolution=(600,500))
     ax = Axis(fig[1,1], 
               xlabel = "Longitude",
               ylabel = "Latitude",
@@ -38,7 +38,7 @@ let
             polygon_x = [point.x for point in polygon.points]
             polygon_y = [point.y for point in polygon.points]
             points = Point2f.(polygon_x, polygon_y)
-            poly!(ax=ax, points, color=(:snow2, 1), strokewidth=2, strokecolor=:black)
+            poly!(ax=ax, points, color=(:seashell2, 0.7), strokewidth=2, strokecolor=:black)
         end
     end
 
@@ -56,7 +56,7 @@ let
             river_x = [point.x for point in river_geometry.points]
             river_y = [point.y for point in river_geometry.points]
             points = Point2f.(river_x, river_y)
-            lines!(ax=ax, points, color=(:mediumblue, 1 - order/10))
+            lines!(ax=ax, points, color=(:dodgerblue, 1 - order/10))
         end
     end
 

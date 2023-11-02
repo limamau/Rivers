@@ -1,5 +1,6 @@
 using Rivers
 using CairoMakie
+using ColorSchemes
 using DataFrames
 using GeometryBasics
 using JSON
@@ -53,7 +54,7 @@ let
     shape_df = Shapefile.Table(shp_file) |> DataFrame
 
     # Define plot
-    fig = Figure()
+    fig = Figure(resolution=(700,500))
     ax = Axis(fig[1,1], 
               xlabel = "Longitude",
               ylabel = "Latitude",
@@ -66,7 +67,7 @@ let
             polygon_x = [point.x for point in polygon.points]
             polygon_y = [point.y for point in polygon.points]
             points = Point2f.(polygon_x, polygon_y)
-            poly!(ax=ax, points, color=(:snow2, 1), strokewidth=2, strokecolor=:black)
+            poly!(ax=ax, points, color=(:seashell2, 0.7), strokewidth=2, strokecolor=:black)
         end
     end
 
@@ -81,7 +82,7 @@ let
     sc = scatter!(basin_longitudes, basin_latitudes, color=basin_probas,
                   ax=ax,
                   lab="ERA5 data", 
-                  colormap=:blues,
+                  colormap=:Greens_6,
                   colorrange=(0,1),
                   markersize=13)
 

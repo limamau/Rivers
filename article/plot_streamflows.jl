@@ -7,7 +7,7 @@ using Statistics
 
 let 
     # Define figure and axis
-    fig = Figure(resolution = (1600, 1600))
+    fig = Figure(resolution = (1200, 1200))
     # bad, median, good LSTM, good GloFAS
     basins = [1061638580, 6050344660, 7070250410, 7060363050]
 
@@ -27,7 +27,7 @@ let
             sdf = CSV.read("/central/scratch/mdemoura/Rivers/post_data/lstm_simulations/sim_$basin_id.csv", DataFrame)
             gdf = CSV.read("/central/scratch/mdemoura/Rivers/post_data/glofas_timeseries/sim_$basin_id.csv", DataFrame)
 
-            ax = Axis(fig[i,j], ylabel="m³/day")
+            ax = Axis(fig[i,j], xlabel="Dates", xlabelsize=17, ylabel="Discharge (m³/day)", ylabelsize=17)
             hidedecorations!(ax, ticklabels=false, ticks=false, label=false)
 
             # Select date indexes
@@ -39,9 +39,9 @@ let
             glofas_max_date_idx = findfirst(date -> date == Date(1998, 12, 31), gdf[:, "date"])
 
             # Plot lines
-            lines!(ax, lstm_min_date_idx:lstm_max_date_idx, gdf[glofas_min_date_idx:glofas_max_date_idx, "sim"] .* 24*60*60, label="GloFAS ERA5", transparency=true, color=:goldenrod1, linewidth=2)
-            lines!(ax, lstm_min_date_idx:lstm_max_date_idx, sdf[lstm_min_date_idx:lstm_max_date_idx, "sim"] .* 24*60*60, label="LSTM", transparency=true, color=:orchid, linewidth=2)
-            lines!(ax, lstm_min_date_idx:lstm_max_date_idx, sdf[lstm_min_date_idx:lstm_max_date_idx, "obs"] .* 24*60*60, label="Observed", transparency=true, color=:darkseagreen3, linewidth=2)
+            lines!(ax, lstm_min_date_idx:lstm_max_date_idx, gdf[glofas_min_date_idx:glofas_max_date_idx, "sim"] .* 24*60*60, label="GloFAS ERA5", transparency=true, color=:lime, linewidth=2)
+            lines!(ax, lstm_min_date_idx:lstm_max_date_idx, sdf[lstm_min_date_idx:lstm_max_date_idx, "sim"] .* 24*60*60, label="LSTM", transparency=true, color=:magenta, linewidth=2)
+            lines!(ax, lstm_min_date_idx:lstm_max_date_idx, sdf[lstm_min_date_idx:lstm_max_date_idx, "obs"] .* 24*60*60, label="Observed", transparency=true, color=:dodgerblue, linewidth=2)
             ax.xticks = (lstm_min_date_idx+30:365:lstm_max_date_idx+30, string.(sdf[:, "date"])[lstm_min_date_idx+30:365:lstm_max_date_idx+30])
             ax.xticklabelrotation = π/4
             axislegend(ax)
