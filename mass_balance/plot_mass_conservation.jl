@@ -164,39 +164,49 @@ let
     println("Not found basins: ", not_found_basins)
     println("Found basins: ", found_basins)
 
-    # Plot histograms
-    # Observation runoff diff
-    fig = Figure()
-    ax = Axis(fig[1,1], title="Observation - Runoff", ylabel="N of basins", xlabel="mm/yr")
-    hist!(ax, obs_diffs, bins=100)
-    text!(-threshold+0.2, 20, text = "N of outliers: $obs_outliers")
-    save("mass_balance/png_files/mass_hist_obs.png", fig)
-
+    # Plot histograms into a biiiig figure
+    fig = Figure(resolution = (1200, 1200))
+    
     # LSTM runoff diff
-    fig = Figure()
-    ax = Axis(fig[1,1], title="LSTM simulation - Runoff", ylabel="N of basins", xlabel="mm/yr")
-    hist!(ax, lstm_diffs, bins=100)
+    ax = Axis(fig[1,1], 
+              title="Streamflow (LSTM) / Catchment area - Runoff", 
+              xlabel="Mass difference (mm/yr)",
+              xlabelsize=17,
+              ylabel="N of basins", 
+              ylabelsize=17)
+    hist!(ax, lstm_diffs, bins=100, color=:dodgerblue)
     text!(-threshold+0.2, 20, text = "N of outliers: $lstm_outliers")
-    save("mass_balance/png_files/mass_hist_lstm.png", fig)
 
-    # GloFAS runoff diff using GRDC area
-    fig = Figure()
-    ax = Axis(fig[1,1], title="GloFAS reanalysis - Runoff using GRDC area", ylabel="N of basins", xlabel="mm/yr")
-    hist!(ax, grdc_glofas_diffs, bins=100)
-    text!(-threshold+0.2, 20, text = "N of outliers: $grdc_glofas_outliers")
-    save("mass_balance/png_files/mass_hist_grdc_glofas.png", fig)
+    # Observation-runoff diff
+    ax = Axis(fig[1,2],
+              title="Streamflow (Observations) / Catchment area - Runoff", 
+              xlabel="Mass difference (mm/yr)",
+              xlabelsize=17,
+              ylabel="N of basins",
+              ylabelsize=17)
+    hist!(ax, obs_diffs, bins=100, color=:dodgerblue)
+    text!(-threshold+0.2, 11.27, text = "N of outliers: $obs_outliers")
 
     # GloFAS runoff diff using GloFAS area
-    fig = Figure()
-    ax = Axis(fig[1,1], title="Streamflow (GloFAS) / Basin Area - Runoff", ylabel="N of basins", xlabel="mm/yr")
-    hist!(ax, glofas_glofas_diffs, bins=100)
+    ax = Axis(fig[2,1], 
+              title="Streamflow (GloFAS) / Upstream area - Runoff", 
+              xlabel="Mass difference (mm/yr)",
+              xlabelsize=17,
+              ylabel="N of basins", 
+              ylabelsize=17)
+    hist!(ax, glofas_glofas_diffs, bins=100, color=:dodgerblue)
     text!(-threshold+0.2, 20, text = "N of outliers: $glofas_glofas_outliers")
-    save("mass_balance/png_files/mass_hist_glofas_glofas.png", fig)
 
     # Upstream area diff: GloFAS - GRDC
-    fig = Figure()
-    ax = Axis(fig[1,1], title="GloFAS area - GRDC area", ylabel="N of basins", xlabel="Relative difference")
-    hist!(ax, area_diffs, bins=100)
-    text!(-1.9, 300, text="N of outliers: $area_outliers")
-    save("mass_balance/png_files/area_hist_glofas_grdc.png", fig)
+    ax = Axis(fig[2,2],
+              title="Upstream Area (GloFAS) - Catchment area (GRDC)", 
+              xlabel="Relative difference",
+              xlabelsize=17,
+              ylabel="N of basins", 
+              ylabelsize=17)
+    hist!(ax, area_diffs, bins=100, color=:lightcoral)
+    text!(-1.9, 152.7, text="N of outliers: $area_outliers")
+
+    # Save figure
+    save("mass_balance/png_files/4-histogram.png", fig, px_per_unit=8)
 end
