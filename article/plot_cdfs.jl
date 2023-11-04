@@ -27,11 +27,13 @@ let
           println("-------"*uppercase(metric)*"-------")
           
           ### US vs. Globe models
-          fig = Figure(resolution=(600,500))
+          fig = Figure(resolution=(500,500))
           Axis(fig[1, 1], 
                limits = (0,1,0,1), 
                xlabel = uppercase(metric),
+               xlabelsize = 17,
                ylabel = "CDF",
+               ylabelsize = 17,
                xticks = 0:0.2:1,
                yticks = 0:0.2:1)
 
@@ -63,11 +65,11 @@ let
           print_meand_median("Globe, time-split", time_global_metric_values)
 
           # Plot curves
-          ecdfplot!(basin_us_metric_values, color=:dodgerblue2, label="USA model - Basin split", linestyle=:dash)
-          ecdfplot!(time_us_metric_values, color=:dodgerblue2, label="USA model - Time split")
-          ecdfplot!(precip_time_us_metric_values, color=:indigo, label="USA model - Time split (precip.)")
-          ecdfplot!(basin_global_metric_values, color=:red, label="Global model - Basin split", linestyle=:dash)
-          ecdfplot!(time_global_metric_values, color=:red, label="Global model - Time split")
+          ecdfplot!(basin_us_metric_values, color=:dodgerblue2, label="USA - basin split", linestyle=:dash)
+          ecdfplot!(time_us_metric_values, color=:dodgerblue2, label="USA - time split")
+          ecdfplot!(precip_time_us_metric_values, color=:indigo, label="USA - time split (precip.)")
+          ecdfplot!(basin_global_metric_values, color=:red, label="Global - basin split", linestyle=:dash)
+          ecdfplot!(time_global_metric_values, color=:red, label="Global - time split")
           axislegend(position=(0,1))
 
           # Save
@@ -76,13 +78,20 @@ let
           save(output_file, fig, px_per_unit = 2)
 
           ### Benchmarks
-          fig = Figure(resolution=(600,500))
-          Axis(fig[1, 1], 
-               limits = (0,1,0,1), 
-               xlabel = uppercase(metric), 
-               ylabel = "CDF", 
-               xticks = 0:0.2:1,
-               yticks = 0:0.2:1)
+          fig = Figure(resolution=(500,500))
+          ax = Axis(fig[1,1], 
+                   limits = (0,1,0,1), 
+                   xlabel = uppercase(metric),
+                   xlabelsize = 17,
+                   ylabel = "CDF",
+                   ylabelsize = 17,
+                   xticks = 0:0.2:1,
+                   yticks = 0:0.2:1)
+          if metric == "kge"
+               ax.ylabelcolor = :white
+               ax.yticklabelcolor = :white
+               ax.ytickcolor = :white
+          end
 
           # Get LSTM scores
           csv_file = "article/csv_files/globe_all_daily.csv"
@@ -116,11 +125,10 @@ let
           ecdfplot!(basin_lstm_metric_values, color=:red, label="LSTM - Basin split", linestyle=:dash)
           ecdfplot!(time_lstm_metric_values, color=:red, label="LSTM - Time split")
           ecdfplot!(glofas_metric_values, color=:green, label="GloFAS-ERA5 (daily)")
-          axislegend(position=(0,1))
 
           # Save
           output_file = "article/png_files/"*metric*"_cdfs/lstm_vs_benchmarks.png"
           mkpath(dirname(output_file))
-          save(output_file, fig, px_per_unit = 2)
+          save(output_file, fig, px_per_unit = 4)
      end
 end
