@@ -7,6 +7,11 @@ using NCDatasets
 using ProgressMeter
 using Shapefile
 
+# Figure height = 400 * 5
+# Labels size = 17
+
+# Note: this code still bugs sometimes... if it does, try relaunching it!
+
 let
     # Select files and constants
     basins_shp_file = "/central/scratch/mdemoura/Rivers/source_data/BasinATLAS_v10_shp/BasinATLAS_v10_lev07.shp"
@@ -25,11 +30,21 @@ let
     x_min, x_max, y_min, y_max = find_min_max_lon_lat(basin_points, 0.2)
 
     # Define plot
-    fig = Figure(resolution=(600,500))
+    fig = Figure(resolution=(450,400))
     ax = Axis(fig[1,1], 
-              xlabel = "Longitude",
-              ylabel = "Latitude",
+              xlabel = "Latitude",
+              xlabelsize = 17,
+              xlabelcolor = :white,
+              xticklabelcolor = :white,
+              xtickcolor = :white,
+              ylabel = "Longitude",
+              ylabelsize = 17,
+              ylabelcolor = :white,
+              yticklabelcolor = :white,
+              yaxisposition=:right,
+              ytickcolor = :white,
               limits = (x_min, x_max, y_min, y_max))
+    hidedecorations!(ax, ticks=false, ticklabels=false, label=false)
 
     # Surroundings
     for row in eachrow(basins_df)
@@ -100,5 +115,5 @@ let
     # TODO: Plot catchment areas
 
     # Save Plot
-    save("article/png_files/gauges_and_rivers.png", fig, px_per_unit=4)
+    save("article/png_files/gauges_and_rivers.png", fig, px_per_unit=5)
 end

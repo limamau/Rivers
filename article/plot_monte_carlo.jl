@@ -7,6 +7,9 @@ using JSON
 using NCDatasets
 using Shapefile
 
+# Figure height = 400 * 5
+# Labels size = 17
+
 let
     # Select files and constants
     era5_nc_file = "/central/scratch/mdemoura/Rivers/source_data/era5/globe_year_month/era5_1990_01.nc"
@@ -54,11 +57,14 @@ let
     shape_df = Shapefile.Table(shp_file) |> DataFrame
 
     # Define plot
-    fig = Figure(resolution=(700,500))
+    fig = Figure(resolution=(550,400))
     ax = Axis(fig[1,1], 
               xlabel = "Longitude",
+              xlabelsize = 17,
               ylabel = "Latitude",
+              ylabelsize = 17,
               limits = (x_min, x_max, y_min, y_max))
+    hidedecorations!(ax, ticks=false, ticklabels=false, label=false)
 
     # Surroundings
     for row in eachrow(shape_df)
@@ -84,11 +90,11 @@ let
                   lab="ERA5 data", 
                   colormap=:Greens_6,
                   colorrange=(0,1),
-                  markersize=13)
+                  markersize=11)
 
     # Colorbar
-    Colorbar(fig[1,2], sc, label="Weights")
+    Colorbar(fig[1,2], sc, label="Points weight", labelsize=17)
 
     # Save Plot
-    save("article/png_files/monte_carlo.png", fig, px_per_unit=4)
+    save("article/png_files/monte_carlo.png", fig, px_per_unit=5)
 end
