@@ -8,7 +8,7 @@ using Statistics
 
 function allocate_relative_difference!(val1::Real, val2::Real, histogram_array::Vector{Float64}, n_outliers::Real, threshold::Real)
     if !isnan(val1) & (val1 != 0)
-        relative_diff = (val1 - val2) / val1
+        relative_diff = (val1 - val2) / max(val1, val2)
         if abs(relative_diff) < threshold
             push!(histogram_array, relative_diff)
         else
@@ -20,12 +20,12 @@ function allocate_relative_difference!(val1::Real, val2::Real, histogram_array::
 end
 
 function allocate_mm_per_year!(val1::Real, 
-                                  val2::Real, 
-                                  histogram_array::Vector{Float64}, 
-                                  area::Real, 
-                                  aggregation_days::Int, 
-                                  n_outliers::Real, 
-                                  threshold::Real)
+                               val2::Real, 
+                               histogram_array::Vector{Float64}, 
+                               area::Real, 
+                               aggregation_days::Int, 
+                               n_outliers::Real, 
+                               threshold::Real)
     m_to_mm = 1000
     days_in_a_year = 365
     if !isnan(val1) & (val1 != 0)
@@ -79,14 +79,14 @@ let
     gauge_area_dict = JSON.parsefile("/central/scratch/mdemoura/Rivers/midway_data/era5/gauge_area_dict.json")
     
     # Read base csv file as DataFrame
-    base_csv = "article/csv_files/globe_all_daily.csv"
+    base_csv = "article/csv_files/glofas_daily.csv"
     base_df = CSV.read(base_csv, DataFrame)
     basin_ids = base_df.basin
     @showprogress for basin_id in basin_ids
         # Read timeseries and simulations Data Frames
         lv = string(basin_id)[2:3]
         if !isfile(joinpath(glofas_sim_dir, "sim_$basin_id.csv"))
-            not_found_basins += 1 # TODO: investigate why we don't have these basins
+            not_found_basins += 1
             continue
         end
         found_basins += 1
@@ -110,9 +110,9 @@ let
         glofas_max_date_idx = findfirst(date -> date == max_date, glofas_sim_df[:, "date"])
 
         # Basin / catchment area
-        grdc_area = other_attributes_df[other_attributes_df[:, :basin_id] .== basin_id, "area"][1] * km²_to_m²
         basin_area = hydro_attributes_df[hydro_attributes_df[:, :basin_id] .== basin_id, "UP_AREA"][1]
         basin_gauge_dict = JSON.parsefile(joinpath(base_dir, "midway_data/mapping_dicts/gauge_to_basin_dict_lv$lv"*"_max.json"))
+        grdc_area = other_attributes_df[other_attributes_df[:, :basin_id] .== basin_id, "area"][1] * km²_to_m²
         gauge_id = basin_gauge_dict[string(basin_id)][1]
         glofas_area = gauge_area_dict[string(gauge_id)] * km²_to_m²
 
@@ -153,12 +153,7 @@ let
         glofas_glofas_outliers = allocate_mm_per_year!(glofas_streamflow, glofas_runoff, glofas_glofas_diffs, glofas_area, aggregation_days, glofas_glofas_outliers, threshold)
 
         # Area histogram
-        relative_diff = (glofas_area - grdc_area) / glofas_area
-        if abs(relative_diff) < 2
-            push!(area_diffs, relative_diff)
-        else
-            area_outliers += 1
-        end
+        area_outliers = allocate_relative_difference!(glofas_area, grdc_area, area_diffs, area_outliers, 0.2)
     end
 
     println("Not found basins: ", not_found_basins)
@@ -172,9 +167,11 @@ let
               xlabel="Mass difference (mm/yr)",
               xlabelsize=17,
               ylabel="N of basins",
-              ylabelsize=17)
+              ylabelsize=17,
+              limits=(-200,200,0,30))
     hist!(ax, lstm_diffs, bins=100, color=:dodgerblue)
-    text!(-threshold+0.2, 20, text = "N of outliers: $lstm_outliers")
+    hidedecorations!(ax, ticks=false, ticklabels=false, label=false)
+    text!(-threshold+5, 20, text = "N of outliers: $lstm_outliers")
     save("mass_balance/png_files/histogram_a.png", fig, px_per_unit=4)
 
     # Observation-runoff diff
@@ -184,9 +181,11 @@ let
               xlabel="Mass difference (mm/yr)",
               xlabelsize=17,
               ylabel="N of basins",
-              ylabelsize=17)
+              ylabelsize=17,
+              limits=(-200,200,0,30))
     hist!(ax, obs_diffs, bins=100, color=:dodgerblue)
-    text!(-threshold+0.2, 11.27, text = "N of outliers: $obs_outliers")
+    hidedecorations!(ax, ticks=false, ticklabels=false, label=false)
+    text!(-threshold+5, 20, text = "N of outliers: $obs_outliers")
     save("mass_balance/png_files/histogram_b.png", fig, px_per_unit=4)
 
     # GloFAS runoff diff using GloFAS area
@@ -196,9 +195,11 @@ let
               xlabel="Mass difference (mm/yr)",
               xlabelsize=17,
               ylabel="N of basins",
-              ylabelsize=17)
+              ylabelsize=17,
+              limits=(-200,200,0,30))
     hist!(ax, glofas_glofas_diffs, bins=100, color=:dodgerblue)
-    text!(-threshold+0.2, 20, text = "N of outliers: $glofas_glofas_outliers")
+    hidedecorations!(ax, ticks=false, ticklabels=false, label=false)
+    text!(-threshold+5, 20, text = "N of outliers: $glofas_glofas_outliers")
     save("mass_balance/png_files/histogram_c.png", fig, px_per_unit=4)
 
     # Upstream area diff: GloFAS - GRDC
@@ -208,8 +209,10 @@ let
               xlabel="Relative difference",
               xlabelsize=17,
               ylabel="N of basins",
-              ylabelsize=17)
+              ylabelsize=17,
+              limits=(-0.25,0.25,0,60))
     hist!(ax, area_diffs, bins=100, color=:lightcoral)
-    text!(-1.9, 152.7, text="N of outliers: $area_outliers")
+    text!(-0.245, 40, text="N of outliers: $area_outliers")
+    hidedecorations!(ax, ticks=false, ticklabels=false, label=false)
     save("mass_balance/png_files/histogram_d.png", fig, px_per_unit=4)
 end

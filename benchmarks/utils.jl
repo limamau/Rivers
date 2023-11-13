@@ -1,3 +1,5 @@
+using Shapefile
+
 function is_area_within_threshold(area1::Real, area2::Real, threshold=0.2::Real)::Bool
     return abs(area1-area2)/max(area1, area2) <= threshold
 end
@@ -110,4 +112,44 @@ function get_year_and_month_river(nc_file::String)
     end
 
     return year, month
+end
+
+function mask_valid(obs::Vector{Float64}, sim::Vector{Float64})::Tuple{Vector{Float64}, Vector{Float64}}
+    # mask of invalid entries. NaNs in simulations can happen during validation/testing
+    idx = Vector{Bool}(undef, length(sim))
+    for i in eachindex(idx)
+        idx[i] = !isnan(sim[i]) & !isnan(obs[i])
+    end
+
+    obs = obs[idx]
+    sim = sim[idx]
+
+    return obs, sim
+end
+
+function get_nse(obs::Vector{Float64}, sim::Vector{Float64})::Float64
+    # get time series with only valid observations
+    obs, sim = mask_valid(obs, sim)
+
+    denominator = sum((obs .- mean(obs)).^2)
+    numerator = sum((sim .- obs).^2)
+
+    value = 1.0 - numerator / denominator
+
+    return value
+end
+
+function get_kge(obs::Vector{Float64}, sim::Vector{Float64})::Union{Missing, Float64}
+    # get time series with only valid observations
+    obs, sim = mask_valid(obs, sim)
+    
+    if isempty(obs) | isempty(sim)
+        return missing
+    else
+        alpha = std(sim) / std(obs)
+        beta = mean(sim) / mean(obs)
+        r = cor(sim, obs)
+
+        return 1 - sqrt((alpha-1)^2 + (beta-1)^2 + (r-1)^2)
+    end
 end
