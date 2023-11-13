@@ -3,61 +3,31 @@ using DataFrames
 using JSON
 using Statistics
 
-function mask_valid(obs::Vector{Float64}, sim::Vector{Float64})::Tuple{Vector{Float64}, Vector{Float64}}
-    # mask of invalid entries. NaNs in simulations can happen during validation/testing
-    idx = Vector{Bool}(undef, length(sim))
-    for i in eachindex(idx)
-        idx[i] = !isnan(sim[i]) & !isnan(obs[i])
-    end
-
-    obs = obs[idx]
-    sim = sim[idx]
-
-    return obs, sim
-end
-
-function get_nse(obs::Vector{Float64}, sim::Vector{Float64})::Float64
-    # get time series with only valid observations
-    obs, sim = mask_valid(obs, sim)
-
-    denominator = sum((obs .- mean(obs)).^2)
-    numerator = sum((sim .- obs).^2)
-
-    value = 1.0 - numerator / denominator
-
-    return value
-end
-
-function get_kge(obs::Vector{Float64}, sim::Vector{Float64})::Union{Missing, Float64}
-    # get time series with only valid observations
-    obs, sim = mask_valid(obs, sim)
-    
-    if isempty(obs) | isempty(sim)
-        return missing
-    else
-        alpha = std(sim) / std(obs)
-        beta = mean(sim) / mean(obs)
-        r = cor(sim, obs)
-
-        return 1 - sqrt((alpha-1)^2 + (beta-1)^2 + (r-1)^2)
-    end
-end
+include("utils.jl")
 
 let
+    # Base
+    base = "/central/scratch/mdemoura/Rivers"
+
     # Read base csv file as DataFrame
     base_csv = "article/csv_files/globe_all_daily.csv"
     base_df = CSV.read(base_csv, DataFrame)
 
     # Get gauges list
-    basin_gauge_dict_lv05 = JSON.parsefile("/central/scratch/mdemoura/Rivers/midway_data/mapping_dicts/gauge_to_basin_dict_lv05_max.json")
-    basin_gauge_dict_lv06 = JSON.parsefile("/central/scratch/mdemoura/Rivers/midway_data/mapping_dicts/gauge_to_basin_dict_lv06_max.json")
-    basin_gauge_dict_lv07 = JSON.parsefile("/central/scratch/mdemoura/Rivers/midway_data/mapping_dicts/gauge_to_basin_dict_lv07_max.json")
-
-    # Get GloFAS upstreams areas
-    gauge_area_dict = JSON.parsefile("/central/scratch/mdemoura/Rivers/midway_data/era5/gauge_area_dict.json")
+    basin_gauge_dict_lv05 = JSON.parsefile(joinpath(base, "midway_data/mapping_dicts/gauge_to_basin_dict_lv05_max.json"))
+    basin_gauge_dict_lv06 = JSON.parsefile(joinpath(base, "midway_data/mapping_dicts/gauge_to_basin_dict_lv06_max.json"))
+    basin_gauge_dict_lv07 = JSON.parsefile(joinpath(base, "midway_data/mapping_dicts/gauge_to_basin_dict_lv07_max.json"))
 
     # Merge mapping dictionaries
     mapping_dict = merge(basin_gauge_dict_lv05, basin_gauge_dict_lv06, basin_gauge_dict_lv07)
+    
+    # Get GloFAS upstreams areas
+    gauge_area_dict = JSON.parsefile(joinpath(base, "midway_data/era5/gauge_area_dict.json"))
+
+    other_attributes_lv05_df = CSV.read(joinpath(base, "single_model_data/attributes/attributes_lv05/other_attributes.csv"), DataFrame)
+    other_attributes_lv06_df = CSV.read(joinpath(base, "single_model_data/attributes/attributes_lv06/other_attributes.csv"), DataFrame)
+    other_attributes_lv07_df = CSV.read(joinpath(base, "single_model_data/attributes/attributes_lv07/other_attributes.csv"), DataFrame)
+    other_attributes_df = vcat(other_attributes_lv05_df, other_attributes_lv06_df, other_attributes_lv07_df)
 
     # Define basins to calculate scores
     basins = base_df.basin
@@ -65,11 +35,10 @@ let
     # Basins used in all simulations (from LSTM, and GloFAS)
     selected_basins = []
 
-    for model in ["glofas"] # , "pcr"]
+    for model in ["glofas"]
         # Define array to allocate scores
         nses = []
         kges = []
-        up_areas = []
 
         # Define directory
         if model == "glofas"
@@ -85,6 +54,20 @@ let
 
             # Get timeseries as Data Frame if the file exists
             if isfile(file)
+                # Confirm areas are the same # TODO: investigate this cases
+                lstm_area = other_attributes_df[other_attributes_df.basin_id .== basin_id, :area][1]
+                if haskey(gauge_area_dict, string(gauge_id))
+                    glofas_area = gauge_area_dict[string(gauge_id)]
+                    if !is_area_within_threshold(lstm_area, glofas_area)
+                        println(basin_id)
+                        continue
+                    end
+                else
+                    println(basin_id)
+                    continue
+                end
+
+                # Get DataFrame
                 df = CSV.read(file, DataFrame)
 
                 # Define observation and simulation series from DataFrame
@@ -92,9 +75,13 @@ let
                 sim = replace(df[:,3], missing => NaN)
 
                 # Get scores
-                push!(nses, get_nse(obs, sim))
-                push!(kges, get_kge(obs, sim))
-                push!(selected_basins, basins[i])
+                if get_kge(obs, sim) > -3 # chosen threshold
+                    push!(nses, get_nse(obs, sim))
+                    push!(kges, get_kge(obs, sim))
+                    push!(selected_basins, basins[i])
+                else
+                    println(basin_id)
+                end
             end
         end
 
