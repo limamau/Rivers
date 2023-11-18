@@ -29,6 +29,10 @@ function print_stats(experiment_name::String, arr::Vector{Float64}, metric::Stri
      println("$experiment_name: $porc_bad% / $arr_mean / $arr_good_mean / $arr_median")
 end
 
+function fix_outliers()
+
+end
+
 let
      # Define resolution multiplier
      px_per_unit = 4
@@ -42,7 +46,7 @@ let
           end
      end
 
-     println("Median / Mean / Good mean / % of bad")
+     println("% of bad / Mean / Good mean / Median")
      
      ### US vs. Globe models
      println("----- NSE -----")
@@ -84,11 +88,11 @@ let
      print_stats("Globe, time-split", time_global_nse_values, "nse")
 
      # Plot curves
-     ecdfplot!(basin_us_nse_values, color=:dodgerblue2, label="USA - basin split", linestyle=:dash)
-     ecdfplot!(time_us_nse_values, color=:dodgerblue2, label="USA - time split")
+     ecdfplot!(basin_us_nse_values, color=:dodgerblue2, label="USA - basin split (runoff)", linestyle=:dash)
+     ecdfplot!(time_us_nse_values, color=:dodgerblue2, label="USA - time split (runoff)")
      ecdfplot!(precip_time_us_nse_values, color=:indigo, label="USA - time split (precip.)")
-     ecdfplot!(basin_global_nse_values, color=:red, label="Global - basin split", linestyle=:dash)
-     ecdfplot!(time_global_nse_values, color=:red, label="Global - time split")
+     ecdfplot!(basin_global_nse_values, color=:red, label="Global - basin split (runoff)", linestyle=:dash)
+     ecdfplot!(time_global_nse_values, color=:red, label="Global - time split (runoff)")
      axislegend(position=(0,1))
 
      # Save
@@ -128,11 +132,12 @@ let
      glofas_results_df = filter(row -> row.basin in selected_basins, glofas_results_df)
      glofas_nse_values = glofas_results_df[:,:nse]
      print_stats("GloFAS-ERA5", glofas_nse_values, "nse")
+     glofas_nse_values .= max.(-10, glofas_nse_values)
 
      # Plot curves
      ecdfplot!(basin_lstm_nse_values, color=:red, label="LSTM - basin split", linestyle=:dash)
      ecdfplot!(time_lstm_nse_values, color=:red, label="LSTM - time split")
-     ecdfplot!(glofas_nse_values, color=:green, label="GloFAS-ERA5 (daily)")
+     ecdfplot!(glofas_nse_values, color=:green, label="GloFAS-ERA5")
      axislegend(position=(0,1))
 
      # Save
@@ -175,11 +180,12 @@ let
      glofas_results_df = filter(row -> row.basin in selected_basins, glofas_results_df)
      glofas_kge_values = glofas_results_df[:,:kge]
      print_stats("GloFAS-ERA5", glofas_kge_values, "kge")
+     glofas_kge_values .= max.(-10, glofas_kge_values)
 
      # Plot curves
      ecdfplot!(basin_lstm_kge_values, color=:red, label="LSTM - basin split", linestyle=:dash)
      ecdfplot!(time_lstm_kge_values, color=:red, label="LSTM - time split")
-     ecdfplot!(glofas_kge_values, color=:green, label="GloFAS-ERA5 (daily)")
+     ecdfplot!(glofas_kge_values, color=:green, label="GloFAS-ERA5")
 
      # Save
      output_file = "article/png_files/kge_cdfs/lstm_vs_benchmarks.png"
