@@ -74,14 +74,9 @@ let
                 obs = replace(df[:,2], missing => NaN)
                 sim = replace(df[:,3], missing => NaN)
 
-                # Get scores
-                if get_kge(obs, sim) > -3 # chosen threshold
-                    push!(nses, get_nse(obs, sim))
-                    push!(kges, get_kge(obs, sim))
-                    push!(selected_basins, basins[i])
-                else
-                    println(basin_id)
-                end
+                push!(nses, get_nse(obs, sim))
+                push!(kges, get_kge(obs, sim))
+                push!(selected_basins, basins[i])
             end
         end
 
