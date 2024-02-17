@@ -5,8 +5,6 @@ using JSON
 using Shapefile
 using Statistics
 
-include("single_and_graph_attributes.jl")
-
 """
     create_hydroatlas_attributes(hydroatlas_df, basins_ids, output_dir)
 
