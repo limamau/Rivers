@@ -7,8 +7,8 @@ River model for CliMA.
 3. Merge and shift GRDC files from local time to UTC with `merge_and_shift_grdc_files()`.
 4. (For the graph model only:) Use `create_graph()` to create the nested sub-basins relation in a .json file.
 5. Connect GRDC gauges to HydroSHEDS basins with `gauges_to_basins()`. Note: different options for single and graph model here!
-6. Merge ERA5 timeseries for each HydroSHEDS basin with the corresponding GRDC gauge with `merge_era5_grdc()`.
-7. Get the statical attributes for each basin with `attribute_attributes()`.
+6. Merge ERA5 timeseries for each HydroSHEDS basin with the corresponding GRDC gauge with `merge_era5_grdc()`. This function has two additional argument for the graph model.
+7. Get the statical attributes for each basin with `attribute_attributes()`. This function has an additional argument for the graph model.
 8. Extract the basin lists for each model with `extract_basin_lists()`.
 
 At the end of the process you should get a `timeseries/`, an `attributes/` and a `basin_lists/` folder ready to be used by the model.
