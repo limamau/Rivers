@@ -6,8 +6,9 @@ eng_*
 */csv_files/*
 */model/*
 
-# dev
+# dev and simulations
 dev/
+simulations/
 
 # others
 .DS_Store

@@ -30,6 +30,10 @@ basin_gauge_dict_file = "path/to/mapping_dicts/gauge_to_basin_dict_lvXX.json"
 timeseries_lvXX_dir = "path/to/timeseries/timeseries_lvXX"
 hydroatlas_lvXX_shp_file = # this can be downloaded in https://www.hydrosheds.org
 attributes_lvXX_dir = "path/to/attributes/attributes_lvXX"
+timeseries_dir = "path/to/timeseries"
+attributes_dir = "path/to/attributes"
+levels = ["XX"]
+basin_lists_dir = "path/to/basin_lists"
 
 ## Engineering process
 # 1. Create a JSON mapping ERA5 grid points to HydroSHEDS basins with
@@ -44,6 +48,8 @@ gauges_to_basins(original_grdc_nc_file, hydrosheds_lvXX_shp_file, basin_gauge_di
 merge_era5_grdc(xd_dir, shifted_grdc_nc_file, basin_gauge_dict_file, timeseries_lvXX_dir)
 # 6. Get the statical attributes for each basin with
 attribute_attributes(hydroatlas_lvXX_shp_file, timeseries_lvXX_dir, original_grdc_nc_file, basin_gauge_dict_file, attributes_lvXX_dir)
+# 7. Get the basin lists to train the models (here I'm assuming your training just one level)
+extract_basin_lists(timeseries_dir, attributes_dir, levels, basin_lists_dir)
 
 
 # ## You can choose to delete the intermediate files after the process is done:

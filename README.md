@@ -2,14 +2,17 @@
 River model for CliMA.
 
 ## Engineering (Julia)
-1. Create a set of JSON mapping ERA5 grid points to HydroSHEDS basins with `grid_points_to_basins()`.
-2. Compute dynamical variables for all basins with `compute_basins_timeseries()`. Currently using netCDF files from ERA5 Land divided by year and month.
+1. Create a set of .json mapping ERA5 grid points to HydroSHEDS basins with `grid_points_to_basins()`.
+2. Compute dynamical variables for all basins with `compute_basins_timeseries()`. Currently using netCDF files from ERA5 Land divided by year and month. Note: this function takes a lot of time currently (days for level 07) and can be optimised in the future! If the cluster bugs and you have to use checkpoint option, make sure to use `select_uniques()`.
 3. Merge and shift GRDC files from local time to UTC with `merge_and_shift_grdc_files()`.
-4. Connect GRDC gauges to HydroSHEDS basins with `gauges_to_basins()`.
+4. 
+    - If using the graph model, use `create_graph()` to create the nested sub-basins relation in a .json file.
+    - Connect GRDC gauges to HydroSHEDS basins with `gauges_to_basins()`. Note: different options for single and graph model here!
 5. Merge ERA5 timeseries for each HydroSHEDS basin with the corresponding GRDC gauge with `merge_era5_grdc()`.
 6. Get the statical attributes for each basin with `attribute_attributes()`.
+7. Extract the basin lists for each model with `extract_basin_lists()`.
 
-At the end of the process you should get a "timeseries" and a "attributes" folder ready to be used by the model.
+At the end of the process you should get a `timeseries/`, an `attributes/` and a `basin_lists/` folder ready to be used by the model.
 
 The complete engineering approach is shown in `examples/engineer.jl`.
 
