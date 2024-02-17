@@ -26,7 +26,9 @@ include("engineering/merge_era5_grdc_single.jl")
 
 include("engineering/merge_era5_grdc_graph.jl")
 
-include("engineering/attribute_attributes.jl")
+include("engineering/attribute_attributes_single.jl")
+
+include("engineering/attribute_attributes_graph.jl")
 
 include("engineering/select_uniques.jl")
 
