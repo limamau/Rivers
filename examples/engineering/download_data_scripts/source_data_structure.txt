@@ -1,0 +1,25 @@
+This can be used as a reference to organize the data in your directory.
+
+I like to organize my downloaded data in a source_data/ folder. It looks like:
+source_data/
+	era5/
+		globe_year_month/ (this can be downloaded using api_land_retrieval.py)
+			era5_1990_01.nc
+			.
+			.
+			.
+			era5_2019_12.nc
+	
+	GRDC-Globe/ (this can be downloaded following grdc_download_guide.pdf)
+		GRDC-Daily-XXXX.nc (where XXXX is your request ID)
+		.
+		.
+		.
+		GRDC-Daily-YYYY.nc
+	
+	BasinATLAS_v10_shp/ (this can be downloaded using wget https://figshare.com/ndownloader/files/20087237)
+		BasinATLAS_v10_lev01.dbf
+		.
+		.
+		.
+		BasinATLAS_v10_lev11.shx
