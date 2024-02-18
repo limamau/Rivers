@@ -13,7 +13,7 @@ River model for CliMA.
 
 At the end of the process you should get a `timeseries/`, an `attributes/` and a `basin_lists/` folder ready to be used by the model.
 
-The complete engineering approach is shown in `examples/engineer.jl`.
+The complete engineering approach is shown in `examples/engineer.jl`. For an overview on how to download the data see `examples/engineering/download_data_scripts/source_data_structure.txt`.
 
 ## Neuralhydrology (Python)
 Here we use a forked repository from NeuralHydrology (original: https://github.com/neuralhydrology/neuralhydrology) with an additional class to the created data set: Era5GrdcSheds. 
@@ -26,8 +26,6 @@ pip install -e .
 as shown in the documentation of the package.
 
 A typical `config.yml` of the model is shown in `examples/neuralhydrology/NA_lv06`.
-
-Use `extractbasins()` to get the list of basins in .txt format.
 
 It can be run with `nh-run train --config-file config.yml`.
 
