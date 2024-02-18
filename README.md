@@ -13,7 +13,7 @@ River model for CliMA.
 
 At the end of the process you should get a `timeseries/`, an `attributes/` and a `basin_lists/` folder ready to be used by the model.
 
-The complete engineering approach is shown in `examples/engineer.jl`. For an overview on how to download the data see `examples/engineering/download_data_scripts/source_data_structure.txt`.
+The complete engineering approach is shown in `examples/engineering/`. For an overview on how to download the data see `examples/engineering/download_data_scripts/source_data_structure.txt`. The engineering process is used in HydroSHEDS level 05 in `examples/engineering/engineer_lv05.jl`.
 
 ## Neuralhydrology (Python)
 Here we use a forked repository from NeuralHydrology (original: https://github.com/neuralhydrology/neuralhydrology) with an additional class to the created data set: Era5GrdcSheds. 
