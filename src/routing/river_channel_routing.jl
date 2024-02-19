@@ -15,20 +15,27 @@ function river_channel_route(
 )
 
     # Read DataFrame with inputs from upstream
-    timeseries_df = CSV.read(joinpath(output_dir, "basin_$basin_id.csv"), DataFrame)
+    up_timeseries_df = CSV.read(joinpath(output_dir, "basin_$up_basin.csv"), DataFrame)
 
     # Get basin area and the riverine distance (x) from HydroATLAS
     attributes_df = CSV.read(joinpath(attributes_dir, "attributes.csv"), DataFrame)
-    x = attributes_df[attributes_df.HYBAS_ID .== basin_id, :DIST_MAIN][1] - attributes_df[attributes_df.HYBAS_ID .== up_basin, :DIST_MAIN][1]
+    x = attributes_df[attributes_df.HYBAS_ID .== up_basin, :DIST_MAIN][1] - attributes_df[attributes_df.HYBAS_ID .== basin_id, :DIST_MAIN][1]
     
     # Sum the runoff and sub-surface runoff columns
-    input = timeseries_df[:,:streamflow]
-
+    input = up_timeseries_df[:,:streamflow]
+    
     if method == "IRF"
-        streamflow = IRF(input, x, C, D)
-    # TODO: add the single-LSTM method
-    # TODO: add the graph-LSTM method
+        up_streamflow = IRF(input, x, C, D)
+        # TODO: add graph-LSTM method
+    else
+        error("Method not supported.")
     end
+    
+    # Get current streamflow in the basin
+    timeseries_df = CSV.read(joinpath(output_dir, "basin_$basin_id.csv"), DataFrame)
+
+    # Sum the streamflow
+    streamflow = up_streamflow + timeseries_df[:,:streamflow]
 
     # Get dates array
     dates = timeseries_df.date

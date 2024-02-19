@@ -1,5 +1,6 @@
 using CSV
 using DataFrames
+using Dates
 
 function write_routing_timeseries(xd_dir::String, start_date::Date, end_date::Date, output_dir_dir::String)
     # Create directory
