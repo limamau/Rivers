@@ -28,48 +28,61 @@ function write_routing_levels(graph_dict_file::String, hydroatlas_shp_file::Stri
     # Read HydroATLAS shapefile as a DataFrame
     hydro_df = Shapefile.Table(hydroatlas_shp_file) |> DataFrame
 
-    # Iterator for the routing levels
     # We begin with source basins
     routing_lv = 1
 
-    # Array to store the basins in the curre
+    # Array to store the basins in the current level
     routing_lv_basins = Int64[]
+
+    # Sets to store written and unwrittens basins
+    written_basins = Set{Int64}()
+    unwritten_basins = Set{Int64}()
 
     # Get the the source basins
     print("Source basins... ")
-    for basin_id in keys(graph_dict)
-        if isempty(graph_dict[basin_id])
-            push!(routing_lv_basins, parse(Int64, basin_id))
+    for basin_id in hydro_df[:,:HYBAS_ID]
+        if isempty(graph_dict[string(basin_id)])
+            push!(routing_lv_basins, basin_id)
+            push!(written_basins, basin_id)
+        else
+            push!(unwritten_basins, basin_id)
         end
     end
 
     # Create output directory
+    if isdir(output_dir)
+        println("\nDeleting old routing levels...")
+        rm(output_dir, recursive=true)
+    end
     mkpath(output_dir)
 
     # Write source basins in output directory
     write_routing_level(routing_lv_basins, routing_lv, output_dir)
     println("Done!")
 
-    # Upload routing level
-    routing_lv += 1
-
     # Iterate over the other levels
     print("Routing basins... ")
-    while !isempty(routing_lv_basins)
+    while !isempty(unwritten_basins)
         # Upload routing level
         routing_lv += 1
 
         # Repopulate routing_lv_basins
-        aux_array = Int64[]
-        for basin_id in routing_lv_basins
-            # Check if downstream exists in the graph
-            next_down_id = hydro_df[hydro_df.HYBAS_ID .== basin_id, :NEXT_DOWN][1]
-            if next_down_id != 0
-                push!(aux_array, next_down_id)
+        routing_lv_basins = Int64[]
+        for basin_id in unwritten_basins
+            # Check if upstreams are all written
+            all_up_written = true
+            for up_basin in graph_dict[string(basin_id)]
+                if !(up_basin in written_basins)
+                    all_up_written = false
+                end
+            end
+            if all_up_written
+                push!(routing_lv_basins, basin_id)
+                push!(written_basins, pop!(unwritten_basins, basin_id))
             end
         end
-        routing_lv_basins = aux_array
 
+        # Write routing level
         write_routing_level(routing_lv_basins, routing_lv, output_dir)
     end
 

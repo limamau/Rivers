@@ -12,6 +12,8 @@ function write_routing_attributes(hydroatlas_shapefile::String, output_dir::Stri
     # Discard geomtry column
     select!(attributes_df, [:HYBAS_ID, :SUB_AREA, :DIST_MAIN])
 
+    rename!(attributes_df, "SUB_AREA" => "area")
+
     # Write csv
     CSV.write(joinpath(output_dir, "attributes.csv"), attributes_df)
 end

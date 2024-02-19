@@ -14,11 +14,12 @@ function route(
     end_date::Date,
     output_dir::String
 )
-    # Definition of parameters as in mizuRouting v.1 TODO: optimize it
-    a = 2.5 # Shape factor
-    θ = 86400 # Timescale factor
-    C = 1.5 # Wave velocity
-    D = 800 # Diffusivity
+    # Definition of parameters as in mizuRouting v.1 but re-scaled
+    # TODO: optimize it
+    a = 1.5 # Shape factor (adjusted)
+    θ = 1 # Timescale factor [day]
+    C = 1.5 * 86400 # Wave velocity [m/day]
+    D = 8000 * 86400 # Diffusivity [m²/day]
 
     # Read JSON file as a dictionary
     graph_dict = JSON.parsefile(graph_dict_file)
@@ -27,21 +28,27 @@ function route(
     routing_lv = 1
 
     # Create simulations directory
+    if isdir(output_dir)
+        println("Deleting old simulations...")
+        rm(output_dir, recursive=true)
+    end
     mkpath(output_dir)
+
 
     # Iterate over routing levels
     for routing_lv_file in readdir(routing_levels_dir)
         println("Routing lv"*lpad(routing_lv, 2, "0")*"... ")
+        
         # Read basin IDs from the current routing level
         routing_lv_basins = Int64[]
-        open(joinpath(routing_levels_dir, routing_lv_file)) do file
+        file = open(joinpath(routing_levels_dir, routing_lv_file))
             for line in eachline(file)
                 push!(routing_lv_basins, parse(Int64, line))
             end
-        end
+        close(file)
 
         for basin_id in routing_lv_basins
-            # Hillslope route
+            # Hillslope routing
             hillslope_route(
                 basin_id, 
                 timeseries_dir,
@@ -51,8 +58,9 @@ function route(
                 hillslope_method, 
                 output_dir,
                 a, θ, # params
-            )
+            ) 
 
+            # River channel routing
             if routing_lv != 1 # there's no river channel routing for source basins
                 for up_basin in graph_dict[string(basin_id)]
                     river_channel_route(

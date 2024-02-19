@@ -24,13 +24,13 @@ function hillslope_route(
 
     # Get area from HydroATLAS
     attributes_df = CSV.read(joinpath(attributes_dir, "attributes.csv"), DataFrame)
-    basin_area = attributes_df[attributes_df.HYBAS_ID .== basin_id, :SUB_AREA][1]
+    basin_area = attributes_df[attributes_df.HYBAS_ID .== basin_id, :area][1]
     
     # Sum the runoff and sub-surface runoff columns
     input = filtered_df[:,:sro_sum] .+ filtered_df[:,:ssro_sum]
 
     if method == "gamma"
-        streamflow = gamma_conv(input, a, θ) .* basin_area
+        streamflow = gamma_conv(input, basin_area, a, θ)
     # TODO: add the single-LSTM method
     # TODO: add the graph-LSTM method
     end
