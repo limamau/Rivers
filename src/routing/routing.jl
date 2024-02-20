@@ -76,19 +76,18 @@ function route(
 
             # No river channel routing for source basins
             if routing_lv != 1
-                continue
-            end
 
-            # River channel routing
-            for up_basin in graph_dict[string(basin_id)]
-                river_channel_route(
-                    basin_id,
-                    up_basin,
-                    attributes_dir,
-                    river_channel_method, 
-                    output_dir, 
-                    C, D, # params
-                )
+                # River channel routing
+                for up_basin in graph_dict[string(basin_id)]
+                    river_channel_route(
+                        basin_id,
+                        up_basin,
+                        attributes_dir,
+                        river_channel_method, 
+                        output_dir, 
+                        C, D, # params
+                    )
+                end
             end
         end
         
