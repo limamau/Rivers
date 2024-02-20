@@ -10,7 +10,7 @@ using Distributed
 @everywhere using Rivers, JSON
 
 # Define your base
-base = "user/path/to/Rivers"
+base = "user/path/to/Rivers/data"
 
 ## Define files and directories names
 # ERA5
@@ -46,7 +46,7 @@ attributes_lv05_dir = joinpath(base, "single_model_data/attributes/attributes_lv
 timeseries_dir = joinpath(base, "single_model_data/timeseries")
 attributes_dir = joinpath(base, "single_model_data/attributes")
 levels = ["05"]
-basin_lists_dir = joinpath(base, "single_model_data/basin_lists"
+basin_lists_dir = joinpath(base, "single_model_data/basin_lists")
 
 
 ## Engineering process
