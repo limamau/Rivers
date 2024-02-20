@@ -6,9 +6,10 @@ eng_*
 */csv_files/*
 */model/*
 
-# dev and simulations
+# some folders
 dev/
 simulations/
+routing_analysis/
 
 # others
 .DS_Store

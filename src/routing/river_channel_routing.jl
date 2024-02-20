@@ -34,15 +34,12 @@ function river_channel_route(
     # Get current streamflow in the basin
     timeseries_df = CSV.read(joinpath(output_dir, "basin_$basin_id.csv"), DataFrame)
 
-    # Sum the streamflow
-    streamflow = up_streamflow + timeseries_df[:,:streamflow]
+    # Sum the upstreamflow with the current basin streamflow
+    timeseries_df[!,:streamflow] += up_streamflow
 
     # Get dates array
     dates = timeseries_df.date
 
-    # Write output DataFrame
-    output_df = DataFrame(date=dates, streamflow=streamflow)
-
     # Write streamflow timeseries
-    CSV.write(joinpath(output_dir, "basin_$basin_id.csv"), output_df) # this will override the file
+    CSV.write(joinpath(output_dir, "basin_$basin_id.csv"), timeseries_df) # this will override the file
 end

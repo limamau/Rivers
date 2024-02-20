@@ -15,10 +15,6 @@ function IRF(up_streamflow::AbstractArray, x::Real, C::Real, D::Real, max_time::
     
     # Perform convolution
     streamflow = DSP.conv(up_streamflow, h_values)[1:length(up_streamflow)]
-
-    # println(x)
-    # println(h_values)
-    # error("a")
     
     return streamflow
 end
