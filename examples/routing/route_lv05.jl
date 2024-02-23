@@ -1,18 +1,23 @@
 using Rivers
 
-# TODO: put this includes in the Rivers module
+# TODO: put these includes in the Rivers module
 include("../../src/engineering/write_routing_levels.jl")
 include("../../src/engineering/write_routing_timeseries.jl")
 include("../../src/engineering/write_routing_attributes.jl")
 include("../../src/routing/routing.jl")
 
 let
-    base = "path/to/user/Rivers/data"
+    # 0. Pre setup
+    base = "/path/to/Rivers/data"
     hydro_lv = "05"
+    # Copy the graph dictionary to the folder where the routing will be done
     graph_dict_file = joinpath(base, "midway_data/graph_dicts/graph_lv$hydro_lv.json")
+    cp(graph_dict_file, joinpath(base, "routing_lv05/graph_lv$hydro_lv.json"))
+    graph_dict_file = joinpath(base, "routing_lv05/graph_lv$hydro_lv.json")
+    
+    # 1. Write routing levels
     hydroatlas_shp_file = joinpath(base, "source_data/BasinATLAS_v10_shp/BasinATLAS_v10_lev$hydro_lv.shp")
     routing_levels_dir = joinpath(base, "routing_lv05/routing_lvs")
-    # 1. Write routing levels
     write_routing_levels(graph_dict_file, hydroatlas_shp_file, routing_levels_dir)
 
     # 2. Write the proper basin -> dict file
@@ -45,6 +50,7 @@ let
     attributes_dir = joinpath(base, "routing_lv05/attributes")
     write_routing_attributes(hydroatlas_shp_file, attributes_dir)
 
+    # TODO: use .yml file to set the parameters
     # 5. Route route
     hillslope_method = "gamma"
     river_channel_method = "IRF"
@@ -55,9 +61,15 @@ let
         graph_dict_file, 
         routing_levels_dir,
         hillslope_method,
+        true,
         river_channel_method,
+        true,
         start_date,
         end_date,
         simulation_dir,
+        1e-5,
+        1,
+        1e-4,
+        2,
     )
 end

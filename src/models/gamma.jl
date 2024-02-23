@@ -5,26 +5,36 @@ using SpecialFunctions
 # Following mizuRoute v.1
 # Should be used in hillslope routing
 
-function gamma_distribution(t::Real, a::Real, θ::Real)
-    return (t ^ (a - 1) .* exp(-t / θ)) / (θ ^ a * SpecialFunctions.gamma(a,0.))
+function γ(t::Real, a::Real, θ::Real)
+    return (t^(a - 1) * exp(-t/θ)) / (θ^a * SpecialFunctions.gamma(a))
 end
 
-# TODO: optimise this convolution
-function gamma_conv(
-    runoff::AbstractArray, 
-    basin_area::Float64, 
+function dγdθ(t::Real, a::Real, θ::Real)
+    num1 = t ^ (a - 1)
+    num2 = -a*θ^(-a-1)*exp(-t/θ) + θ^(-a)*exp(-t/θ)/θ^2
+    den = SpecialFunctions.gamma(a)
+    return num1 * num2 / den
+end
+
+function dγda(t::Real, a::Real, θ::Real)
+    num1 = θ^(-a) * t^(a-1) * exp(-t/θ)
+    num2 = - SpecialFunctions.polygamma(0, a) - log(θ) + log(t)
+    den = SpecialFunctions.gamma(a)
+    return  num1 * num2 / den
+end
+
+function gamma(
+    x::AbstractArray, 
     a::Real, 
     θ::Real, 
-    max_time::Int64=60
+    func::Function=γ,
+    max_time::Int64=60,
 )
-    # Generate the gamma function values
-    gamma_values = [gamma_distribution(t, a, θ) for t in 0:max_time-1]
+    # Generate the function function values
+    distribution = [func(t, a, θ) for t in 0:max_time-1]
     
     # Perform convolution
-    day_to_s = 86400
-    km²_to_m² = 1000000
-    streamflow = DSP.conv(runoff, gamma_values)[1:length(runoff)] / day_to_s * basin_area * km²_to_m²
+    streamflow = DSP.conv(x, distribution)[1:size(x)[1],:]
 
     return streamflow
 end
-
