@@ -1,5 +1,4 @@
 using Random
-using Revise
 
 function has_at_least_one_year_data(df::DataFrame, initial_year, final_year)
     # Define dates
