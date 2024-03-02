@@ -79,7 +79,7 @@ let
     gauge_area_dict = JSON.parsefile("/central/scratch/mdemoura/Rivers/midway_data/era5/gauge_area_dict.json")
     
     # Read base csv file as DataFrame
-    base_csv = "article/csv_files/glofas_daily.csv"
+    base_csv = "examples/catchment_model/analysis/csv_files/glofas_daily.csv"
     base_df = CSV.read(base_csv, DataFrame)
     basin_ids = base_df.basin
     @showprogress for basin_id in basin_ids

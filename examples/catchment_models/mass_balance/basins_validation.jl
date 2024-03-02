@@ -14,7 +14,7 @@ function plot_histogram(diffs::Vector{Float64}, threshold::Real, n_outliers::Int
     text!(-threshold+0.1, 200, text="N of outliers: $n_outliers")
 
     # Save figure
-    save("mass_balance/png_files/histogram_basins.png", fig)
+    save("examples/catchment_models/mass_balance/png_files/histogram_basins.png", fig)
 end
 
 function plot_map(shapefile::String, diffs_df::DataFrame, lv::String, output_file::String)
@@ -116,7 +116,7 @@ let
         end
 
         map_df = DataFrame(basin=basins, diff=diffs)
-        output_file = "mass_balance/png_files/map_lv$lv.png"
+        output_file = "/examples/catchment_models/mass_balance/png_files/map_lv$lv.png"
         plot_map(shapefile, map_df, lv, output_file)
 
         # Append into the histogram array

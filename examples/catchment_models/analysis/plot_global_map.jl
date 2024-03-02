@@ -92,5 +92,5 @@ let
     )
 
     # Save plot
-    save("article/png_files/map.png", fig, px_per_unit=4)
+    save("examples/catchment_model/analysis/png_files/map.png", fig, px_per_unit=4)
 end

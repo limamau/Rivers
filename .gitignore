@@ -3,13 +3,13 @@ eng_*
 
 # images and csvs
 */png_files/*
+*.png
 */csv_files/*
-*/model/*
+*.csv
+*/runs/*
 
 # some folders
 dev/
-simulations/
-routing_analysis/
 
 # others
 .DS_Store
