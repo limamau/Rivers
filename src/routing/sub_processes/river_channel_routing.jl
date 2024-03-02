@@ -2,20 +2,18 @@ using CSV
 using DataFrames
 using Dates
 
-include("../models/IRF.jl")
-
 function train_river_channel_routing(
-    routing_lv_basins::Array{Int64},
+    routing_lv_basins::Vector{Int64},
     graph_dict::Dict,
     timeseries_dir::String,
     attributes_dir::String,
-    method::String,
     output_dir::String,
-    C::Real, 
-    D::Real,
+    physical::AbstractPhysicalModel,
     learning_rate::Real,
     epochs::Int64,
 )
+    error("Not sure it works.")
+    
     # Define constant
     km_to_m = 1e3
 
@@ -78,28 +76,25 @@ function train_river_channel_routing(
         println("No valid basins in this routing level")
     else
         # Train
-        C, D = train(
+        physical = train(
             x, # Take out the initial zeros column
             y, # ||
-            method, 
-            Real[C, D],
+            physical,
             learning_rate,
             epochs,
         )
     end
 
-    return C, D
+    return physical
 end
 
 
 function simulate_river_channel_routing(
-    routing_lv_basins::Array{Int64},
+    routing_lv_basins::Vector{Int64},
     graph_dict::Dict,
     attributes_dir::String,
-    method::String,
     output_dir::String,
-    C::Real, 
-    D::Real
+    physical::AbstractPhysicalModel,
 )
     # Define constant
     km_to_m = 1e3
@@ -126,11 +121,7 @@ function simulate_river_channel_routing(
             # Sum the runoff and sub-surface runoff columns
             input = up_timeseries_df[:,:streamflow]
             
-            if method == "IRF"
-                up_streamflow += IRF(vcat(input, dist*km_to_m), C, D)
-            else
-                error("Not supported method.")
-            end
+            up_streamflow += physical.model(vcat(input, dist*km_to_m), physical.params)
         end
 
         # Sum the upstreamflow with the current basin streamflow
@@ -146,44 +137,36 @@ end
 
 # Main
 function river_channel_route(
-    routing_lv_basins::Array{Int64},
+    routing_lv_basins::Vector{Int64},
     graph_dict::Dict,
     timeseries_dir::String,
     attributes_dir::String,
-    method::String,
-    is_training::Bool,
     output_dir::String,
-    C::Real, 
-    D::Real,
+    model::AbstractPhysicalModel,
+    is_training::Bool,
     learning_rate::Real=nothing,
     epochs::Int64=nothing,
 )
     if is_training
-        # We have to call a training launcher because the way the model is trained is
-        # different from the way it is used for simulations as it can have different
-        # input size depending on how many upstream basins there are
-        C, D = train_river_channel_routing(
-            routing_lv_basins::Array{Int64},
-            graph_dict::Dict,
-            timeseries_dir::String,
-            attributes_dir::String,
-            method::String,
-            output_dir::String,
-            C::Real, 
-            D::Real
+        model = train_river_channel_routing(
+            routing_lv_basins,
+            graph_dict,
+            timeseries_dir,
+            attributes_dir,
+            output_dir,
+            model,
+            learning_rate,
+            epochs,
         )
     end
 
-    # Simulate river channel routing
     simulate_river_channel_routing(
-        routing_lv_basins::Array{Int64},
-        graph_dict::Dict,
-        attributes_dir::String,
-        method::String,
-        output_dir::String,
-        C::Real, 
-        D::Real
+        routing_lv_basins,
+        graph_dict,
+        attributes_dir,
+        output_dir,
+        model,
     )
 
-    return C, D
+    return model
 end
