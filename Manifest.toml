@@ -2,7 +2,7 @@
 
 julia_version = "1.8.5"
 manifest_format = "2.0"
-project_hash = "2ae2b57502aadc7fdc6eb2a187011a19984457f5"
+project_hash = "c3b457f120e3b80a56d9bb0eff7dfb3946e83b2e"
 
 [[deps.AbstractFFTs]]
 deps = ["ChainRulesCore", "LinearAlgebra", "Test"]
@@ -1438,12 +1438,6 @@ git-tree-sha1 = "cef0472124fab0695b58ca35a77c6fb942fdab8a"
 uuid = "4c63d2b9-4356-54db-8cca-17b64c39e42c"
 version = "1.3.1"
 
-[[deps.StringEncodings]]
-deps = ["Libiconv_jll"]
-git-tree-sha1 = "b765e46ba27ecf6b44faf70df40c57aa3a547dcb"
-uuid = "69024149-9ee7-55f6-a4c4-859efe599b68"
-version = "0.3.7"
-
 [[deps.StringManipulation]]
 deps = ["PrecompileTools"]
 git-tree-sha1 = "a04cabe79c5f01f4d723cc6704070ada0b9d46d5"
@@ -1608,12 +1602,6 @@ deps = ["Artifacts", "JLLWrappers", "Libdl"]
 git-tree-sha1 = "e92a1a012a10506618f10b7047e478403a046c77"
 uuid = "c5fb5394-a638-5e4d-96e5-b29de1b5cf10"
 version = "1.5.0+0"
-
-[[deps.YAML]]
-deps = ["Base64", "Dates", "Printf", "StringEncodings"]
-git-tree-sha1 = "e6330e4b731a6af7959673621e91645eb1356884"
-uuid = "ddb6d928-2868-570f-bddf-ab3f9cf99eb6"
-version = "0.4.9"
 
 [[deps.Zlib_jll]]
 deps = ["Libdl"]
