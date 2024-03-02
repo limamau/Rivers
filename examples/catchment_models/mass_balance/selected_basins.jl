@@ -4,7 +4,7 @@ using ProgressMeter
 
 include("utils.jl")
 
-# This code uses selected_basins.txt which is in the article/ folder.
+# This code uses selected_basins.txt which is in the analysis/ folder.
 
 function plot_histogram(diffs::Vector{Float64}, threshold::Real, n_outliers::Int)
     # Define figure and axis
@@ -31,9 +31,9 @@ let
     threshold = 200
     n_outliers = 0
 
-    # Read used basins from the article folder
+    # Read used basins from the folder
     selected_basins = Int[]
-    file_path = "article/selected_basins.txt" 
+    file_path = "examples/catchment_model/analysis/selected_basins.txt" 
     open(file_path) do file
         for line in eachline(file)
             push!(selected_basins, parse(Int, line))

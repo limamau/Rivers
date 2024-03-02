@@ -32,7 +32,7 @@ end
 
 let
     # Read scores as a DataFrame
-    csv_file = "article/csv_files/globe_all_daily.csv"
+    csv_file = "examples/catchment_model/analysis/csv_files/globe_all_daily.csv"
     scores_df = CSV.read(csv_file, DataFrame)
 
     # Read attributes in each of the three levels
@@ -128,7 +128,7 @@ let
     Colorbar(fig[1,2], hm, label="Number of basins", labelsize=17)
     
     # Save
-    save("article/png_files/nse_vs_irrigation.png", fig)
+    save("examples/catchment_model/analysis/png_files/nse_vs_irrigation.png", fig)
 
     # # Runoff
     # fig = Figure(resolution=(500,400))

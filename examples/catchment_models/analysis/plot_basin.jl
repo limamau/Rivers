@@ -180,6 +180,6 @@ let
     # TODO: Plot catchment areas
 
     # Save Plot
-    save("article/png_files/basin.png", fig, px_per_unit=4)
+    save("examples/catchment_model/analysis/png_files/basin.png", fig, px_per_unit=4)
     println("Ok!")
 end

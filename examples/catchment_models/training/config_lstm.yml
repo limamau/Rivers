@@ -1,18 +1,18 @@
 # --- Experiment configurations --------------------------------------------------------------------
 
 # experiment name, used as folder name
-experiment_name: na_lv06_r_128_1e3
+experiment_name: all_lstm_cont
 
 # files to specify training, validation and test basins (relative to code root or absolute path)
-train_basin_file: na_lv06_selected.txt
-validation_basin_file: na_lv06_selected.txt
-test_basin_file: na_lv06_selected.txt
+train_basin_file: basins.txt
+validation_basin_file: basins.txt
+test_basin_file: basins.txt
 
 # training, validation and test time periods (format = 'dd/mm/yyyy')
 train_start_date: '01/10/1999'
 train_end_date: '30/09/2009'
-validation_start_date: '01/10/1989'
-validation_end_date: '30/09/1999'
+validation_start_date: '01/10/2009'
+validation_end_date: '30/09/2019'
 test_start_date: '01/10/1989'
 test_end_date: '30/09/1999'
 
@@ -30,17 +30,20 @@ allow_subsequent_nan_losses: 5
 validate_every: 2
 
 # specify how many random basins to use for validation
-validate_n_random_basins: 166
+validate_n_random_basins: 1000
 
 # specify which metrics to calculate during validation (see codebase.evaluation.metrics)
 metrics:
 - NSE
 
 # --- Model configuration --------------------------------------------------------------------------
+# Continue training
+checkpoint_path: runs/all_lstm_0308_210501/model_epoch009.pt 
+continue_from_epoch: 9
 
 # base model type [lstm, ealstm, cudalstm, embcudalstm, shortcutlstm, dropoutlstm, cudalstminitialh]
 # (has to match the if statement in modelzoo/__init__.py)
-model: cudalstm
+model: lstm
 
 # prediction head [regression, mdn, umal]. Define the head specific parameters below
 head: regression
@@ -69,12 +72,14 @@ loss: NSE
 # specify learning rates to use starting at specific epochs (0 is the initial learning rate)
 learning_rate:
     0: 1e-3
+    12: 1e-4
+    22: 1e-5
 
 # Mini-batch size
-batch_size: 512
+batch_size: 256
 
 # Number of training epochs
-epochs: 30
+epochs: 26
 
 # If True, clips norm of gradients
 clip_gradient_norm: 1
@@ -101,19 +106,15 @@ save_weights_every: 1
 save_validation_results: True
 
 # --- Data configurations --------------------------------------------------------------------------
-
+# Data information
 dataset: era5_grdc_sheds
-
-# Path to CAMELS data set
-data_dir: /path/to/dir
+data_dir: /central/scratch/mdemoura/data/
 
 
 # variables to use as time series input (names match the data file column headers)
 # Note: In case of multiple input forcing products, you have to append the forcing product behind
 # each variable. E.g. 'prcp(mm/day)' of the daymet product is 'prcp(mm/day)_daymet'
 dynamic_inputs:
-# - tp_sum # total precipitation sum
-
 - sro_sum # surface runoff
 - ssro_sum # sub surface runoff
 
@@ -130,36 +131,17 @@ static_attributes:
 - ari_ix_sav # aridity index (difference on the calculation between Kratzert and HydroSHEDS?)
 - area # area
 - ele_mt_sav # mean elevation
-# - high_prec_dur # high precipitation duration
 - snw_pc_syr # snow fraction
-# - high_precip_freq # high precipitation frequency
 - slp_dg_sav # mean slope
-# geological permeability
 - kar_pc_sse # karst area extent (fraction of carbonate sedimentary rock?)
 - cly_pc_sav # clay fraction
 - pet_mm_syr # mean potential evaporation
-# - low_precip_freq # low precipitation frequency
-# soil depth to bedrock
-# precipitation seasonality
 - for_pc_sse # forest fractino
 - snd_pc_sav # sand fraction
-# saturated hydrological condutivity
-# - low_precip_dur # low precipitation duration
-# max green vegetatio fraction (GVF)
-# annual GVF difference
-# annual leaf area index (LAI) difference
-# volumetric porosity
-# soil depth
-# max LAI
 - slt_pc_sav # silt fraction
-# max water content
-### additionals
 - gwt_cm_sav # ground water table depth
 - run_mm_syr # land surface runoff
 - soc_th_sav # organic carbon content
 - swc_pc_syr # soil water content
 - sgr_dk_sav # stream gradient
 - cmi_ix_syr # climate moisture index
-
-# - dis_m3_pyr # estimated yearly average discharge
-

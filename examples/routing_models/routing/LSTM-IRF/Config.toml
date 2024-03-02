@@ -1,0 +1,32 @@
+[base]
+base = "/central/scratch/mdemoura/Rivers"
+
+[level]
+hydro_lv = "05"
+
+[source]
+hydroatlas_shp_file = "source_data/BasinATLAS_v10_shp/BasinATLAS_v10_lev05.shp"
+
+[midway]
+basin_gauge_dict_file = "midway_data/mapping_dicts/gauge_to_basin_dict_lv05_grdc.json"
+grdc_nc_file = "midway_data/GRDC-Globe/grdc-merged.nc"
+routing_levels_dir = "routing/routing_lvs/routing_lvs_lv05"
+xd_dir = "midway_data/xd_lv05"
+
+[simulation]
+attributes_dir = "routing/attributes/attributes_lv05"
+graph_dict_file = "routing/graphs/graph_lv05.json"
+timeseries_dir = "routing/timeseries/timeseries_lv05"
+simulation_dir = "routing/simulations/simulations_lv05/simulation_LSTM-IRF"
+
+[dates]
+start_date = "1996-01-01"
+end_date = "1996-01-31"
+
+[training]
+hillslope_method = "LSTM"
+hillslope_learning_rate = 0.001
+hillslope_epochs = 10
+river_channel_method = "IRF"
+river_channel_learning_rate = 0.001
+river_channel_epochs = 2

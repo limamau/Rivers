@@ -8,10 +8,10 @@ using Statistics
 
 let
     # LSTM scores DataFrame
-    lstm_scores_df = CSV.read("article/csv_files/globe_all_daily.csv", DataFrame)
+    lstm_scores_df = CSV.read("examples/catchment_model/analysis/csv_files/globe_all_daily.csv", DataFrame)
 
     # GloFAS scores DataFrame
-    glofas_scores_df = CSV.read("article/csv_files/glofas_daily.csv", DataFrame)
+    glofas_scores_df = CSV.read("examples/catchment_model/analysis/csv_files/glofas_daily.csv", DataFrame)
 
     # Bad, median, good LSTM, good GloFAS
     basin_ids = [1061638580, 6050344660, 7070250410, 7060363050]
@@ -98,5 +98,5 @@ let
     end
 
     # Save figure
-    save("article/png_files/streamflows.png", fig, px_per_unit=4)
+    save("examples/catchment_model/analysis/png_files/streamflows.png", fig, px_per_unit=4)
 end

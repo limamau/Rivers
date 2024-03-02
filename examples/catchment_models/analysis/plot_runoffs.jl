@@ -27,7 +27,7 @@ let
     ax.xticklabelrotation = π/4
     axislegend(ax)
     hidedecorations!(ax, ticklabels=false, ticks=false, label=false)
-    save("article/png_files/runoffs.png", fig, px_per_unit=4)
+    save("examples/catchment_model/analysis/png_files/runoffs.png", fig, px_per_unit=4)
 
     # Plot Runoffs
     fig = Figure(resolution=(1000,500))
@@ -39,5 +39,5 @@ let
     axislegend(ax)
     hidedecorations!(ax, ticklabels=false, ticks=false, label=false)
     hidespines!(ax, :t, :r)
-    save("article/png_files/streamflows.png", fig, px_per_unit=4)
+    save("examples/catchment_model/analysis/png_files/streamflows.png", fig, px_per_unit=4)
 end
