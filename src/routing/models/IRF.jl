@@ -26,11 +26,13 @@ end
 
 function IRF(
     x::AbstractArray,
-    C::Real, 
-    D::Real,
+    params::Vector{AbstractFloat},
     func::Function=h, 
     max_time::Int64=120,
 )
+    # Get parameters from params
+    C, D = params[1], params[2]
+    
     # De-concatenate x into up_q and x
     up_q = x[1:end-1,:]
     dist = x[end,:]

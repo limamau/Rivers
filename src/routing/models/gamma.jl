@@ -25,16 +25,18 @@ end
 
 function gamma(
     x::AbstractArray, 
-    a::Real, 
-    θ::Real, 
+    params::Vector{AbstractFloat},
     func::Function=γ,
     max_time::Int64=60,
 )
+    # Get paramaters from params
+    a, θ = params[1], params[2]
+
     # Generate the function function values
     distribution = [func(t, a, θ) for t in 0:max_time-1]
     
     # Perform convolution
-    streamflow = DSP.conv(x, distribution)[1:size(x)[1],:]
+    streamflow = DSP.conv(x, distribution)[1:size(x)[1],:][:]
 
     return streamflow
 end
