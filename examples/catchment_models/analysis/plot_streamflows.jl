@@ -6,18 +6,19 @@ using JSON
 using NCDatasets
 using Statistics
 
-let
+function main()
     # LSTM scores DataFrame
-    lstm_scores_df = CSV.read("examples/catchment_model/analysis/csv_files/globe_all_daily.csv", DataFrame)
+    base = "/central/scratch/mdemoura/Rivers"
+    lstm_scores_df = CSV.read("examples/catchment_models/analysis/csv_files/globe_all_daily.csv", DataFrame)
 
     # GloFAS scores DataFrame
-    glofas_scores_df = CSV.read("examples/catchment_model/analysis/csv_files/glofas_daily.csv", DataFrame)
+    glofas_scores_df = CSV.read("examples/catchment_models/analysis/csv_files/glofas_daily.csv", DataFrame)
 
     # Bad, median, good LSTM, good GloFAS
     basin_ids = [1061638580, 6050344660, 7070250410, 7060363050]
 
     # Read gauge information
-    grdc_nc_file = "/central/scratch/mdemoura/Rivers/midway_data/GRDC-Globe/grdc-merged.nc"
+    grdc_nc_file = joinpath(base, "midway_data/GRDC-Globe/grdc-merged.nc")
     grdc_nc = NCDataset(grdc_nc_file)
     grdc_lons = grdc_nc["geo_x"][:]
     grdc_lats = grdc_nc["geo_y"][:]
@@ -38,8 +39,8 @@ let
         lv = string(basin_id)[2:3]
 
         # Read files
-        lstm_df = CSV.read("/central/scratch/mdemoura/Rivers/post_data/lstm_simulations/sim_$basin_id.csv", DataFrame)
-        glofas_df = CSV.read("/central/scratch/mdemoura/Rivers/post_data/glofas_timeseries/sim_$basin_id.csv", DataFrame)
+        lstm_df = CSV.read(joinpath(base, "post_data/lstm_simulations/sim_$basin_id.csv"), DataFrame)
+        glofas_df = CSV.read(joinpath(base, "post_data/glofas_timeseries/sim_$basin_id.csv"), DataFrame)
         
         # Define figure and axis
         if letter == "a"
@@ -67,7 +68,10 @@ let
         lines!(ax, lstm_min_date_idx:lstm_max_date_idx, lstm_df[lstm_min_date_idx:lstm_max_date_idx, "obs"], label="Observed", transparency=true, color=:dodgerblue, linewidth=2)
         ax.xticks = (lstm_min_date_idx+30:365:lstm_max_date_idx+30, string.(lstm_df[:, "date"])[lstm_min_date_idx+30:365:lstm_max_date_idx+30])
         ax.xticklabelrotation = π/4
-        axislegend(ax)
+
+        if letter == "b"
+            axislegend(ax)
+        end
 
         # Get NSE and KGE scores for the LSTM model
         row = lstm_scores_df[lstm_scores_df.basin .== basin_id, :]
@@ -86,7 +90,7 @@ let
         println("GloFAS: $glofas_nse/$glofas_kge")
 
         # Read basin-gauge mapping dictionary and get corresponding gauge
-        basin_gauge_json_file = "/central/scratch/mdemoura/Rivers/midway_data/mapping_dicts/gauge_to_basin_dict_lv$lv"*"_max.json"
+        basin_gauge_json_file = joinpath(base, "midway_data/mapping_dicts/gauge_to_basin_dict_lv$lv"*"_max.json")
         basin_gauge_dict = JSON.parsefile(basin_gauge_json_file)
         gauge_id = basin_gauge_dict[string(basin_id)][1]
 
@@ -98,5 +102,7 @@ let
     end
 
     # Save figure
-    save("examples/catchment_model/analysis/png_files/streamflows.png", fig, px_per_unit=4)
+    save("examples/catchment_models/analysis/png_files/streamflows.png", fig, px_per_unit=4)
 end
+
+main()

@@ -79,7 +79,7 @@ let
     gauge_area_dict = JSON.parsefile("/central/scratch/mdemoura/Rivers/midway_data/era5/gauge_area_dict.json")
     
     # Read base csv file as DataFrame
-    base_csv = "examples/catchment_model/analysis/csv_files/glofas_daily.csv"
+    base_csv = "examples/catchment_models/analysis/csv_files/glofas_daily.csv"
     base_df = CSV.read(base_csv, DataFrame)
     basin_ids = base_df.basin
     @showprogress for basin_id in basin_ids
@@ -172,7 +172,7 @@ let
     hist!(ax, lstm_diffs, bins=100, color=:dodgerblue)
     hidedecorations!(ax, ticks=false, ticklabels=false, label=false)
     text!(-threshold+5, 20, text = "N of outliers: $lstm_outliers")
-    save("mass_balance/png_files/histogram_a.png", fig, px_per_unit=4)
+    save("examples/catchment_models/mass_balance/png_files/histogram_a.png", fig, px_per_unit=4)
 
     # Observation-runoff diff
     fig = Figure(resolution = (500, 500))
@@ -186,7 +186,7 @@ let
     hist!(ax, obs_diffs, bins=100, color=:dodgerblue)
     hidedecorations!(ax, ticks=false, ticklabels=false, label=false)
     text!(-threshold+5, 20, text = "N of outliers: $obs_outliers")
-    save("mass_balance/png_files/histogram_b.png", fig, px_per_unit=4)
+    save("examples/catchment_models/mass_balance/png_files/histogram_b.png", fig, px_per_unit=4)
 
     # GloFAS runoff diff using GloFAS area
     fig = Figure(resolution = (500, 500))
@@ -200,7 +200,7 @@ let
     hist!(ax, glofas_glofas_diffs, bins=100, color=:dodgerblue)
     hidedecorations!(ax, ticks=false, ticklabels=false, label=false)
     text!(-threshold+5, 20, text = "N of outliers: $glofas_glofas_outliers")
-    save("mass_balance/png_files/histogram_c.png", fig, px_per_unit=4)
+    save("examples/catchment_models/mass_balance/png_files/histogram_c.png", fig, px_per_unit=4)
 
     # Upstream area diff: GloFAS - GRDC
     fig = Figure(resolution = (500, 500))
@@ -214,5 +214,5 @@ let
     hist!(ax, area_diffs, bins=100, color=:lightcoral)
     text!(-0.245, 40, text="N of outliers: $area_outliers")
     hidedecorations!(ax, ticks=false, ticklabels=false, label=false)
-    save("mass_balance/png_files/histogram_d.png", fig, px_per_unit=4)
+    save("examples/catchment_models/mass_balance/png_files/histogram_d.png", fig, px_per_unit=4)
 end

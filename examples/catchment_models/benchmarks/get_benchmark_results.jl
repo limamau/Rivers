@@ -10,7 +10,7 @@ let
     base = "/central/scratch/mdemoura/Rivers"
 
     # Read base csv file as DataFrame
-    base_csv = "examples/analysis/csv_files/globe_all_daily.csv"
+    base_csv = "examples/catchment_models/analysis/csv_files/globe_all_daily.csv"
     base_df = CSV.read(base_csv, DataFrame)
 
     # Get gauges list
@@ -95,16 +95,16 @@ let
 
         # Write results
         if model == "pcr"
-            CSV.write("examples/analysis/csv_files/pcr_monthly.csv", DataFrame(basin=selected_basins[idx], nse=nses[idx], kge=kges[idx]))
+            CSV.write("examples/catchment_models/analysis/csv_files/pcr_monthly.csv", DataFrame(basin=selected_basins[idx], nse=nses[idx], kge=kges[idx]))
         elseif model == "glofas"
-            CSV.write("examples/analysis/csv_files/glofas_daily.csv", DataFrame(basin=selected_basins[idx], 
+            CSV.write("examples/catchment_models/analysis/csv_files/glofas_daily.csv", DataFrame(basin=selected_basins[idx], 
                                                                       nse=nses[idx], 
                                                                       kge=kges[idx]))
         end
     end
 
     # Write selected basins in analysis/ folder
-    selected_basins_file = open("examples/analysis/selected_basins.txt", "w")
+    selected_basins_file = open("examples/catchment_models/analysis/selected_basins.txt", "w")
     for basin_id in selected_basins
         write(selected_basins_file, "$basin_id\n")
     end

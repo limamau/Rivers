@@ -1,20 +1,20 @@
 # --- Experiment configurations --------------------------------------------------------------------
 
 # experiment name, used as folder name
-experiment_name: all_lstm_cont
+experiment_name: usa_time_split
 
 # files to specify training, validation and test basins (relative to code root or absolute path)
-train_basin_file: basins.txt
-validation_basin_file: basins.txt
-test_basin_file: basins.txt
+train_basin_file: path/to/basins.txt
+validation_basin_file: path/to/basins.txt
+test_basin_file: path/to/basins.txt
 
 # training, validation and test time periods (format = 'dd/mm/yyyy')
 train_start_date: '01/10/1999'
 train_end_date: '30/09/2009'
-validation_start_date: '01/10/2009'
-validation_end_date: '30/09/2019'
-test_start_date: '01/10/1989'
-test_end_date: '30/09/1999'
+validation_start_date: '01/10/1989'
+validation_end_date: '30/09/1999'
+test_start_date: '01/10/1999'
+test_end_date: '30/09/2009'
 
 # fixed seed, leave empty to use a random seed
 seed: 123
@@ -37,13 +37,10 @@ metrics:
 - NSE
 
 # --- Model configuration --------------------------------------------------------------------------
-# Continue training
-checkpoint_path: runs/all_lstm_0308_210501/model_epoch009.pt 
-continue_from_epoch: 9
 
 # base model type [lstm, ealstm, cudalstm, embcudalstm, shortcutlstm, dropoutlstm, cudalstminitialh]
 # (has to match the if statement in modelzoo/__init__.py)
-model: lstm
+model: cudalstm
 
 # prediction head [regression, mdn, umal]. Define the head specific parameters below
 head: regression
@@ -72,14 +69,14 @@ loss: NSE
 # specify learning rates to use starting at specific epochs (0 is the initial learning rate)
 learning_rate:
     0: 1e-3
-    12: 1e-4
-    22: 1e-5
+    21: 1e-4
+    31: 1e-5
 
 # Mini-batch size
 batch_size: 256
 
 # Number of training epochs
-epochs: 26
+epochs: 35
 
 # If True, clips norm of gradients
 clip_gradient_norm: 1
@@ -108,7 +105,7 @@ save_validation_results: True
 # --- Data configurations --------------------------------------------------------------------------
 # Data information
 dataset: era5_grdc_sheds
-data_dir: /central/scratch/mdemoura/data/
+data_dir: path/to/data
 
 
 # variables to use as time series input (names match the data file column headers)

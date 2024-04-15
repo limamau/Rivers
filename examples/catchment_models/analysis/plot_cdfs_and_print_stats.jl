@@ -39,13 +39,13 @@ function print_stats(experiment_name::String, arr::Vector{Float64}, metric::Stri
      end
 end
 
-let
+function main()
      # Define resolution multiplier
      px_per_unit = 4
 
      # Read used basins from the folder
      selected_basins = Int[]
-     file_path = "examples/catchment_model/analysis/selected_basins.txt" 
+     file_path = "examples/catchment_models/analysis/selected_basins.txt" 
      open(file_path) do file
           for line in eachline(file)
                push!(selected_basins, parse(Int, line))
@@ -65,53 +65,81 @@ let
                ylabelsize = 17,
                xticks = 0:0.25:1,
                yticks = 0:0.25:1)
-     hidespines!(ax)
 
 
      # Get scores in USA
-     csv_file = "examples/catchment_model/analysis/csv_files/us_split_daily_runoff.csv"
+     csv_file = "examples/catchment_models/analysis/csv_files/us_split_daily_runoff.csv"
      us_results_df = CSV.read(csv_file, DataFrame)
      basin_us_nse_values = us_results_df[:,:nse]
      print_stats("US, basin-split", basin_us_nse_values, "nse")
 
-     csv_file = "examples/catchment_model/analysis/csv_files/us_all_daily_runoff.csv"
+     csv_file = "examples/catchment_models/analysis/csv_files/us_all_daily_runoff.csv"
      us_results_df = CSV.read(csv_file, DataFrame)
      time_us_nse_values = us_results_df[:,:nse]
      print_stats("US, time-split", time_us_nse_values, "nse")
 
-     csv_file = "examples/catchment_model/analysis/csv_files/us_all_daily_precip.csv"
+     csv_file = "examples/catchment_models/analysis/csv_files/us_all_daily_precip.csv"
      us_results_df = CSV.read(csv_file, DataFrame)
      precip_time_us_nse_values = us_results_df[:,:nse]
      print_stats("US, time-split (precip.)", precip_time_us_nse_values, "nse")
 
      # Get global scores
-     csv_file = "examples/catchment_model/analysis/csv_files/globe_split_daily.csv"
+     csv_file = "examples/catchment_models/analysis/csv_files/globe_split_daily.csv"
      global_results_df = CSV.read(csv_file, DataFrame)
      basin_global_nse_values = global_results_df[:,:nse]
      print_stats("Globe, basin-split", basin_global_nse_values, "nse")
 
-     csv_file = "examples/catchment_model/analysis/csv_files/globe_all_daily.csv"
+     csv_file = "examples/catchment_models/analysis/csv_files/globe_all_daily.csv"
      global_results_df = CSV.read(csv_file, DataFrame)
      time_global_nse_values = global_results_df[:,:nse]
      print_stats("Globe, time-split", time_global_nse_values, "nse")
 
      # Plot curves
-     ecdfplot!(ax, basin_us_nse_values, color=:dodgerblue2, label="USA - basin split (runoff)", linestyle=:dash)
-     ecdfplot!(ax, time_us_nse_values, color=:dodgerblue2, label="USA - time split (runoff)")
-     ecdfplot!(ax, precip_time_us_nse_values, color=:indigo, label="USA - time split (precip.)")
-     ecdfplot!(ax, basin_global_nse_values, color=:red, label="Global - basin split (runoff)", linestyle=:dash)
-     ecdfplot!(ax,  time_global_nse_values, color=:red, label="Global - time split (runoff)")
+     ecdfplot!(ax, basin_us_nse_values, color=:dodgerblue2, label="USA basin-split (runoff)", linestyle=:dash)
+     ecdfplot!(ax, time_us_nse_values, color=:dodgerblue2, label="USA time-split (runoff)")
+     ecdfplot!(ax, precip_time_us_nse_values, color=:indigo, label="USA time-split (precip.)")
+     ecdfplot!(ax, basin_global_nse_values, color=:red, label="Global basin-split (runoff)", linestyle=:dash)
+     ecdfplot!(ax,  time_global_nse_values, color=:red, label="Global time-split (runoff)")
      axislegend(position=(0,1))
      hidedecorations!(ax, ticklabels=false, ticks=false, label=false)
 
      # Save
-     output_file = "examples/catchment_model/analysis/png_files/us_vs_global.png"
+     output_file = "examples/catchment_models/analysis/png_files/us_vs_global.png"
      mkpath(dirname(output_file))
      save(output_file, fig, px_per_unit=px_per_unit)
 
-     ### Global - time split model under each level and under each continent
+     ### Global (time-split) model under each level and under each continent
      println("----- --- -----")
-     fig = Figure(resolution=(500,500))
+     fig = Figure(resolution=(1000,500))
+     ax = Axis(fig[1, 2], 
+               limits = (0,1,0,1), 
+               xlabel = "NSE",
+               xlabelsize = 17,
+               ylabel = "CDF",
+               ylabelsize = 17,
+               xticks = 0:0.25:1,
+               yticks = 0:0.25:1)
+     ax.ylabelcolor = :white
+
+     # Global model scores in time-split
+     csv_file = "examples/catchment_models/analysis/csv_files/globe_all_daily.csv"
+     results_df = CSV.read(csv_file, DataFrame)
+     lv05_nse_values = filter(row -> string(row.basin)[3] == '5', results_df)[:,:nse]
+     print_stats("lv 05", lv05_nse_values, "nse")
+     lv06_nse_values = filter(row -> string(row.basin)[3] == '6', results_df)[:,:nse]
+     print_stats("lv 06", lv06_nse_values, "nse")
+     lv07_nse_values = filter(row -> string(row.basin)[3] == '7', results_df)[:,:nse]
+     print_stats("lv 07", lv07_nse_values, "nse")
+
+     # Plot curves
+     ecdfplot!(ax, lv05_nse_values, color=:pink, label="Global (time-split) (level 05)")
+     ecdfplot!(ax, lv06_nse_values, color=:deeppink, label="Global (time-split) (level 06)")
+     ecdfplot!(ax, lv07_nse_values, color=:maroon4, label="Global (time-split) (level 07)")
+     axislegend(position=(0,1))
+     hidedecorations!(ax, ticklabels=false, ticks=false, label=false)
+
+     ### Global - (basin-split) model under each level and under each continent
+     println("----- --- -----")
      ax = Axis(fig[1, 1], 
                limits = (0,1,0,1), 
                xlabel = "NSE",
@@ -122,7 +150,7 @@ let
                yticks = 0:0.25:1)
 
      # Global model scores in time-split
-     csv_file = "examples/catchment_model/analysis/csv_files/globe_all_daily.csv"
+     csv_file = "examples/catchment_models/analysis/csv_files/globe_split_daily.csv"
      results_df = CSV.read(csv_file, DataFrame)
      lv05_nse_values = filter(row -> string(row.basin)[3] == '5', results_df)[:,:nse]
      print_stats("lv 05", lv05_nse_values, "nse")
@@ -132,48 +160,14 @@ let
      print_stats("lv 07", lv07_nse_values, "nse")
 
      # Plot curves
-     ecdfplot!(ax, lv05_nse_values, color=:pink, label="Global - time split (level 05)")
-     ecdfplot!(ax, lv06_nse_values, color=:deeppink, label="Global - time split (level 06)")
-     ecdfplot!(ax, lv07_nse_values, color=:maroon4, label="Global - time split (level 07)")
+     ecdfplot!(ax, lv05_nse_values, color=:pink, label="Global basin-split (level 05)", linestyle=:dash)
+     ecdfplot!(ax, lv06_nse_values, color=:deeppink, label="Global basin-split (level 06)", linestyle=:dash)
+     ecdfplot!(ax, lv07_nse_values, color=:maroon4, label="Global basin-split (level 07)", linestyle=:dash)
      axislegend(position=(0,1))
      hidedecorations!(ax, ticklabels=false, ticks=false, label=false)
      
      # Save
-     output_file = "examples/catchment_model/analysis/png_files/global_time_split_hydro_lvs.png"
-     mkpath(dirname(output_file))
-     save(output_file, fig, px_per_unit=px_per_unit)
-
-     ### Global - basin split model under each level and under each continent
-     println("----- --- -----")
-     fig = Figure(resolution=(500,500))
-     ax = Axis(fig[1, 1], 
-               limits = (0,1,0,1), 
-               xlabel = "NSE",
-               xlabelsize = 17,
-               ylabel = "CDF",
-               ylabelsize = 17,
-               xticks = 0:0.25:1,
-               yticks = 0:0.25:1)
-
-     # Global model scores in time-split
-     csv_file = "examples/catchment_model/analysis/csv_files/globe_split_daily.csv"
-     results_df = CSV.read(csv_file, DataFrame)
-     lv05_nse_values = filter(row -> string(row.basin)[3] == '5', results_df)[:,:nse]
-     print_stats("lv 05", lv05_nse_values, "nse")
-     lv06_nse_values = filter(row -> string(row.basin)[3] == '6', results_df)[:,:nse]
-     print_stats("lv 06", lv06_nse_values, "nse")
-     lv07_nse_values = filter(row -> string(row.basin)[3] == '7', results_df)[:,:nse]
-     print_stats("lv 07", lv07_nse_values, "nse")
-
-     # Plot curves
-     ecdfplot!(ax, lv05_nse_values, color=:pink, label="Global - basin split (level 05)", linestyle=:dash)
-     ecdfplot!(ax, lv06_nse_values, color=:deeppink, label="Global - basin split (level 06)", linestyle=:dash)
-     ecdfplot!(ax, lv07_nse_values, color=:maroon4, label="Global - basin split (level 07)", linestyle=:dash)
-     axislegend(position=(0,1))
-     hidedecorations!(ax, ticklabels=false, ticks=false, label=false)
-     
-     # Save
-     output_file = "examples/catchment_model/analysis/png_files/global_basin_split_hydro_lvs.png"
+     output_file = "examples/catchment_models/analysis/png_files/global_hydro_lvs.png"
      mkpath(dirname(output_file))
      save(output_file, fig, px_per_unit=px_per_unit)
 
@@ -214,30 +208,33 @@ let
                yticks = 0:0.25:1)
 
      # Get LSTM scores
-     csv_file = "examples/catchment_model/analysis/csv_files/globe_all_daily.csv"
+     csv_file = "examples/catchment_models/analysis/csv_files/globe_all_daily.csv"
      time_lstm_results_df = CSV.read(csv_file, DataFrame)
      time_lstm_results_df = filter(row -> row.basin in selected_basins, time_lstm_results_df)
+     # time_lstm_nse_values = filter(row -> string(row.basin)[3] != '7', time_lstm_results_df)[:,:nse]
      time_lstm_nse_values = time_lstm_results_df[:,:nse]
      print_stats("LSTM, time-split", time_lstm_nse_values, "nse")
 
      # Get LSTM scores
-     csv_file = "examples/catchment_model/analysis/csv_files/globe_split_daily.csv"
+     csv_file = "examples/catchment_models/analysis/csv_files/globe_split_daily.csv"
      basin_lstm_results_df = CSV.read(csv_file, DataFrame)
      basin_lstm_results_df = filter(row -> row.basin in selected_basins, basin_lstm_results_df)
+     # basin_lstm_nse_values = filter(row -> string(row.basin)[3] != '7', basin_lstm_results_df)[:,:nse]
      basin_lstm_nse_values = basin_lstm_results_df[:,:nse]
      print_stats("LSTM, basin-split", basin_lstm_nse_values, "nse")
 
      # Get GloFAS scores
-     csv_file = "examples/catchment_model/analysis/csv_files/glofas_daily.csv"
+     csv_file = "examples/catchment_models/analysis/csv_files/glofas_daily.csv"
      glofas_results_df = CSV.read(csv_file, DataFrame)
      glofas_results_df = filter(row -> row.basin in selected_basins, glofas_results_df)
+     # glofas_nse_values = filter(row -> string(row.basin)[3] != '7', glofas_results_df)[:,:nse]
      glofas_nse_values = glofas_results_df[:,:nse]
      print_stats("GloFAS-ERA5", glofas_nse_values, "nse")
      glofas_nse_values .= max.(-10, glofas_nse_values)
 
      # Plot curves
-     ecdfplot!(basin_lstm_nse_values, color=:red, label="LSTM - basin split", linestyle=:dash)
-     ecdfplot!(time_lstm_nse_values, color=:red, label="LSTM - time split")
+     ecdfplot!(basin_lstm_nse_values, color=:red, label="LSTM basin-split", linestyle=:dash)
+     ecdfplot!(time_lstm_nse_values, color=:red, label="LSTM time-split")
      ecdfplot!(glofas_nse_values, color=:green, label="GloFAS-ERA5")
      axislegend(position=(0,1))
      hidedecorations!(ax, ticklabels=false, ticks=false, label=false)
@@ -253,45 +250,48 @@ let
                ylabelsize = 17,
                yticks = 0:0.25:1)
      ax.ylabelcolor = :white
-     # ax.yticklabelcolor = :white
-     # ax.ytickcolor = :white
 
      # Get LSTM scores
-     csv_file = "examples/catchment_model/analysis/csv_files/globe_all_daily.csv"
+     csv_file = "examples/catchment_models/analysis/csv_files/globe_all_daily.csv"
      time_lstm_results_df = CSV.read(csv_file, DataFrame)
      time_lstm_results_df = filter(row -> row.basin in selected_basins, time_lstm_results_df)
+     # time_lstm_kge_values = filter(row -> string(row.basin)[3] != '7', time_lstm_results_df)[:,:kge]
      time_lstm_kge_values = time_lstm_results_df[:,:kge]
      print_stats("LSTM, time-split", time_lstm_kge_values, "kge")
 
      # Get LSTM scores
-     csv_file = "examples/catchment_model/analysis/csv_files/globe_split_daily.csv"
+     csv_file = "examples/catchment_models/analysis/csv_files/globe_split_daily.csv"
      basin_lstm_results_df = CSV.read(csv_file, DataFrame)
      basin_lstm_results_df = filter(row -> row.basin in selected_basins, basin_lstm_results_df)
+     # basin_lstm_kge_values = filter(row -> string(row.basin)[3] != '7', basin_lstm_results_df)[:,:nse]
      basin_lstm_kge_values = basin_lstm_results_df[:,:kge]
      print_stats("LSTM, basin-split", basin_lstm_kge_values, "kge")
 
      # Get GloFAS scores
-     csv_file = "examples/catchment_model/analysis/csv_files/glofas_daily.csv"
+     csv_file = "examples/catchment_models/analysis/csv_files/glofas_daily.csv"
      glofas_results_df = CSV.read(csv_file, DataFrame)
      glofas_results_df = filter(row -> row.basin in selected_basins, glofas_results_df)
+     # glofas_kge_values = filter(row -> string(row.basin)[3] != '7', glofas_results_df)[:,:kge]
      glofas_kge_values = glofas_results_df[:,:kge]
      print_stats("GloFAS-ERA5", glofas_kge_values, "kge")
      glofas_kge_values .= max.(-10, glofas_kge_values)
 
      # Plot curves
-     ecdfplot!(ax, basin_lstm_kge_values, color=:red, label="LSTM - basin split", linestyle=:dash)
-     ecdfplot!(ax, time_lstm_kge_values, color=:red, label="LSTM - time split")
+     ecdfplot!(ax, basin_lstm_kge_values, color=:red, label="LSTM (basin-split)", linestyle=:dash)
+     ecdfplot!(ax, time_lstm_kge_values, color=:red, label="LSTM (time-split)")
      ecdfplot!(ax, glofas_kge_values, color=:green, label="GloFAS-ERA5")
      hidedecorations!(ax, ticklabels=false, ticks=false, label=false)
 
      # Save
-     output_file = "examples/catchment_model/analysis/png_files/lstm_vs_benchmarks.png"
+     output_file = "examples/catchment_models/analysis/png_files/lstm_vs_benchmarks.png"
      mkpath(dirname(output_file))
      save(output_file, fig, px_per_unit=px_per_unit)
 
      # Print lengths
      println("----- L -----")
-     println("Length LSTM basin split: ", length(basin_lstm_nse_values))
-     println("Length LSTM time split: ", length(time_lstm_nse_values))
+     println("Length LSTM (basin-split): ", length(basin_lstm_nse_values))
+     println("Length LST(time-split): ", length(time_lstm_nse_values))
      println("Length GloFAS: ", length(glofas_nse_values))
 end
+
+main()

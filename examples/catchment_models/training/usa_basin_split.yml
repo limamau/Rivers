@@ -4,9 +4,9 @@
 experiment_name: usa_basin_split
 
 # files to specify training, validation and test basins (relative to code root or absolute path)
-train_basin_file: basins.txt
-validation_basin_file: basins.txt
-test_basin_file: basins.txt
+train_basin_file: path/to/basins.txt
+validation_basin_file: path/to/basins.txt
+test_basin_file: path/to/basins.txt
 
 # training, validation and test time periods (format = 'dd/mm/yyyy')
 train_start_date: '01/10/1999'
@@ -105,7 +105,7 @@ save_validation_results: True
 # --- Data configurations --------------------------------------------------------------------------
 # Data information
 dataset: era5_grdc_sheds
-data_dir: /central/scratch/mdemoura/data/
+data_dir: path/to/data
 
 
 # variables to use as time series input (names match the data file column headers)

@@ -11,7 +11,7 @@ using Distributed
 
 # Define your base
 base = "user/path/to/Rivers/data"
-
+# TODO: write all these file pasths in a .toml
 ## Define files and directories names
 # ERA5
 era5_nc_dir = joinpath(base, "source_data/era5/globe_year_month")
