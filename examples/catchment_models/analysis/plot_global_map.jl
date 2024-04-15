@@ -20,16 +20,17 @@ function Makie.convert_arguments(::Type{<:Poly}, p::Shapefile.Polygon)
 end
 
 # Put a (*) next to the -1 border
-let
+function main()
     ## Select files and constants
-    shp_file = "/central/scratch/mdemoura/Rivers/source_data/BasinATLAS_v10_shp/BasinATLAS_v10_lev01.shp"
-    results_file = "article/csv_files/globe_all_daily.csv"
+    base = "/central/scratch/mdemoura/Rivers"
+    shp_file = joinpath(base, "source_data/BasinATLAS_v10_shp/BasinATLAS_v10_lev01.shp")
+    dict_file_lv05 = joinpath(base, "midway_data/mapping_dicts/gauge_to_basin_dict_lv05_max.json")
+    dict_file_lv06 = joinpath(base, "midway_data/mapping_dicts/gauge_to_basin_dict_lv06_max.json")
+    dict_file_lv07 = joinpath(base, "midway_data/mapping_dicts/gauge_to_basin_dict_lv07_max.json")
+    grdc_nc_file = joinpath(base, "midway_data/GRDC-Globe/grdc-merged.nc")
+    results_file = "examples/catchment_models/analysis/csv_files/globe_all_daily.csv"
     metric = "nse"
-    dict_file_lv05 = "/central/scratch/mdemoura/Rivers/midway_data/mapping_dicts/gauge_to_basin_dict_lv05_max.json"
-    dict_file_lv06 = "/central/scratch/mdemoura/Rivers/midway_data/mapping_dicts/gauge_to_basin_dict_lv06_max.json"
-    dict_file_lv07 = "/central/scratch/mdemoura/Rivers/midway_data/mapping_dicts/gauge_to_basin_dict_lv07_max.json"
-    grdc_nc_file = "/central/scratch/mdemoura/Rivers/midway_data/GRDC-Globe/grdc-merged.nc"
-
+    
     # Read shapefile as DataFrame
     shape_df = Shapefile.Table(shp_file) |> DataFrame
 
@@ -92,5 +93,7 @@ let
     )
 
     # Save plot
-    save("examples/catchment_model/analysis/png_files/map.png", fig, px_per_unit=4)
+    save("examples/catchment_models/analysis/png_files/map.png", fig, px_per_unit=4)
 end
+
+main()

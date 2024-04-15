@@ -4,13 +4,12 @@ using DataFrames
 using Dates
 using Statistics
 
-let 
+function main()
     # Define basin
     basin_id = 2070017000
-    ddf = CSV.read("/central/scratch/mdemoura/Rivers/single_model_data/timeseries/timeseries_lv07/basin_$basin_id.csv", DataFrame)
-    simdf = CSV.read("/central/scratch/mdemoura/Rivers/post_data/lstm_simulations/sim_$basin_id.csv", DataFrame)
-
-    sdf = CSV.read("/central/scratch/mdemoura/Rivers/single_model_data/attributes/attributes_lv07/other_attributes.csv", DataFrame)
+    base = "/central/scratch/mdemoura/Rivers"
+    ddf = CSV.read(joinpath(base, "single_model_data/timeseries/timeseries_lv07/basin_$basin_id.csv"), DataFrame)
+    sdf = CSV.read(joinpath(base, "single_model_data/attributes/attributes_lv07/other_attributes.csv"), DataFrame)
     basin_area = sdf[sdf[:, :basin_id] .== basin_id, "area"]
 
     # Select date indexes
@@ -27,17 +26,8 @@ let
     ax.xticklabelrotation = π/4
     axislegend(ax)
     hidedecorations!(ax, ticklabels=false, ticks=false, label=false)
-    save("examples/catchment_model/analysis/png_files/runoffs.png", fig, px_per_unit=4)
-
-    # Plot Runoffs
-    fig = Figure(resolution=(1000,500))
-    ax = Axis(fig[1,1], xlabel="Dates", xlabelsize=17, ylabel="Discharge (m³/s)", ylabelsize=17)
-    lines!(ax, min_date_idx:max_date_idx, simdf[min_date_idx:max_date_idx, "sim"], label="LSTM", transparency=true, color=:magenta, linewidth=2)
-    lines!(ax, min_date_idx:max_date_idx, simdf[min_date_idx:max_date_idx, "obs"], label="Observed", transparency=true, color=:dodgerblue, linewidth=2)
-    ax.xticks = (min_date_idx+30:365:max_date_idx+30, string.(ddf[:, "date"])[min_date_idx+30:365:max_date_idx+30])
-    ax.xticklabelrotation = π/4
-    axislegend(ax)
-    hidedecorations!(ax, ticklabels=false, ticks=false, label=false)
     hidespines!(ax, :t, :r)
-    save("examples/catchment_model/analysis/png_files/streamflows.png", fig, px_per_unit=4)
+    save("examples/catchment_models/analysis/png_files/runoffs.png", fig, px_per_unit=4)
 end
+
+main()

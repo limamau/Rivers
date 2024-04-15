@@ -52,7 +52,7 @@ let
 
     # Write csvs
     output_dir = "/central/scratch/mdemoura/Rivers/post_data/glofas_timeseries"
-    mkdir(output_dir)
+    mkpath(output_dir)
     msg = "Writing GloFAS timeseries..."
     @showprogress msg for file in readdir("/central/scratch/mdemoura/Rivers/source_data/era5/river_year_month_nc/", join=true)
 

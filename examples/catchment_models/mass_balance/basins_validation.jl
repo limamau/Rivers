@@ -14,7 +14,7 @@ function plot_histogram(diffs::Vector{Float64}, threshold::Real, n_outliers::Int
     text!(-threshold+0.1, 200, text="N of outliers: $n_outliers")
 
     # Save figure
-    save("examples/catchment_models/mass_balance/png_files/histogram_basins.png", fig)
+    save("examples/catchment_models/examples/catchment_models/png_files/histogram_basins.png", fig)
 end
 
 function plot_map(shapefile::String, diffs_df::DataFrame, lv::String, output_file::String)
@@ -50,7 +50,7 @@ function plot_map(shapefile::String, diffs_df::DataFrame, lv::String, output_fil
 end
 
 # Start run here
-let
+function main()
     # Empty array to store values to plot in the histogram
     histogram_diffs::Vector{Float64} = Float64[]
 
@@ -61,15 +61,14 @@ let
     threshold = 30
     n_outliers = 0
 
-
     # Plot the difference in a map
-    lv = "01"
+    lv = "05"
     global_shapefile = "/central/scratch/mdemoura/Rivers/source_data/BasinATLAS_v10_shp/BasinATLAS_v10_lev01.shp"
     shapefile = "/central/scratch/mdemoura/Rivers/source_data/BasinATLAS_v10_shp/BasinATLAS_v10_lev$lv.shp"
     shp_df = Shapefile.Table(shapefile) |> DataFrame
 
     # Iterate over HydroSHEDS levels
-    for lv in ["01"]
+    for lv in [lv]
         # Directories with lv information
         xd_dir = "/central/scratch/mdemoura/Rivers/midway_data/xd_lv$lv"
         xd_evaporation_dir = "/central/scratch/mdemoura/Rivers/midway_data/xd_lv$lv"*"_evaporation"
@@ -116,7 +115,7 @@ let
         end
 
         map_df = DataFrame(basin=basins, diff=diffs)
-        output_file = "/examples/catchment_models/mass_balance/png_files/map_lv$lv.png"
+        output_file = "/examples/catchment_models/examples/catchment_models/mass_balance/png_files/map_lv$lv.png"
         plot_map(shapefile, map_df, lv, output_file)
 
         # Append into the histogram array
@@ -124,5 +123,7 @@ let
     end
 
     # Plot histogram
-    # plot_histogram(histogram_diffs, threshold, n_outliers)
+    plot_histogram(histogram_diffs, threshold, n_outliers)
 end
+
+main()

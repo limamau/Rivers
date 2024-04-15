@@ -15,8 +15,8 @@ function plot_histogram(diffs::Vector{Float64}, threshold::Real, n_outliers::Int
     hist!(ax, diffs, bins=100)
     text!(-threshold+0.1, 50, text="N of outliers: $n_outliers")
 
-    # Save figure
-    save("mass_balance/png_files/selected_basins_histogram.png", fig)
+    # Save figure (uncomment to really save)
+    # save("examples/catchment_models/analysis/png_files/selected_basins_histogram.png", fig)
 end
 
 # Start run here
@@ -33,7 +33,7 @@ let
 
     # Read used basins from the folder
     selected_basins = Int[]
-    file_path = "examples/catchment_model/analysis/selected_basins.txt" 
+    file_path = "examples/catchment_models/analysis/selected_basins.txt" 
     open(file_path) do file
         for line in eachline(file)
             push!(selected_basins, parse(Int, line))

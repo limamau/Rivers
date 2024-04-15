@@ -1,9 +1,9 @@
 using CairoMakie
+using ColorSchemes
 using CSV
 using DataFrames
 using Dates
 using Statistics
-using ColorSchemes
 
 function scatter_to_heatmap(x, y, x_min, x_max, y_min, y_max, n_bins::Tuple{Int,Int}=(50,50))
     # Constrain x and y within specified ranges
@@ -18,7 +18,7 @@ function scatter_to_heatmap(x, y, x_min, x_max, y_min, y_max, n_bins::Tuple{Int,
     counts = zeros(Int, n_bins)
 
     # Assign points to bins
-    for i in 1:length(x)
+    for i in eachindex(x)
         x_index = argmin(abs.(x[i] .- x_bins))
         y_index = argmin(abs.(y[i] .- y_bins))
         counts[x_index, y_index] += 1
@@ -30,16 +30,17 @@ function scatter_to_heatmap(x, y, x_min, x_max, y_min, y_max, n_bins::Tuple{Int,
     return x_bins, y_bins, densities
 end
 
-let
+function main()
     # Read scores as a DataFrame
-    csv_file = "examples/catchment_model/analysis/csv_files/globe_all_daily.csv"
+    base = "/central/scratch/mdemoura/Rivers"
+    csv_file = "examples/catchment_models/analysis/csv_files/globe_all_daily.csv"
     scores_df = CSV.read(csv_file, DataFrame)
 
     # Read attributes in each of the three levels
     first = true
     attributes_df = DataFrame()
     for hydro_lv in ["05", "06", "07"]
-        hydroatlas_attributes_df = CSV.read("/central/scratch/mdemoura/Rivers/single_model_data/attributes/attributes_lv$hydro_lv/hydroatlas_attributes.csv", DataFrame)
+        hydroatlas_attributes_df = CSV.read(joinpath(base, "single_model_data/attributes/attributes_lv$hydro_lv/hydroatlas_attributes.csv"), DataFrame)
         if first
             attributes_df = hydroatlas_attributes_df
             first = false
@@ -59,7 +60,6 @@ let
 
     # Basin in Figure 6a
     fig6a_basin_id = 1061638580
-    
 
     # Iterate over all basins
     for row in eachrow(merged_df)
@@ -78,74 +78,35 @@ let
         
         # Print aridity index of the basin in Fig06a
         if basin_id == fig6a_basin_id
-            println(basin_aridity)
+            println("aridity index: ", basin_aridity)
         end
     end
 
     # Define colormap
     cm = cgrad([:white, :orange, :brown], [0.2, 0.7])
 
-    # # Aridity
-    # fig = Figure(resolution=(500,400))
-    # x_min, x_max = -1, 1
-    # y_min, y_max = 0, 4
-    # ax = Axis(
-    #     fig[1,1],
-    #     xlabel="NSE",
-    #     xlabelsize=17,
-    #     ylabel="Aridity index",
-    #     ylabelsize=17,
-    #     limits=(x_min, x_max, y_min, y_max),
-    # )
-
-    # # Get bins and densities for heatmap
-    # x_bins, y_bins, densities = scatter_to_heatmap(nse_arr, aridity_arr, x_min, x_max, y_min, y_max)
-    
-    # # Plot heatmap
-    # hm = heatmap!(ax, x_bins, y_bins, densities, colormap=cm)
-    # Colorbar(fig[1,2], hm, label="Number of basins", labelsize=17)
-    
-    # # Save
-    # save("article/png_files/nse_vs_aridity.png", fig, px_per_unit=4)
-
-    # Irrigation
+    # Aridity
     fig = Figure(resolution=(500,400))
     x_min, x_max = -1, 1
-    y_min, y_max = 0, 1
-    ax = Axis(fig[1,1],
-              xlabel = "NSE",
-              xlabelsize = 17,
-              ylabel = "Irrigated area (%)",
-              ylabelsize = 17,
-            #   limits = (x_min, x_max, y_min, y_max)
+    y_min, y_max = 0, 4
+    ax = Axis(
+        fig[1,1],
+        xlabel="NSE",
+        xlabelsize=17,
+        ylabel="Aridity index",
+        ylabelsize=17,
+        limits=(x_min, x_max, y_min, y_max),
     )
-
+    
     # Get bins and densities for heatmap
-    x_bins, y_bins, densities = scatter_to_heatmap(nse_arr, irrigation_arr, x_min, x_max, y_min, y_max)
+    x_bins, y_bins, densities = scatter_to_heatmap(nse_arr, aridity_arr, x_min, x_max, y_min, y_max)
     
     # Plot heatmap
     hm = heatmap!(ax, x_bins, y_bins, densities, colormap=cm)
     Colorbar(fig[1,2], hm, label="Number of basins", labelsize=17)
     
     # Save
-    save("examples/catchment_model/analysis/png_files/nse_vs_irrigation.png", fig)
-
-    # # Runoff
-    # fig = Figure(resolution=(500,400))
-    # x_min, x_max = -1, 1
-    # y_min, y_max = 0, 1500
-    # ax = Axis(fig[1,1],
-    #           xlabel = "NSE",
-    #           ylabel = "Land surface runoff (m)",
-    #           limits = (x_min, x_max, y_min, y_max))
-    
-    # # Get bins and densities for heatmap
-    # x_bins, y_bins, densities = scatter_to_heatmap(nse_arr, runoff_arr, x_min, x_max, y_min, y_max)
-    
-    # # Plot heatmap
-    # hm = heatmap!(ax, x_bins, y_bins, densities, colormap=cm)
-    # Colorbar(fig[1,2], hm, label="Number of basins", labelsize=17)
-    
-    # # Save
-    # save("article/png_files/nse_vs_runoff.png", fig)
+    save("examples/catchment_models/analysis/png_files/nse_vs_aridity.png", fig, px_per_unit=4)
 end
+
+main()

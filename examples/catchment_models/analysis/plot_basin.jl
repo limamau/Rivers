@@ -10,21 +10,25 @@ using Shapefile
 
 # Note: this code still bugs sometimes... if it does, try relaunching it or crtl+c to skip some river lines
 
-let
+function main()
     # Select files and constants
-    era5_nc_file = "/central/scratch/mdemoura/Rivers/source_data/era5/globe_year_month/era5_1990_01.nc"
-    grid_to_basins_dir = "/central/scratch/mdemoura/Rivers/midway_data/mapping_dicts/grid_to_basins_dict_lv07"
-    basins_shp_file = "/central/scratch/mdemoura/Rivers/source_data/BasinATLAS_v10_shp/BasinATLAS_v10_lev07.shp"
-    rivers_shp_file = "/central/scratch/mdemoura/Rivers/source_data/HydroRIVERS_v10_eu_shp/HydroRIVERS_v10_eu.shp"
-    basin_gauge_json_file = "/central/scratch/mdemoura/Rivers/midway_data/mapping_dicts/gauge_to_basin_dict_lv07_max_list.json"
-    grdc_nc_file = "/central/scratch/mdemoura/Rivers/midway_data/GRDC-Globe/grdc-merged.nc"
+    base = "/central/scratch/mdemoura/Rivers"
+    era5_nc_file = joinpath(base, "source_data/era5/globe_year_month/era5_1990_01.nc")
+    grid_to_basins_dir = joinpath(base, "midway_data/mapping_dicts/grid_to_basins_dict_lv07")
+    basins_shp_file = joinpath(base, "source_data/BasinATLAS_v10_shp/BasinATLAS_v10_lev07.shp")
+    rivers_shp_file = joinpath(base, "source_data/HydroRIVERS_v10_eu_shp/HydroRIVERS_v10_eu.shp")
+    basin_gauge_json_file = joinpath(base, "midway_data/mapping_dicts/gauge_to_basin_dict_lv07_max_list.json")
+    grdc_nc_file = joinpath(base, "midway_data/GRDC-Globe/grdc-merged.nc")
     basin = 2070017000
     
     ### Monte Carlo Plot
     print("Plotting Monte Carlo map...")
     
+    # Open the shapefile in DataFrame format
+    basins_df = Shapefile.Table(basins_shp_file) |> DataFrame
+    
     # Find the basin's bounding box with a 0.2° margin
-    basin_points =  basins_df[basins_df.HYBAS_ID .== basin, :geometry][1].points
+    basin_points = basins_df[basins_df.HYBAS_ID .== basin, :geometry][1].points
     x_min, x_max, y_min, y_max = find_min_max_lon_lat(basin_points, 0.2)
 
     # Read directory with dictionaries
@@ -56,9 +60,6 @@ let
         push!(basin_probas, map_arr[i][3])
     end
 
-    # Open the shapefile in DataFrame format
-    shape_df = Shapefile.Table(basins_shp_file) |> DataFrame
-
     # Define plot
     fig = Figure(resolution=(1000,450))
     ax = Axis(fig[1,1], 
@@ -70,7 +71,7 @@ let
     hidedecorations!(ax, ticks=false, ticklabels=false, label=false)
 
     # Surroundings
-    for row in eachrow(shape_df)
+    for row in eachrow(basins_df)
         polygon = row.geometry
         polygon_x = [point.x for point in polygon.points]
         polygon_y = [point.y for point in polygon.points]
@@ -79,7 +80,7 @@ let
     end
 
     # Basin
-    polygon =  shape_df[shape_df.HYBAS_ID .== basin, :geometry][1]
+    polygon =  basins_df[basins_df.HYBAS_ID .== basin, :geometry][1]
     polygon_x = [point.x for point in polygon.points]
     polygon_y = [point.y for point in polygon.points]
     points = Point2f.(polygon_x, polygon_y)
@@ -180,6 +181,8 @@ let
     # TODO: Plot catchment areas
 
     # Save Plot
-    save("examples/catchment_model/analysis/png_files/basin.png", fig, px_per_unit=4)
+    save("examples/catchment_models/analysis/png_files/basin.png", fig, px_per_unit=4)
     println("Ok!")
 end
+
+main()

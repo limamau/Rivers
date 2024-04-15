@@ -173,21 +173,21 @@ function standard_longitudes!(longitudes::Vector{<:Real})
 end
 
 # Start run here
-let
+function main()
     # Directories with NetCDF files information
     others_dir = "/central/scratch/mdemoura/Rivers/source_data/era5/globe_year_month"
     evaporation_dir = "/central/scratch/mdemoura/Rivers/source_data/era5/evaporation_year_month"
 
     # Calculate mass aggregates -- run if first time (slow)
-    # mass_in, mass_out = calculate_mass_aggregates(others_dir, evaporation_dir)
+    mass_in, mass_out = calculate_mass_aggregates(others_dir, evaporation_dir)
 
     # Save mass_in and mass_out as NetCDF files -- use if first time
-    # output_dir = "/central/scratch/mdemoura/Rivers/midway_data/era5/mass_balance/"
-    # save_mass_balance_netcdf(mass_in, mass_out, evaporation_dir, output_dir)
+    output_dir = "/central/scratch/mdemoura/Rivers/midway_data/era5/mass_balance/"
+    save_mass_balance_netcdf(mass_in, mass_out, evaporation_dir, output_dir)
 
     # Read mass balance -- default (fast)
-    mass_aggregate_file = "/central/scratch/mdemoura/Rivers/midway_data/era5/mass_balance/mass_balance.nc"
-    mass_in, mass_out = read_mass_aggregates(mass_aggregate_file)
+    # mass_aggregate_file = "/central/scratch/mdemoura/Rivers/midway_data/era5/mass_balance/mass_balance.nc"
+    # mass_in, mass_out = read_mass_aggregates(mass_aggregate_file)
 
     # Get relative difference 
     # This is deprecated but I'm leaving it here
@@ -197,7 +197,7 @@ let
     abs_diffs = calculate_absolute_difference_mm_per_year(mass_in, mass_out)
 
     # Plot histogram
-    output_file = "mass_balance/png_files/histogram_grid.png"
+    output_file = "examples/catchment_models/mass_balance/png_files/histogram_grid.png"
     threshold = 5.0
     plot_histogram(abs_diffs, threshold, output_file)
 
@@ -208,7 +208,7 @@ let
     longitudes, latitudes = get_longitudes_and_latitudes(nc_file)
     
     # Plot original map
-    output_file = "mass_balance/png_files/map_grid.png"
+    output_file = "examples/catchment_models/mass_balance/png_files/map_grid.png"
     plot_map(global_shapefile, longitudes, latitudes, abs_diffs, output_file)
 
     # Convolute the mass balance
@@ -216,10 +216,12 @@ let
     convoluted_mass_in = convolute_array(length_size, mass_in)
     convoluted_mass_out = convolute_array(length_size, mass_out)
     convoluted_diffs = calculate_absolute_difference_mm_per_year(convoluted_mass_in, convoluted_mass_out)
-    output_file = "mass_balance/png_files/map_grid_conv.png"
+    output_file = "examples/catchment_models/mass_balance/png_files/map_grid_conv.png"
     plot_map(global_shapefile, 
              longitudes[Int(length_size/2):Int(end-length_size/2)],
              latitudes[Int(length_size/2):Int(end-length_size/2)],
              convoluted_diffs, 
              output_file)
 end
+
+main()
