@@ -8,8 +8,9 @@ eng_*
 *.csv
 */runs/*
 
-# some folders
+# code in development
 dev/
 
 # others
 .DS_Store
+
