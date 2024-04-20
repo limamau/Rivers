@@ -1,0 +1,66 @@
+2024-04-19 17:19:39,191: Logging to /central/home/achiang/CliMA/Rivers/examples/catchment_models/training/runs/usa_time_split_1904_171939/output.log initialized.
+2024-04-19 17:19:39,191: ### Folder structure created at /central/home/achiang/CliMA/Rivers/examples/catchment_models/training/runs/usa_time_split_1904_171939
+2024-04-19 17:19:39,191: ### Run configurations for usa_time_split
+2024-04-19 17:19:39,191: experiment_name: usa_time_split
+2024-04-19 17:19:39,191: train_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/usa_time_split_list.txt
+2024-04-19 17:19:39,192: validation_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/usa_time_split_list.txt
+2024-04-19 17:19:39,192: test_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/usa_time_split_list.txt
+2024-04-19 17:19:39,192: train_start_date: 1999-10-01 00:00:00
+2024-04-19 17:19:39,192: train_end_date: 2009-09-30 00:00:00
+2024-04-19 17:19:39,192: validation_start_date: 1989-10-01 00:00:00
+2024-04-19 17:19:39,192: validation_end_date: 1999-09-30 00:00:00
+2024-04-19 17:19:39,192: test_start_date: 1999-10-01 00:00:00
+2024-04-19 17:19:39,192: test_end_date: 2009-09-30 00:00:00
+2024-04-19 17:19:39,192: seed: 123
+2024-04-19 17:19:39,193: device: cuda:0
+2024-04-19 17:19:39,193: allow_subsequent_nan_losses: 5
+2024-04-19 17:19:39,193: validate_every: 2
+2024-04-19 17:19:39,193: validate_n_random_basins: 1000
+2024-04-19 17:19:39,193: metrics: ['NSE']
+2024-04-19 17:19:39,193: model: cudalstm
+2024-04-19 17:19:39,193: head: regression
+2024-04-19 17:19:39,193: hidden_size: 128
+2024-04-19 17:19:39,193: initial_forget_bias: 3
+2024-04-19 17:19:39,193: output_dropout: 0.4
+2024-04-19 17:19:39,193: output_activation: linear
+2024-04-19 17:19:39,194: optimizer: Adam
+2024-04-19 17:19:39,194: loss: NSE
+2024-04-19 17:19:39,194: learning_rate: {0: 0.001, 21: 0.0001, 31: 1e-05}
+2024-04-19 17:19:39,194: batch_size: 256
+2024-04-19 17:19:39,194: epochs: 5
+2024-04-19 17:19:39,194: clip_gradient_norm: 1
+2024-04-19 17:19:39,194: predict_last_n: 1
+2024-04-19 17:19:39,194: seq_length: 270
+2024-04-19 17:19:39,194: num_workers: 1
+2024-04-19 17:19:39,194: log_interval: 50
+2024-04-19 17:19:39,194: log_tensorboard: True
+2024-04-19 17:19:39,194: save_weights_every: 1
+2024-04-19 17:19:39,195: save_validation_results: True
+2024-04-19 17:19:39,195: dataset: era5_grdc_sheds
+2024-04-19 17:19:39,195: data_dir: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data
+2024-04-19 17:19:39,195: dynamic_inputs: ['sro_sum', 'ssro_sum', 'sp_mean', 't2m_mean', 'str_mean']
+2024-04-19 17:19:39,195: target_variables: ['streamflow']
+2024-04-19 17:19:39,195: static_attributes: ['pre_mm_syr', 'ari_ix_sav', 'area', 'ele_mt_sav', 'snw_pc_syr', 'slp_dg_sav', 'kar_pc_sse', 'cly_pc_sav', 'pet_mm_syr', 'for_pc_sse', 'snd_pc_sav', 'slt_pc_sav', 'gwt_cm_sav', 'run_mm_syr', 'soc_th_sav', 'swc_pc_syr', 'sgr_dk_sav', 'cmi_ix_syr']
+2024-04-19 17:19:39,195: number_of_basins: 394
+2024-04-19 17:19:39,195: run_dir: /central/home/achiang/CliMA/Rivers/examples/catchment_models/training/runs/usa_time_split_1904_171939
+2024-04-19 17:19:39,195: train_dir: /central/home/achiang/CliMA/Rivers/examples/catchment_models/training/runs/usa_time_split_1904_171939/train_data
+2024-04-19 17:19:39,195: img_log_dir: /central/home/achiang/CliMA/Rivers/examples/catchment_models/training/runs/usa_time_split_1904_171939/img_log
+2024-04-19 17:19:39,221: ### Device cuda:0 will be used for training
+2024-04-19 17:19:39,439: Loading basin data into xarray data set.
+2024-04-19 17:19:52,470: Calculating target variable stds per basin
+2024-04-19 17:19:52,914: Create lookup table and convert to pytorch tensor
+2024-04-19 17:22:08,832: Epoch 1 average loss: avg_loss: 0.00081, avg_total_loss: 0.00081
+2024-04-19 17:24:08,336: Epoch 2 average loss: avg_loss: 0.00006, avg_total_loss: 0.00006
+2024-04-19 17:24:14,750: The following basins had not enough valid target values to calculate a standard deviation: 7050045480. NSE loss values for this basin will be NaN.
+2024-04-19 17:24:43,804: The following basins had not enough valid target values to calculate a standard deviation: 7060045480. NSE loss values for this basin will be NaN.
+2024-04-19 17:24:49,729: The following basins had not enough valid target values to calculate a standard deviation: 7060334030. NSE loss values for this basin will be NaN.
+2024-04-19 17:25:31,799: The following basins had not enough valid target values to calculate a standard deviation: 7060589830. NSE loss values for this basin will be NaN.
+2024-04-19 17:25:44,936: The following basins had not enough valid target values to calculate a standard deviation: 7060746040. NSE loss values for this basin will be NaN.
+2024-04-19 17:27:22,693: The following basins had not enough valid target values to calculate a standard deviation: 8070086350. NSE loss values for this basin will be NaN.
+2024-04-19 17:27:26,429: Stored results at /central/home/achiang/CliMA/Rivers/examples/catchment_models/training/runs/usa_time_split_1904_171939/validation/model_epoch002/validation_results.p
+2024-04-19 17:27:26,439: Epoch 2 average validation loss: 0.00002 -- Median validation metrics: avg_loss: 0.00002, NSE: -0.11931
+2024-04-19 17:29:28,965: Epoch 3 average loss: avg_loss: 0.00002, avg_total_loss: 0.00002
+2024-04-19 17:31:31,978: Epoch 4 average loss: avg_loss: 0.00003, avg_total_loss: 0.00003
+2024-04-19 17:33:59,305: Stored results at /central/home/achiang/CliMA/Rivers/examples/catchment_models/training/runs/usa_time_split_1904_171939/validation/model_epoch004/validation_results.p
+2024-04-19 17:33:59,311: Epoch 4 average validation loss: 0.00002 -- Median validation metrics: avg_loss: 0.00002, NSE: 0.12918
+2024-04-19 17:36:02,377: Epoch 5 average loss: avg_loss: 0.00002, avg_total_loss: 0.00002
