@@ -1,0 +1,85 @@
+2024-04-19 21:05:40,571: Logging to /central/home/achiang/CliMA/Rivers/examples/catchment_models/training/runs/globe_basin_split_1904_210540/output.log initialized.
+2024-04-19 21:05:40,571: ### Folder structure created at /central/home/achiang/CliMA/Rivers/examples/catchment_models/training/runs/globe_basin_split_1904_210540
+2024-04-19 21:05:40,571: ### Run configurations for globe_basin_split
+2024-04-19 21:05:40,572: experiment_name: globe_basin_split
+2024-04-19 21:05:40,572: train_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/globe_basin_split_train_list.txt
+2024-04-19 21:05:40,572: validation_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/globe_basin_split_train_list.txt
+2024-04-19 21:05:40,572: test_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/globe_basin_split_test_list.txt
+2024-04-19 21:05:40,572: train_start_date: 1999-10-01 00:00:00
+2024-04-19 21:05:40,572: train_end_date: 2009-09-30 00:00:00
+2024-04-19 21:05:40,572: validation_start_date: 1989-10-01 00:00:00
+2024-04-19 21:05:40,572: validation_end_date: 1999-09-30 00:00:00
+2024-04-19 21:05:40,572: test_start_date: 1999-10-01 00:00:00
+2024-04-19 21:05:40,572: test_end_date: 2009-09-30 00:00:00
+2024-04-19 21:05:40,573: seed: 123
+2024-04-19 21:05:40,573: device: cuda:0
+2024-04-19 21:05:40,573: allow_subsequent_nan_losses: 5
+2024-04-19 21:05:40,573: validate_every: 2
+2024-04-19 21:05:40,573: validate_n_random_basins: 1000
+2024-04-19 21:05:40,573: metrics: ['NSE']
+2024-04-19 21:05:40,573: model: cudalstm
+2024-04-19 21:05:40,573: head: regression
+2024-04-19 21:05:40,573: hidden_size: 128
+2024-04-19 21:05:40,573: initial_forget_bias: 3
+2024-04-19 21:05:40,573: output_dropout: 0.4
+2024-04-19 21:05:40,574: output_activation: linear
+2024-04-19 21:05:40,574: optimizer: Adam
+2024-04-19 21:05:40,574: loss: NSE
+2024-04-19 21:05:40,574: learning_rate: {0: 0.001, 21: 0.0001, 31: 1e-05}
+2024-04-19 21:05:40,574: batch_size: 256
+2024-04-19 21:05:40,574: epochs: 5
+2024-04-19 21:05:40,574: clip_gradient_norm: 1
+2024-04-19 21:05:40,574: predict_last_n: 1
+2024-04-19 21:05:40,574: seq_length: 270
+2024-04-19 21:05:40,574: num_workers: 1
+2024-04-19 21:05:40,574: log_interval: 50
+2024-04-19 21:05:40,574: log_tensorboard: True
+2024-04-19 21:05:40,575: save_weights_every: 1
+2024-04-19 21:05:40,575: save_validation_results: True
+2024-04-19 21:05:40,575: dataset: era5_grdc_sheds
+2024-04-19 21:05:40,575: data_dir: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data
+2024-04-19 21:05:40,575: dynamic_inputs: ['sro_sum', 'ssro_sum', 'sp_mean', 't2m_mean', 'str_mean']
+2024-04-19 21:05:40,575: target_variables: ['streamflow']
+2024-04-19 21:05:40,575: static_attributes: ['pre_mm_syr', 'ari_ix_sav', 'area', 'ele_mt_sav', 'snw_pc_syr', 'slp_dg_sav', 'kar_pc_sse', 'cly_pc_sav', 'pet_mm_syr', 'for_pc_sse', 'snd_pc_sav', 'slt_pc_sav', 'gwt_cm_sav', 'run_mm_syr', 'soc_th_sav', 'swc_pc_syr', 'sgr_dk_sav', 'cmi_ix_syr']
+2024-04-19 21:05:40,575: number_of_basins: 994
+2024-04-19 21:05:40,575: run_dir: /central/home/achiang/CliMA/Rivers/examples/catchment_models/training/runs/globe_basin_split_1904_210540
+2024-04-19 21:05:40,575: train_dir: /central/home/achiang/CliMA/Rivers/examples/catchment_models/training/runs/globe_basin_split_1904_210540/train_data
+2024-04-19 21:05:40,575: img_log_dir: /central/home/achiang/CliMA/Rivers/examples/catchment_models/training/runs/globe_basin_split_1904_210540/img_log
+2024-04-19 21:05:40,601: ### Device cuda:0 will be used for training
+2024-04-19 21:05:41,018: Loading basin data into xarray data set.
+2024-04-19 21:06:26,940: Calculating target variable stds per basin
+2024-04-19 21:06:27,766: The following basins had not enough valid target values to calculate a standard deviation: 5070068140. NSE loss values for this basin will be NaN.
+2024-04-19 21:06:27,999: Create lookup table and convert to pytorch tensor
+2024-04-19 21:07:00,030: These basins do not have a single valid sample in the train period: ['5070068140']
+2024-04-19 21:11:48,113: Epoch 1 average loss: avg_loss: 0.00025, avg_total_loss: 0.00025
+2024-04-19 21:16:39,762: Epoch 2 average loss: avg_loss: 0.00003, avg_total_loss: 0.00003
+2024-04-19 21:16:46,110: The following basins had not enough valid target values to calculate a standard deviation: 1051577000. NSE loss values for this basin will be NaN.
+2024-04-19 21:16:57,305: The following basins had not enough valid target values to calculate a standard deviation: 1061577000. NSE loss values for this basin will be NaN.
+2024-04-19 21:16:59,887: The following basins had not enough valid target values to calculate a standard deviation: 1061613580. NSE loss values for this basin will be NaN.
+2024-04-19 21:17:11,949: The following basins had not enough valid target values to calculate a standard deviation: 1071595420. NSE loss values for this basin will be NaN.
+2024-04-19 21:17:17,001: The following basins had not enough valid target values to calculate a standard deviation: 1071613580. NSE loss values for this basin will be NaN.
+2024-04-19 21:17:18,695: The following basins had not enough valid target values to calculate a standard deviation: 1071620130. NSE loss values for this basin will be NaN.
+2024-04-19 21:17:20,384: The following basins had not enough valid target values to calculate a standard deviation: 1071642440. NSE loss values for this basin will be NaN.
+2024-04-19 21:17:42,809: The following basins had not enough valid target values to calculate a standard deviation: 2060019310. NSE loss values for this basin will be NaN.
+2024-04-19 21:18:51,484: The following basins had not enough valid target values to calculate a standard deviation: 2070430320. NSE loss values for this basin will be NaN.
+2024-04-19 21:18:54,057: The following basins had not enough valid target values to calculate a standard deviation: 2070436660. NSE loss values for this basin will be NaN.
+2024-04-19 21:19:08,838: The following basins had not enough valid target values to calculate a standard deviation: 2070537900. NSE loss values for this basin will be NaN.
+2024-04-19 21:20:05,757: The following basins had not enough valid target values to calculate a standard deviation: 5070068140. NSE loss values for this basin will be NaN.
+2024-04-19 21:20:26,254: The following basins had not enough valid target values to calculate a standard deviation: 6050028110. NSE loss values for this basin will be NaN.
+2024-04-19 21:20:37,927: The following basins had not enough valid target values to calculate a standard deviation: 6050942470. NSE loss values for this basin will be NaN.
+2024-04-19 21:20:40,979: The following basins had not enough valid target values to calculate a standard deviation: 6060028110. NSE loss values for this basin will be NaN.
+2024-04-19 21:20:45,508: The following basins had not enough valid target values to calculate a standard deviation: 6060290300. NSE loss values for this basin will be NaN.
+2024-04-19 21:20:59,773: The following basins had not enough valid target values to calculate a standard deviation: 6060942470. NSE loss values for this basin will be NaN.
+2024-04-19 21:21:36,186: The following basins had not enough valid target values to calculate a standard deviation: 7050045480. NSE loss values for this basin will be NaN.
+2024-04-19 21:22:09,393: The following basins had not enough valid target values to calculate a standard deviation: 7060045480. NSE loss values for this basin will be NaN.
+2024-04-19 21:22:29,474: The following basins had not enough valid target values to calculate a standard deviation: 7060334030. NSE loss values for this basin will be NaN.
+2024-04-19 21:23:03,361: The following basins had not enough valid target values to calculate a standard deviation: 7060589830. NSE loss values for this basin will be NaN.
+2024-04-19 21:23:14,444: The following basins had not enough valid target values to calculate a standard deviation: 7060746040. NSE loss values for this basin will be NaN.
+2024-04-19 21:25:11,075: The following basins had not enough valid target values to calculate a standard deviation: 8070086350. NSE loss values for this basin will be NaN.
+2024-04-19 21:25:30,318: Stored results at /central/home/achiang/CliMA/Rivers/examples/catchment_models/training/runs/globe_basin_split_1904_210540/validation/model_epoch002/validation_results.p
+2024-04-19 21:25:30,335: Epoch 2 average validation loss: 0.00001 -- Median validation metrics: avg_loss: 0.00001, NSE: -0.01187
+2024-04-19 21:30:22,137: Epoch 3 average loss: avg_loss: 0.00001, avg_total_loss: 0.00001
+2024-04-19 21:35:15,607: Epoch 4 average loss: avg_loss: 0.00000, avg_total_loss: 0.00000
+2024-04-19 21:41:50,561: Stored results at /central/home/achiang/CliMA/Rivers/examples/catchment_models/training/runs/globe_basin_split_1904_210540/validation/model_epoch004/validation_results.p
+2024-04-19 21:41:50,581: Epoch 4 average validation loss: 0.00000 -- Median validation metrics: avg_loss: 0.00000, NSE: 0.39293
+2024-04-19 21:46:46,901: Epoch 5 average loss: avg_loss: 0.00000, avg_total_loss: 0.00000

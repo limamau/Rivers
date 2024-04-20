@@ -1,0 +1,96 @@
+attribute_means:
+  area: 36197.27267896365
+  ari_ix_sav: 92.16421452301852
+  cly_pc_sav: 18.87375415282392
+  cmi_ix_syr: -15.787850023730423
+  ele_mt_sav: 719.4466065495966
+  for_pc_sse: 40.143806359753206
+  gwt_cm_sav: 294.9667774086379
+  kar_pc_sse: 13.070242050308496
+  pet_mm_syr: 1067.7883246321785
+  pre_mm_syr: 881.6938775510204
+  run_mm_syr: 387.5097294731846
+  sgr_dk_sav: 128.92785951589937
+  slp_dg_sav: 59.861414333175134
+  slt_pc_sav: 32.201708590412906
+  snd_pc_sav: 48.945420028476505
+  snw_pc_syr: 20.634076886568582
+  soc_th_sav: 53.97294731846227
+  swc_pc_syr: 66.34646416706218
+attribute_stds:
+  area: 167150.2197146001
+  ari_ix_sav: 52.534866917680695
+  cly_pc_sav: 6.882145120868686
+  cmi_ix_syr: 35.23741326918624
+  ele_mt_sav: 608.4026915709271
+  for_pc_sse: 31.700098012384355
+  gwt_cm_sav: 221.09579004001444
+  kar_pc_sse: 23.072119517703605
+  pet_mm_syr: 473.1032944844446
+  pre_mm_syr: 532.2165665130594
+  run_mm_syr: 359.40292534917813
+  sgr_dk_sav: 149.2248776813551
+  slp_dg_sav: 55.47172963494079
+  slt_pc_sav: 9.83132370814131
+  snd_pc_sav: 9.251029133563737
+  snw_pc_syr: 22.18390792416899
+  soc_th_sav: 42.862694372257444
+  swc_pc_syr: 22.03798715951065
+xarray_feature_scale:
+  coords: {}
+  attrs: {}
+  dims: {}
+  data_vars:
+    sp_mean:
+      dims: []
+      attrs: {}
+      data: 12332.2568359375
+    sro_sum:
+      dims: []
+      attrs: {}
+      data: 0.0010742670856416225
+    ssro_sum:
+      dims: []
+      attrs: {}
+      data: 0.0014999022241681814
+    str_mean:
+      dims: []
+      attrs: {}
+      data: 1589319.0
+    streamflow:
+      dims: []
+      attrs: {}
+      data: 711.6022338867188
+    t2m_mean:
+      dims: []
+      attrs: {}
+      data: 36.944374084472656
+xarray_feature_center:
+  coords: {}
+  attrs: {}
+  dims: {}
+  data_vars:
+    sp_mean:
+      dims: []
+      attrs: {}
+      data: 48699.29296875
+    sro_sum:
+      dims: []
+      attrs: {}
+      data: 0.00019951141439378262
+    ssro_sum:
+      dims: []
+      attrs: {}
+      data: 0.0007876916788518429
+    str_mean:
+      dims: []
+      attrs: {}
+      data: -2787675.0
+    streamflow:
+      dims: []
+      attrs: {}
+      data: 164.08802795410156
+    t2m_mean:
+      dims: []
+      attrs: {}
+      data: 147.6854248046875

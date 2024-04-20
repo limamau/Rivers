@@ -1,0 +1,74 @@
+allow_subsequent_nan_losses: 5
+batch_size: 256
+clip_gradient_norm: 1
+commit_hash: 925c3bd
+data_dir: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data
+dataset: era5_grdc_sheds
+device: cuda:0
+dynamic_inputs:
+- sro_sum
+- ssro_sum
+- sp_mean
+- t2m_mean
+- str_mean
+epochs: 5
+experiment_name: globe_basin_split
+head: regression
+hidden_size: 128
+img_log_dir: /central/home/achiang/CliMA/Rivers/examples/catchment_models/training/runs/globe_basin_split_1904_210540/img_log
+initial_forget_bias: 3
+learning_rate:
+  0: 0.001
+  21: 0.0001
+  31: 1e-05
+log_interval: 50
+log_tensorboard: true
+loss: NSE
+metrics:
+- NSE
+model: cudalstm
+num_workers: 1
+number_of_basins: 994
+optimizer: Adam
+output_activation: linear
+output_dropout: 0.4
+package_version: 1.7.0
+predict_last_n: 1
+run_dir: /central/home/achiang/CliMA/Rivers/examples/catchment_models/training/runs/globe_basin_split_1904_210540
+save_validation_results: true
+save_weights_every: 1
+seed: 123
+seq_length: 270
+static_attributes:
+- pre_mm_syr
+- ari_ix_sav
+- area
+- ele_mt_sav
+- snw_pc_syr
+- slp_dg_sav
+- kar_pc_sse
+- cly_pc_sav
+- pet_mm_syr
+- for_pc_sse
+- snd_pc_sav
+- slt_pc_sav
+- gwt_cm_sav
+- run_mm_syr
+- soc_th_sav
+- swc_pc_syr
+- sgr_dk_sav
+- cmi_ix_syr
+target_variables:
+- streamflow
+test_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/globe_basin_split_test_list.txt
+test_end_date: 30/09/2009
+test_start_date: 01/10/1999
+train_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/globe_basin_split_train_list.txt
+train_dir: /central/home/achiang/CliMA/Rivers/examples/catchment_models/training/runs/globe_basin_split_1904_210540/train_data
+train_end_date: 30/09/2009
+train_start_date: 01/10/1999
+validate_every: 2
+validate_n_random_basins: 1000
+validation_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/globe_basin_split_train_list.txt
+validation_end_date: 30/09/1999
+validation_start_date: 01/10/1989
