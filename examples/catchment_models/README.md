@@ -14,8 +14,8 @@ At the end of the process you should get a `timeseries/`, an `attributes/` and a
 
 The complete engineering approach is shown in `examples/engineering/`. For an overview on how to download the data see `examples/engineering/download_data_scripts/source_data_structure.txt`. The engineering process is used in HydroSHEDS level 05 in `examples/engineering/engineer_lv05.jl`.
 
-## 2 - Training (Neuralhydrology - Python)
-The following can be found inside the `training` folder.
+## 2 - Neuralhydrology (Python)
+This section is dedicated to training, evaluating and forecasting streamflow using the python library neuralhydrology.
 
 Here we use a forked repository from NeuralHydrology (original: https://github.com/neuralhydrology/neuralhydrology) with an additional class to the created data set: Era5GrdcSheds. 
 
@@ -28,7 +28,9 @@ as shown in the documentation of the package.
 
 All the configurations used to train the models for the paper are available as `.yml` files.
 
-It can be run with `nh-run train --config-file config.yml`.
+1. To train a model, use `nh-run train --config-file config.yml`. A `run_dir` will be created to store training info.
+2. To evaluate this run for a given epoch, use `nh-run evaluate --run-dir /path/to/run_dir/ --epoch N`.
+3. To simulate the streamflow timeseries over the test period + the metrics for each basin in csv files, use `simulate.py`.
 
 ## 3 - Analysis (Julia)
 Illustrations of the engineering process and model scores are made in the `analysis/` folder.
