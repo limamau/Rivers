@@ -1,0 +1,128 @@
+2024-04-24 01:58:59,618: Logging to /central/home/achiang/CliMA/runs/usa_time_split_2404_015859/output.log initialized.
+2024-04-24 01:58:59,618: ### Folder structure created at /central/home/achiang/CliMA/runs/usa_time_split_2404_015859
+2024-04-24 01:58:59,618: ### Run configurations for usa_time_split
+2024-04-24 01:58:59,618: experiment_name: usa_time_split
+2024-04-24 01:58:59,618: train_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/usa_time_split_list.txt
+2024-04-24 01:58:59,619: validation_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/usa_time_split_list.txt
+2024-04-24 01:58:59,619: test_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/usa_time_split_list.txt
+2024-04-24 01:58:59,619: train_start_date: 1999-10-01 00:00:00
+2024-04-24 01:58:59,619: train_end_date: 2009-09-30 00:00:00
+2024-04-24 01:58:59,619: validation_start_date: 1989-10-01 00:00:00
+2024-04-24 01:58:59,619: validation_end_date: 1999-09-30 00:00:00
+2024-04-24 01:58:59,619: test_start_date: 1999-10-01 00:00:00
+2024-04-24 01:58:59,619: test_end_date: 2009-09-30 00:00:00
+2024-04-24 01:58:59,619: seed: 123
+2024-04-24 01:58:59,619: device: cuda:0
+2024-04-24 01:58:59,619: allow_subsequent_nan_losses: 5
+2024-04-24 01:58:59,619: validate_every: 2
+2024-04-24 01:58:59,619: validate_n_random_basins: 1000
+2024-04-24 01:58:59,620: metrics: ['NSE']
+2024-04-24 01:58:59,620: model: cudalstm
+2024-04-24 01:58:59,620: head: regression
+2024-04-24 01:58:59,620: hidden_size: 128
+2024-04-24 01:58:59,620: initial_forget_bias: 3
+2024-04-24 01:58:59,620: output_dropout: 0.4
+2024-04-24 01:58:59,620: output_activation: linear
+2024-04-24 01:58:59,620: optimizer: Adam
+2024-04-24 01:58:59,620: loss: NSE
+2024-04-24 01:58:59,620: learning_rate: {0: 0.001, 21: 0.0001, 31: 1e-05}
+2024-04-24 01:58:59,620: batch_size: 256
+2024-04-24 01:58:59,620: epochs: 35
+2024-04-24 01:58:59,620: clip_gradient_norm: 1
+2024-04-24 01:58:59,620: predict_last_n: 1
+2024-04-24 01:58:59,620: seq_length: 270
+2024-04-24 01:58:59,621: num_workers: 1
+2024-04-24 01:58:59,621: log_interval: 50
+2024-04-24 01:58:59,621: log_tensorboard: True
+2024-04-24 01:58:59,621: save_weights_every: 1
+2024-04-24 01:58:59,621: save_validation_results: True
+2024-04-24 01:58:59,621: dataset: era5_grdc_sheds
+2024-04-24 01:58:59,621: data_dir: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data
+2024-04-24 01:58:59,621: dynamic_inputs: ['sro_sum', 'ssro_sum', 'sp_mean', 't2m_mean', 'str_mean']
+2024-04-24 01:58:59,621: target_variables: ['streamflow']
+2024-04-24 01:58:59,621: static_attributes: ['pre_mm_syr', 'ari_ix_sav', 'area', 'ele_mt_sav', 'snw_pc_syr', 'slp_dg_sav', 'kar_pc_sse', 'cly_pc_sav', 'pet_mm_syr', 'for_pc_sse', 'snd_pc_sav', 'slt_pc_sav', 'gwt_cm_sav', 'run_mm_syr', 'soc_th_sav', 'swc_pc_syr', 'sgr_dk_sav', 'cmi_ix_syr']
+2024-04-24 01:58:59,621: number_of_basins: 394
+2024-04-24 01:58:59,621: run_dir: /central/home/achiang/CliMA/runs/usa_time_split_2404_015859
+2024-04-24 01:58:59,621: train_dir: /central/home/achiang/CliMA/runs/usa_time_split_2404_015859/train_data
+2024-04-24 01:58:59,621: img_log_dir: /central/home/achiang/CliMA/runs/usa_time_split_2404_015859/img_log
+2024-04-24 01:58:59,650: ### Device cuda:0 will be used for training
+2024-04-24 01:58:59,917: Loading basin data into xarray data set.
+2024-04-24 01:59:14,383: Calculating target variable stds per basin
+2024-04-24 01:59:14,952: Create lookup table and convert to pytorch tensor
+2024-04-24 02:02:29,487: Epoch 1 average loss: avg_loss: 0.00081, avg_total_loss: 0.00081
+2024-04-24 02:05:25,135: Epoch 2 average loss: avg_loss: 0.00006, avg_total_loss: 0.00006
+2024-04-24 02:05:32,971: The following basins had not enough valid target values to calculate a standard deviation: 7050045480. NSE loss values for this basin will be NaN.
+2024-04-24 02:06:09,655: The following basins had not enough valid target values to calculate a standard deviation: 7060045480. NSE loss values for this basin will be NaN.
+2024-04-24 02:06:16,954: The following basins had not enough valid target values to calculate a standard deviation: 7060334030. NSE loss values for this basin will be NaN.
+2024-04-24 02:07:11,015: The following basins had not enough valid target values to calculate a standard deviation: 7060589830. NSE loss values for this basin will be NaN.
+2024-04-24 02:07:27,067: The following basins had not enough valid target values to calculate a standard deviation: 7060746040. NSE loss values for this basin will be NaN.
+2024-04-24 02:09:28,902: The following basins had not enough valid target values to calculate a standard deviation: 8070086350. NSE loss values for this basin will be NaN.
+2024-04-24 02:09:33,374: Stored results at /central/home/achiang/CliMA/runs/usa_time_split_2404_015859/validation/model_epoch002/validation_results.p
+2024-04-24 02:09:33,389: Epoch 2 average validation loss: 0.00002 -- Median validation metrics: avg_loss: 0.00002, NSE: -0.11931
+2024-04-24 02:12:35,729: Epoch 3 average loss: avg_loss: 0.00002, avg_total_loss: 0.00002
+2024-04-24 02:15:39,199: Epoch 4 average loss: avg_loss: 0.00003, avg_total_loss: 0.00003
+2024-04-24 02:18:39,252: Stored results at /central/home/achiang/CliMA/runs/usa_time_split_2404_015859/validation/model_epoch004/validation_results.p
+2024-04-24 02:18:39,264: Epoch 4 average validation loss: 0.00002 -- Median validation metrics: avg_loss: 0.00002, NSE: 0.12918
+2024-04-24 02:21:41,700: Epoch 5 average loss: avg_loss: 0.00002, avg_total_loss: 0.00002
+2024-04-24 02:24:44,791: Epoch 6 average loss: avg_loss: 0.00001, avg_total_loss: 0.00001
+2024-04-24 02:27:43,525: Stored results at /central/home/achiang/CliMA/runs/usa_time_split_2404_015859/validation/model_epoch006/validation_results.p
+2024-04-24 02:27:43,537: Epoch 6 average validation loss: 0.00001 -- Median validation metrics: avg_loss: 0.00001, NSE: 0.48530
+2024-04-24 02:30:46,986: Epoch 7 average loss: avg_loss: 0.00001, avg_total_loss: 0.00001
+2024-04-24 02:33:49,879: Epoch 8 average loss: avg_loss: 0.00001, avg_total_loss: 0.00001
+2024-04-24 02:36:48,242: Stored results at /central/home/achiang/CliMA/runs/usa_time_split_2404_015859/validation/model_epoch008/validation_results.p
+2024-04-24 02:36:48,254: Epoch 8 average validation loss: 0.00001 -- Median validation metrics: avg_loss: 0.00001, NSE: 0.54274
+2024-04-24 02:39:51,083: Epoch 9 average loss: avg_loss: 0.00001, avg_total_loss: 0.00001
+2024-04-24 02:42:53,541: Epoch 10 average loss: avg_loss: 0.00001, avg_total_loss: 0.00001
+2024-04-24 02:45:52,167: Stored results at /central/home/achiang/CliMA/runs/usa_time_split_2404_015859/validation/model_epoch010/validation_results.p
+2024-04-24 02:45:52,176: Epoch 10 average validation loss: 0.00002 -- Median validation metrics: avg_loss: 0.00002, NSE: 0.56100
+2024-04-24 02:48:56,317: Epoch 11 average loss: avg_loss: 0.00001, avg_total_loss: 0.00001
+2024-04-24 02:52:00,127: Epoch 12 average loss: avg_loss: 0.00001, avg_total_loss: 0.00001
+2024-04-24 02:55:00,080: Stored results at /central/home/achiang/CliMA/runs/usa_time_split_2404_015859/validation/model_epoch012/validation_results.p
+2024-04-24 02:55:00,091: Epoch 12 average validation loss: 0.00001 -- Median validation metrics: avg_loss: 0.00001, NSE: 0.53108
+2024-04-24 02:58:02,528: Epoch 13 average loss: avg_loss: 0.00001, avg_total_loss: 0.00001
+2024-04-24 03:01:05,697: Epoch 14 average loss: avg_loss: 0.00001, avg_total_loss: 0.00001
+2024-04-24 03:04:04,481: Stored results at /central/home/achiang/CliMA/runs/usa_time_split_2404_015859/validation/model_epoch014/validation_results.p
+2024-04-24 03:04:04,490: Epoch 14 average validation loss: 0.00001 -- Median validation metrics: avg_loss: 0.00001, NSE: 0.56291
+2024-04-24 03:07:07,957: Epoch 15 average loss: avg_loss: 0.00001, avg_total_loss: 0.00001
+2024-04-24 03:10:11,677: Epoch 16 average loss: avg_loss: 0.00001, avg_total_loss: 0.00001
+2024-04-24 03:13:09,470: Stored results at /central/home/achiang/CliMA/runs/usa_time_split_2404_015859/validation/model_epoch016/validation_results.p
+2024-04-24 03:13:09,482: Epoch 16 average validation loss: 0.00001 -- Median validation metrics: avg_loss: 0.00001, NSE: 0.54930
+2024-04-24 03:16:12,380: Epoch 17 average loss: avg_loss: 0.00001, avg_total_loss: 0.00001
+2024-04-24 03:19:15,244: Epoch 18 average loss: avg_loss: 0.00001, avg_total_loss: 0.00001
+2024-04-24 03:22:14,906: Stored results at /central/home/achiang/CliMA/runs/usa_time_split_2404_015859/validation/model_epoch018/validation_results.p
+2024-04-24 03:22:14,922: Epoch 18 average validation loss: 0.00001 -- Median validation metrics: avg_loss: 0.00001, NSE: 0.51976
+2024-04-24 03:25:19,106: Epoch 19 average loss: avg_loss: 0.00001, avg_total_loss: 0.00001
+2024-04-24 03:28:24,007: Epoch 20 average loss: avg_loss: 0.00001, avg_total_loss: 0.00001
+2024-04-24 03:31:24,583: Stored results at /central/home/achiang/CliMA/runs/usa_time_split_2404_015859/validation/model_epoch020/validation_results.p
+2024-04-24 03:31:24,596: Epoch 20 average validation loss: 0.00001 -- Median validation metrics: avg_loss: 0.00001, NSE: 0.53791
+2024-04-24 03:31:24,596: Setting learning rate to 0.0001
+2024-04-24 03:34:28,742: Epoch 21 average loss: avg_loss: 0.00000, avg_total_loss: 0.00000
+2024-04-24 03:37:31,992: Epoch 22 average loss: avg_loss: 0.00000, avg_total_loss: 0.00000
+2024-04-24 03:40:31,395: Stored results at /central/home/achiang/CliMA/runs/usa_time_split_2404_015859/validation/model_epoch022/validation_results.p
+2024-04-24 03:40:31,404: Epoch 22 average validation loss: 0.00001 -- Median validation metrics: avg_loss: 0.00001, NSE: 0.53235
+2024-04-24 03:43:34,484: Epoch 23 average loss: avg_loss: 0.00000, avg_total_loss: 0.00000
+2024-04-24 03:46:37,488: Epoch 24 average loss: avg_loss: 0.00000, avg_total_loss: 0.00000
+2024-04-24 03:49:37,036: Stored results at /central/home/achiang/CliMA/runs/usa_time_split_2404_015859/validation/model_epoch024/validation_results.p
+2024-04-24 03:49:37,049: Epoch 24 average validation loss: 0.00001 -- Median validation metrics: avg_loss: 0.00001, NSE: 0.52399
+2024-04-24 03:52:41,475: Epoch 25 average loss: avg_loss: 0.00000, avg_total_loss: 0.00000
+2024-04-24 03:55:46,598: Epoch 26 average loss: avg_loss: 0.00000, avg_total_loss: 0.00000
+2024-04-24 03:58:47,620: Stored results at /central/home/achiang/CliMA/runs/usa_time_split_2404_015859/validation/model_epoch026/validation_results.p
+2024-04-24 03:58:47,632: Epoch 26 average validation loss: 0.00001 -- Median validation metrics: avg_loss: 0.00001, NSE: 0.51899
+2024-04-24 04:02:11,853: Epoch 27 average loss: avg_loss: 0.00000, avg_total_loss: 0.00000
+2024-04-24 04:05:46,706: Epoch 28 average loss: avg_loss: 0.00000, avg_total_loss: 0.00000
+2024-04-24 04:08:55,567: Stored results at /central/home/achiang/CliMA/runs/usa_time_split_2404_015859/validation/model_epoch028/validation_results.p
+2024-04-24 04:08:55,579: Epoch 28 average validation loss: 0.00001 -- Median validation metrics: avg_loss: 0.00001, NSE: 0.50468
+2024-04-24 04:11:59,402: Epoch 29 average loss: avg_loss: 0.00000, avg_total_loss: 0.00000
+2024-04-24 04:15:02,323: Epoch 30 average loss: avg_loss: 0.00000, avg_total_loss: 0.00000
+2024-04-24 04:18:30,082: Stored results at /central/home/achiang/CliMA/runs/usa_time_split_2404_015859/validation/model_epoch030/validation_results.p
+2024-04-24 04:18:30,095: Epoch 30 average validation loss: 0.00001 -- Median validation metrics: avg_loss: 0.00001, NSE: 0.50402
+2024-04-24 04:18:30,095: Setting learning rate to 1e-05
+2024-04-24 04:22:02,511: Epoch 31 average loss: avg_loss: 0.00000, avg_total_loss: 0.00000
+2024-04-24 04:25:04,590: Epoch 32 average loss: avg_loss: 0.00000, avg_total_loss: 0.00000
+2024-04-24 04:28:04,383: Stored results at /central/home/achiang/CliMA/runs/usa_time_split_2404_015859/validation/model_epoch032/validation_results.p
+2024-04-24 04:28:04,395: Epoch 32 average validation loss: 0.00001 -- Median validation metrics: avg_loss: 0.00001, NSE: 0.50636
+2024-04-24 04:31:10,555: Epoch 33 average loss: avg_loss: 0.00000, avg_total_loss: 0.00000
+2024-04-24 04:34:15,736: Epoch 34 average loss: avg_loss: 0.00000, avg_total_loss: 0.00000
+2024-04-24 04:37:17,375: Stored results at /central/home/achiang/CliMA/runs/usa_time_split_2404_015859/validation/model_epoch034/validation_results.p
+2024-04-24 04:37:17,387: Epoch 34 average validation loss: 0.00001 -- Median validation metrics: avg_loss: 0.00001, NSE: 0.50841
+2024-04-24 04:40:20,919: Epoch 35 average loss: avg_loss: 0.00000, avg_total_loss: 0.00000
