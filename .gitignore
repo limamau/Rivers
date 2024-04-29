@@ -1,7 +1,7 @@
 # engineering tests
 eng_*
 
-# pyt
+# pytorch
 *.p
 
 # code in development
