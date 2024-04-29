@@ -21,6 +21,7 @@ plt.plot(df['NSE'], cdf)
 plt.xlabel('NSE')
 plt.ylabel('CDF')
 plt.title(split_name + ': CDF of NSE')
+plt.xlim(0,1)
 plt.grid(True)
 
 fig_path = os.path.join('/home/achiang/CliMA/Rivers/examples/catchment_models/training/runs', run_dir, 'test/CDF_NSE.png')
