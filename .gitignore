@@ -1,12 +1,8 @@
 # engineering tests
 eng_*
 
-# images and csvs
-*/png_files/*
-*.png
-*/csv_files/*
-*.csv
-*/runs/*
+# pyt
+*.p
 
 # code in development
 dev/
