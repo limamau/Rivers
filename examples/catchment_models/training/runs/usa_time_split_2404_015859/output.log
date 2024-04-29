@@ -126,3 +126,50 @@
 2024-04-24 04:37:17,375: Stored results at /central/home/achiang/CliMA/runs/usa_time_split_2404_015859/validation/model_epoch034/validation_results.p
 2024-04-24 04:37:17,387: Epoch 34 average validation loss: 0.00001 -- Median validation metrics: avg_loss: 0.00001, NSE: 0.50841
 2024-04-24 04:40:20,919: Epoch 35 average loss: avg_loss: 0.00000, avg_total_loss: 0.00000
+2024-04-25 22:47:21,347: Logging to /home/achiang/CliMA/runs/usa_time_split_2404_015859/output.log initialized.
+2024-04-25 22:47:21,657: Uncaught exception
+Traceback (most recent call last):
+  File "/home/achiang/miniconda3/bin/nh-run", line 33, in <module>
+    sys.exit(load_entry_point('neuralhydrology', 'console_scripts', 'nh-run')())
+  File "/central/home/achiang/CliMA/Rivers/src/neuralhydrology/neuralhydrology/nh_run.py", line 51, in _main
+    eval_run(run_dir=Path(args["run_dir"]), period=args["period"], epoch=args["epoch"], gpu=args["gpu"])
+  File "/central/home/achiang/CliMA/Rivers/src/neuralhydrology/neuralhydrology/nh_run.py", line 169, in eval_run
+    start_evaluation(cfg=config, run_dir=run_dir, epoch=epoch, period=period)
+  File "/central/home/achiang/CliMA/Rivers/src/neuralhydrology/neuralhydrology/evaluation/evaluate.py", line 22, in start_evaluation
+    tester = get_tester(cfg=cfg, run_dir=run_dir, period=period, init_model=True)
+  File "/central/home/achiang/CliMA/Rivers/src/neuralhydrology/neuralhydrology/evaluation/__init__.py", line 35, in get_tester
+    return Tester(cfg=cfg, run_dir=run_dir, period=period, init_model=init_model)
+  File "/central/home/achiang/CliMA/Rivers/src/neuralhydrology/neuralhydrology/evaluation/tester.py", line 497, in __init__
+    super(RegressionTester, self).__init__(cfg, run_dir, period, init_model)
+  File "/central/home/achiang/CliMA/Rivers/src/neuralhydrology/neuralhydrology/evaluation/tester.py", line 82, in __init__
+    self._load_run_data()
+  File "/central/home/achiang/CliMA/Rivers/src/neuralhydrology/neuralhydrology/evaluation/tester.py", line 104, in _load_run_data
+    self.scaler = load_scaler(self.cfg.run_dir)
+  File "/central/home/achiang/CliMA/Rivers/src/neuralhydrology/neuralhydrology/evaluation/utils.py", line 57, in load_scaler
+    raise FileNotFoundError(f"No scaler file found in {scaler_file.parent}. "
+FileNotFoundError: No scaler file found in /central/home/achiang/CliMA/runs/usa_time_split_2404_015859/train_data. Looked for (new) yaml file or (old) pickle file
+2024-04-26 00:12:44,131: Logging to /home/achiang/CliMA/Rivers/examples/catchment_models/training/runs/usa_time_split_2404_015859/output.log initialized.
+2024-04-26 00:12:44,456: Uncaught exception
+Traceback (most recent call last):
+  File "/home/achiang/miniconda3/bin/nh-run", line 33, in <module>
+    sys.exit(load_entry_point('neuralhydrology', 'console_scripts', 'nh-run')())
+  File "/central/home/achiang/CliMA/Rivers/src/neuralhydrology/neuralhydrology/nh_run.py", line 51, in _main
+    eval_run(run_dir=Path(args["run_dir"]), period=args["period"], epoch=args["epoch"], gpu=args["gpu"])
+  File "/central/home/achiang/CliMA/Rivers/src/neuralhydrology/neuralhydrology/nh_run.py", line 169, in eval_run
+    start_evaluation(cfg=config, run_dir=run_dir, epoch=epoch, period=period)
+  File "/central/home/achiang/CliMA/Rivers/src/neuralhydrology/neuralhydrology/evaluation/evaluate.py", line 22, in start_evaluation
+    tester = get_tester(cfg=cfg, run_dir=run_dir, period=period, init_model=True)
+  File "/central/home/achiang/CliMA/Rivers/src/neuralhydrology/neuralhydrology/evaluation/__init__.py", line 35, in get_tester
+    return Tester(cfg=cfg, run_dir=run_dir, period=period, init_model=init_model)
+  File "/central/home/achiang/CliMA/Rivers/src/neuralhydrology/neuralhydrology/evaluation/tester.py", line 497, in __init__
+    super(RegressionTester, self).__init__(cfg, run_dir, period, init_model)
+  File "/central/home/achiang/CliMA/Rivers/src/neuralhydrology/neuralhydrology/evaluation/tester.py", line 82, in __init__
+    self._load_run_data()
+  File "/central/home/achiang/CliMA/Rivers/src/neuralhydrology/neuralhydrology/evaluation/tester.py", line 104, in _load_run_data
+    self.scaler = load_scaler(self.cfg.run_dir)
+  File "/central/home/achiang/CliMA/Rivers/src/neuralhydrology/neuralhydrology/evaluation/utils.py", line 57, in load_scaler
+    raise FileNotFoundError(f"No scaler file found in {scaler_file.parent}. "
+FileNotFoundError: No scaler file found in /central/home/achiang/CliMA/runs/usa_time_split_2404_015859/train_data. Looked for (new) yaml file or (old) pickle file
+2024-04-26 15:04:30,182: Logging to /home/achiang/CliMA/runs/usa_time_split_2404_015859/output.log initialized.
+2024-04-26 15:04:30,903: Using the model weights from /home/achiang/CliMA/runs/usa_time_split_2404_015859/model_epoch035.pt
+2024-04-26 15:07:38,764: Stored results at /home/achiang/CliMA/runs/usa_time_split_2404_015859/test/model_epoch035/test_results.p

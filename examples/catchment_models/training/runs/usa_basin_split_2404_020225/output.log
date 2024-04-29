@@ -125,3 +125,6 @@
 2024-04-24 04:00:12,414: Stored results at /central/home/achiang/CliMA/runs/usa_basin_split_2404_020225/validation/model_epoch034/validation_results.p
 2024-04-24 04:00:12,424: Epoch 34 average validation loss: 0.00001 -- Median validation metrics: avg_loss: 0.00001, NSE: 0.47866
 2024-04-24 04:03:00,990: Epoch 35 average loss: avg_loss: 0.00000, avg_total_loss: 0.00000
+2024-04-26 15:19:16,641: Logging to /home/achiang/CliMA/runs/usa_basin_split_2404_020225/output.log initialized.
+2024-04-26 15:19:17,210: Using the model weights from /home/achiang/CliMA/runs/usa_basin_split_2404_020225/model_epoch035.pt
+2024-04-26 15:20:00,754: Stored results at /home/achiang/CliMA/runs/usa_basin_split_2404_020225/test/model_epoch035/test_results.p
