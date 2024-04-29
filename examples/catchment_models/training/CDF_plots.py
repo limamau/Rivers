@@ -2,8 +2,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 
-split_name = 'Global Basin Split'
-run_dir = 'globe_basin_split_2404_220637'
+split_name = 'Global Time Split'
+run_dir = 'globe_time_split_2404_124848'
 
 # Load the CSV file
 csv_path = os.path.join('/home/achiang/CliMA/Rivers/examples/catchment_models/training/runs', run_dir, 'test/model_epoch035/test_metrics.csv')
