@@ -1,12 +1,15 @@
 # engineering tests
 eng_*
 
-# pytorch
-*.p
+# images and csvs
+*/png_files/*
+*.png
+*/csv_files/*
+*.csv
+*/runs/*
 
 # code in development
 dev/
 
 # others
 .DS_Store
-
