@@ -6,7 +6,7 @@ eng_*
 *.png
 */csv_files/*
 *.csv
-*/runs/*
+runs/*
 
 # code in development
 dev/
