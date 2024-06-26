@@ -14,5 +14,5 @@
 
 set -euo pipefail # kill the job if anything fails
 set -x # echo script
-nh-run train --config-file /home/achiang/CliMA/Rivers/examples/catchment_models/neuralhydrology/usa_time_split.yml
+nh-run evaluate --run-dir /home/achiang/CliMA/Rivers/examples/catchment_models/neuralhydrology/runs/usa_time_split_2606_124027
 echo done
