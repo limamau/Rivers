@@ -27,7 +27,7 @@ allow_subsequent_nan_losses: 5
 # --- Validation configuration ---------------------------------------------------------------------
 
 # specify after how many epochs to perform validation
-validate_every: 2
+validate_every: 1
 
 # specify how many random basins to use for validation
 validate_n_random_basins: 1000
@@ -76,7 +76,7 @@ learning_rate:
 batch_size: 256
 
 # Number of training epochs
-epochs: 1
+epochs: 5
 
 # If True, clips norm of gradients
 clip_gradient_norm: 1

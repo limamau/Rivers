@@ -6,7 +6,9 @@ eng_*
 *.png
 */csv_files/*
 *.csv
-runs/*
+examples/catchment_models/neuralhydrology/runs/*
+examples/catchment_models/neuralhydrology/*.out
+
 
 # code in development
 dev/
