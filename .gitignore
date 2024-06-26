@@ -8,6 +8,8 @@ eng_*
 *.csv
 examples/catchment_models/neuralhydrology/runs/*
 examples/catchment_models/neuralhydrology/*.out
+examples/catchment_models/lstm_training/runs/*
+
 
 
 # code in development
