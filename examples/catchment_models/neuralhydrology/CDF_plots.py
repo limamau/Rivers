@@ -4,9 +4,10 @@ import os
 
 split_name = 'USA Time Split'
 run_dir = 'usa_time_split_2606_124027'
+epoch = '05'
 
 # Load the CSV file
-csv_path = os.path.join('/home/achiang/CliMA/Rivers/examples/catchment_models/neuralhydrology/runs', run_dir, 'test/model_epoch005/test_metrics.csv')
+csv_path = os.path.join(f'runs/{run_dir}/test/model_epoch0{epoch}/test_metrics.csv')
 df = pd.read_csv(csv_path)
 
 # Sort the data by NSE
@@ -20,9 +21,9 @@ plt.figure(figsize=(8, 6))
 plt.plot(df['NSE'], cdf)
 plt.xlabel('NSE')
 plt.ylabel('CDF')
-plt.title(split_name + ': CDF of NSE')
+plt.title(f'{split_name}: CDF of NSE for {epoch} epochs')
 plt.xlim(0,1)
 plt.grid(True)
 
-fig_path = os.path.join('/home/achiang/CliMA/Rivers/examples/catchment_models/neuralhydrology/runs', run_dir, 'test/CDF_NSE.png')
+fig_path = os.path.join(f'plots/{run_dir}_CDF_NSE_{epoch}.png')
 plt.savefig(fig_path, dpi=300)
