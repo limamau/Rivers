@@ -1,11 +1,11 @@
 #!/bin/bash
 
-#SBATCH --job-name=globe_time_eval
+#SBATCH --job-name=usa_time
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
 #SBATCH --tasks-per-node=1
 #SBATCH --gres=gpu:v100:1 # remove :v100 for p100    
-#SBATCH --time=3:00:00 # adjust as necessary
+#SBATCH --time=12:00:00 # adjust as necessary
 #SBATCH --mem-per-gpu=16GB # adjust as necessary
 #SBATCH --mail-user=achiang@caltech.edu
 #SBATCH --mail-type=BEGIN

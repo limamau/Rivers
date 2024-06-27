@@ -4,9 +4,9 @@
 experiment_name: usa_basin_split
 
 # files to specify training, validation and test basins (relative to code root or absolute path)
-train_basin_file: path/to/basins.txt
-validation_basin_file: path/to/basins.txt
-test_basin_file: path/to/basins.txt
+train_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/usa_basin_split_train_list.txt
+validation_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/usa_basin_split_train_list.txt
+test_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/usa_basin_split_test_list.txt
 
 # training, validation and test time periods (format = 'dd/mm/yyyy')
 train_start_date: '01/10/1999'
@@ -40,7 +40,7 @@ metrics:
 
 # base model type [lstm, ealstm, cudalstm, embcudalstm, shortcutlstm, dropoutlstm, cudalstminitialh]
 # (has to match the if statement in modelzoo/__init__.py)
-model: cudalstm
+model: cornn
 
 # prediction head [regression, mdn, umal]. Define the head specific parameters below
 head: regression
@@ -105,7 +105,7 @@ save_validation_results: True
 # --- Data configurations --------------------------------------------------------------------------
 # Data information
 dataset: era5_grdc_sheds
-data_dir: path/to/data
+data_dir: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/
 
 
 # variables to use as time series input (names match the data file column headers)
