@@ -3,7 +3,7 @@ import os
 import matplotlib.pyplot as plt
 
 model_NSE = {}
-run_dir = 'usa_time_split_2606_190054'
+run_dir = 'usa_basin_split_2606_190054'
 epoch_num = '35'
 
 parts = run_dir.split('_')
