@@ -1,0 +1,51 @@
+2024-06-27 13:55:24,269: Logging to /central/home/achiang/CliMA/Rivers/examples/catchment_models/neuralhydrology/scripts/runs/usa_time_split_2706_135524/output.log initialized.
+2024-06-27 13:55:24,269: ### Folder structure created at /central/home/achiang/CliMA/Rivers/examples/catchment_models/neuralhydrology/scripts/runs/usa_time_split_2706_135524
+2024-06-27 13:55:24,269: ### Run configurations for usa_time_split
+2024-06-27 13:55:24,269: experiment_name: usa_time_split
+2024-06-27 13:55:24,269: train_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/usa_time_split_list.txt
+2024-06-27 13:55:24,269: validation_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/usa_time_split_list.txt
+2024-06-27 13:55:24,269: test_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/usa_time_split_list.txt
+2024-06-27 13:55:24,269: train_start_date: 1999-10-01 00:00:00
+2024-06-27 13:55:24,269: train_end_date: 2009-09-30 00:00:00
+2024-06-27 13:55:24,269: validation_start_date: 1989-10-01 00:00:00
+2024-06-27 13:55:24,270: validation_end_date: 1999-09-30 00:00:00
+2024-06-27 13:55:24,270: test_start_date: 1999-10-01 00:00:00
+2024-06-27 13:55:24,270: test_end_date: 2009-09-30 00:00:00
+2024-06-27 13:55:24,270: seed: 123
+2024-06-27 13:55:24,270: device: cuda:0
+2024-06-27 13:55:24,270: allow_subsequent_nan_losses: 5
+2024-06-27 13:55:24,270: validate_every: 2
+2024-06-27 13:55:24,270: validate_n_random_basins: 1000
+2024-06-27 13:55:24,270: metrics: ['NSE']
+2024-06-27 13:55:24,270: model: cornn
+2024-06-27 13:55:24,270: head: regression
+2024-06-27 13:55:24,270: hidden_size: 128
+2024-06-27 13:55:24,270: initial_forget_bias: 3
+2024-06-27 13:55:24,270: output_dropout: 0.4
+2024-06-27 13:55:24,270: output_activation: linear
+2024-06-27 13:55:24,270: optimizer: Adam
+2024-06-27 13:55:24,270: loss: NSE
+2024-06-27 13:55:24,270: learning_rate: {0: 0.001, 21: 0.0001, 31: 1e-05}
+2024-06-27 13:55:24,270: batch_size: 256
+2024-06-27 13:55:24,270: epochs: 35
+2024-06-27 13:55:24,270: clip_gradient_norm: 1
+2024-06-27 13:55:24,270: predict_last_n: 1
+2024-06-27 13:55:24,270: seq_length: 270
+2024-06-27 13:55:24,270: num_workers: 1
+2024-06-27 13:55:24,270: log_interval: 50
+2024-06-27 13:55:24,271: log_tensorboard: True
+2024-06-27 13:55:24,271: save_weights_every: 1
+2024-06-27 13:55:24,271: save_validation_results: True
+2024-06-27 13:55:24,271: dataset: era5_grdc_sheds
+2024-06-27 13:55:24,271: data_dir: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data
+2024-06-27 13:55:24,271: dynamic_inputs: ['sro_sum', 'ssro_sum', 'sp_mean', 't2m_mean', 'str_mean']
+2024-06-27 13:55:24,271: target_variables: ['streamflow']
+2024-06-27 13:55:24,271: static_attributes: ['pre_mm_syr', 'ari_ix_sav', 'area', 'ele_mt_sav', 'snw_pc_syr', 'slp_dg_sav', 'kar_pc_sse', 'cly_pc_sav', 'pet_mm_syr', 'for_pc_sse', 'snd_pc_sav', 'slt_pc_sav', 'gwt_cm_sav', 'run_mm_syr', 'soc_th_sav', 'swc_pc_syr', 'sgr_dk_sav', 'cmi_ix_syr']
+2024-06-27 13:55:24,271: number_of_basins: 394
+2024-06-27 13:55:24,271: run_dir: /central/home/achiang/CliMA/Rivers/examples/catchment_models/neuralhydrology/scripts/runs/usa_time_split_2706_135524
+2024-06-27 13:55:24,271: train_dir: /central/home/achiang/CliMA/Rivers/examples/catchment_models/neuralhydrology/scripts/runs/usa_time_split_2706_135524/train_data
+2024-06-27 13:55:24,271: img_log_dir: /central/home/achiang/CliMA/Rivers/examples/catchment_models/neuralhydrology/scripts/runs/usa_time_split_2706_135524/img_log
+2024-06-27 13:55:24,295: ### Device cuda:0 will be used for training
+2024-06-27 13:55:24,505: Loading basin data into xarray data set.
+2024-06-27 13:55:36,077: Calculating target variable stds per basin
+2024-06-27 13:55:36,523: Create lookup table and convert to pytorch tensor
