@@ -3,7 +3,7 @@ eng_*
 
 # images and csvs
 */png_files/*
-*.png
+# *.png
 */csv_files/*
 *.csv
 examples/catchment_models/neuralhydrology/runs/*
