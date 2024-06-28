@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=usa_basin_eval
+#SBATCH --job-name=usa_time_eval_mse_no_dropout
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
 #SBATCH --tasks-per-node=1
@@ -14,5 +14,5 @@
 
 set -euo pipefail # kill the job if anything fails
 set -x # echo script
-nh-run evaluate --run-dir /home/achiang/CliMA/Rivers/examples/catchment_models/neuralhydrology/runs/usa_basin_split_2606_190054
+nh-run evaluate --run-dir /home/achiang/CliMA/Rivers/examples/catchment_models/neuralhydrology/runs/usa_time_split_2706_161344
 echo done

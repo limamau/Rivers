@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from neuralhydrology.evaluation import metrics
 import os
 
-run_dir = 'usa_basin_split_2606_190054'
+run_dir = 'usa_time_split_2706_140255'
 epoch = '35'
 
 parts = run_dir.split('_')
