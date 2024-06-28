@@ -6,6 +6,7 @@ eng_*
 # *.png
 */csv_files/*
 *.csv
+*.pyc
 examples/catchment_models/neuralhydrology/runs/*
 examples/catchment_models/neuralhydrology/*.out
 examples/catchment_models/lstm_training/runs/*
