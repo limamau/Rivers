@@ -6,7 +6,7 @@ from NSE_vs_epochs import NSE_plot
 
 
 if __name__ == "__main__":
-    run_dir = 'usa_time_split_2706_140255'
+    run_dir = 'usa_time_split_2706_161344'
     epoch = '35'
 
     # Plot observed vs simulated trajectory
