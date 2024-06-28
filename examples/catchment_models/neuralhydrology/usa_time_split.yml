@@ -1,7 +1,7 @@
 # --- Experiment configurations --------------------------------------------------------------------
 
 # experiment name, used as folder name
-experiment_name: usa_time_split
+experiment_name: usa_time_split_high_dt
 
 # files to specify training, validation and test basins (relative to code root or absolute path)
 train_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/usa_time_split_list.txt
@@ -27,7 +27,7 @@ allow_subsequent_nan_losses: 5
 # --- Validation configuration ---------------------------------------------------------------------
 
 # specify after how many epochs to perform validation
-validate_every: 2
+validate_every: 1
 
 # specify how many random basins to use for validation
 validate_n_random_basins: 1000
@@ -76,7 +76,7 @@ learning_rate:
 batch_size: 256
 
 # Number of training epochs
-epochs: 35
+epochs: 20
 
 # If True, clips norm of gradients
 clip_gradient_norm: 1
