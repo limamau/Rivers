@@ -30,6 +30,7 @@ def obs_vs_sim_plot(run_dir, epoch, basin_id = '7050039160'):
 
     fig_path = f'plots/{run_dir}/obs_vs_sim_{epoch}.png'
     plt.savefig(fig_path, dpi=300)
+    plt.close()
 
     # print metrics
     # values = metrics.calculate_all_metrics(qobs.isel(time_step=-1), qsim.isel(time_step=-1))

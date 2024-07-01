@@ -31,4 +31,6 @@ def cdf_plot(run_dir, epoch):
     fig_path = f'plots/{run_dir}/CDF_NSE_{epoch}.png'
     plt.savefig(fig_path, dpi=300)
 
+    plt.close()
+
     return df['NSE'], cdf

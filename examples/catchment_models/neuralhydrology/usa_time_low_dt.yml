@@ -1,7 +1,7 @@
 # --- Experiment configurations --------------------------------------------------------------------
 
 # experiment name, used as folder name
-experiment_name: usa_time_split_control_all
+experiment_name: usa_time_split_low_dt
 
 # files to specify training, validation and test basins (relative to code root or absolute path)
 train_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/usa_time_split_list.txt
@@ -43,7 +43,7 @@ metrics:
 model: cornn
 
 # coRNN hyperparameters
-dt : 0.05
+dt : 0.01
 gamma : 1
 eps : 1
 

@@ -41,5 +41,6 @@ def NSE_plot(run_dir, epoch):
 
     fig_path = f'plots/{run_dir}/NSE_per_epoch_{epoch}.png'
     plt.savefig(fig_path, dpi=300)
+    plt.close()
 
     return x, y
