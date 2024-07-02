@@ -5,15 +5,17 @@ from CDF_plots import cdf_plot
 from NSE_vs_epochs import NSE_plot
 from collections import defaultdict
 import matplotlib.pyplot as plt
+import os
 
 if __name__ == "__main__":
     run_dirs = ['usa_time_split_control_all_0107_065026',
-                'usa_time_split_high_dt_3006_134343',
-                'usa_time_split_high_eps_3006_234955',
-                'usa_time_split_high_gamma_3006_235327',
-                'usa_time_split_low_dt_3006_235327',
-                'usa_time_split_low_eps_0107_064655',
-                'usa_time_split_low_gamma_0107_064755']
+               'usa_time_split_high_dt_3006_134343',
+               'usa_time_split_high_eps_3006_234955',
+               'usa_time_split_high_gamma_3006_235327',
+               'usa_time_split_mid_dt_0107_153127',
+               'usa_time_split_mid_eps_0107_155114',
+               'usa_time_split_mid_gamma_0107_154404',
+               'usa_time_split_high_dt-gamma_0207_005943']
     epoch = '20'
 
     CDF = []
@@ -35,6 +37,10 @@ if __name__ == "__main__":
         MED_NSE.append((ep, med_nse, exp_name))
     
     if True:
+        plot_folder = 'high_med'
+        if not os.path.exists(f'plots/{plot_folder}'):
+            os.makedirs(f'plots/{plot_folder}')
+
         # Plot all CDFs on the same figure
         plt.figure(1)
         for (nse, cdf, exp_name) in CDF:
@@ -47,7 +53,7 @@ if __name__ == "__main__":
         plt.ylim(-0.1,1.1)
         plt.grid(True)
         plt.legend()
-        fig_path = f'plots/joint/CDF_NSE.png'
+        fig_path = f'plots/{plot_folder}/CDF_NSE.png'
         plt.savefig(fig_path, dpi=300)
         plt.close()
 
@@ -67,6 +73,6 @@ if __name__ == "__main__":
         plt.xlim(0, int(epoch) + 1)
         plt.ylim(min_nse-0.1, max_nse+0.1)
         plt.legend()
-        fig_path = f'plots/joint/NSE_per_epoch.png'
+        fig_path = f'plots/{plot_folder}/NSE_per_epoch.png'
         plt.savefig(fig_path, dpi=300)
         plt.close()
