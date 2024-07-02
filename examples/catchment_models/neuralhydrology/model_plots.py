@@ -10,12 +10,15 @@ import os
 if __name__ == "__main__":
     run_dirs = ['usa_time_split_control_all_0107_065026',
                'usa_time_split_high_dt_3006_134343',
-               'usa_time_split_high_eps_3006_234955',
-               'usa_time_split_high_gamma_3006_235327',
+            #    'usa_time_split_high_eps_3006_234955',
+            #    'usa_time_split_high_gamma_3006_235327',
                'usa_time_split_mid_dt_0107_153127',
-               'usa_time_split_mid_eps_0107_155114',
-               'usa_time_split_mid_gamma_0107_154404',
-               'usa_time_split_high_dt-gamma_0207_005943']
+            #    'usa_time_split_mid_eps_0107_155114',
+            #    'usa_time_split_mid_gamma_0107_154404',
+            #    'usa_time_split_high_dt-gamma_0207_005943',
+               'usa_time_split_low_dt_3006_235327']
+            #    'usa_time_split_low_eps_0107_064655',
+            #    'usa_time_split_low_gamma_0107_064755']
     epoch = '20'
 
     CDF = []
@@ -37,7 +40,7 @@ if __name__ == "__main__":
         MED_NSE.append((ep, med_nse, exp_name))
     
     if True:
-        plot_folder = 'high_med'
+        plot_folder = 'dt'
         if not os.path.exists(f'plots/{plot_folder}'):
             os.makedirs(f'plots/{plot_folder}')
 
@@ -71,7 +74,7 @@ if __name__ == "__main__":
         plt.title(split_name + ': Median NSE vs Epoch')
         plt.grid(True)
         plt.xlim(0, int(epoch) + 1)
-        plt.ylim(min_nse-0.1, max_nse+0.1)
+        plt.ylim(0.1, 0.6)
         plt.legend()
         fig_path = f'plots/{plot_folder}/NSE_per_epoch.png'
         plt.savefig(fig_path, dpi=300)
