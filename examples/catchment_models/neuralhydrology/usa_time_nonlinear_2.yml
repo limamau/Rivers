@@ -11,10 +11,10 @@ test_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model
 # training, validation and test time periods (format = 'dd/mm/yyyy')
 train_start_date: '01/10/1999'
 train_end_date: '30/09/2009'
-validation_start_date: '01/10/1989'
-validation_end_date: '30/09/1999'
-test_start_date: '01/10/1999'
-test_end_date: '30/09/2009'
+validation_start_date: '01/10/2009'
+validation_end_date: '30/09/2019'
+test_start_date: '01/10/1989'
+test_end_date: '30/09/1999'
 
 # fixed seed, leave empty to use a random seed
 seed: 123
@@ -27,7 +27,7 @@ allow_subsequent_nan_losses: 5
 # --- Validation configuration ---------------------------------------------------------------------
 
 # specify after how many epochs to perform validation
-validate_every: 1
+validate_every: 2
 
 # specify how many random basins to use for validation
 validate_n_random_basins: 1000

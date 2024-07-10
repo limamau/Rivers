@@ -8,10 +8,11 @@ import matplotlib.pyplot as plt
 import os
 
 if __name__ == "__main__":
-    run_dirs = ['usa_time_split_nonlinear_2_0307_132149',
-                'usa_time_split_nonlinear_3_0307_132212',
-                'usa_time_split_high-dt_mid-gamma_128-nhid_0207_162313',
-                'usa_time_split_high-dt_mid-gamma_256-nhid_0207_162416']
+    run_dirs = ['usa_time_split_nonlinear_2_0907_102119',
+                'usa_time_split_nonlinear_3_0907_102504',
+                'usa_time_split_nonlinear_4_0907_102618',
+                'usa_time_split_high-dt_mid-gamma_128-nhid_0907_101842',
+                'usa_time_split_high-dt_mid-gamma_256-nhid_0907_101859']
 
             #    'usa_time_split_control_all_0107_065026',
             #    'usa_time_split_high_dt_3006_134343',
@@ -45,7 +46,7 @@ if __name__ == "__main__":
         MED_NSE.append((ep, med_nse, exp_name))
     
     if True:
-        plot_folder = 'hidden_states'
+        plot_folder = 'increased_capacity'
         if not os.path.exists(f'plots/{plot_folder}'):
             os.makedirs(f'plots/{plot_folder}')
 
