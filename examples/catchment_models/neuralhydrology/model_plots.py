@@ -8,52 +8,45 @@ import matplotlib.pyplot as plt
 import os
 
 if __name__ == "__main__":
-    run_dirs = ['usa_time_split_nonlinear_2_0907_102119',
-                'usa_time_split_nonlinear_3_0907_102504',
-                'usa_time_split_nonlinear_4_0907_102618',
-                'usa_time_split_high-dt_mid-gamma_128-nhid_0907_101842',
-                'usa_time_split_high-dt_mid-gamma_256-nhid_0907_101859']
-
-            #    'usa_time_split_control_all_0107_065026',
-            #    'usa_time_split_high_dt_3006_134343',
-            #    'usa_time_split_high_eps_3006_234955',
-            #    'usa_time_split_high_gamma_3006_235327',
-            #    'usa_time_split_mid_dt_0107_153127',
-            #    'usa_time_split_mid_eps_0107_155114',
-            #    'usa_time_split_mid_gamma_0107_154404',
-            #    'usa_time_split_high_dt-gamma_0207_005943']
-            #    'usa_time_split_low_dt_3006_235327']
-            #    'usa_time_split_low_eps_0107_064655',
-            #    'usa_time_split_low_gamma_0107_064755']
-    epoch = '20'
+    run_dirs = {
+                'lstm_training' :
+                    ['usa_time_split_adj_0807_170652'],   
+                'neuralhydrology':
+                    ['usa_time_split_128nhid_35epochs_1007_144118',
+                    'usa_time_split_256nhid_35epochs_1007_143541',
+                    'usa_time_split_512nhid_35epochs_1007_143728',
+                    'usa_time_split_nonlinear_4_1007_143728']
+                }
+    epoch = '35'
 
     CDF = []
     MED_NSE = []
-    for run_dir in run_dirs:
-        parts = run_dir.split('_')
-        split_name = f"{parts[0].upper()} {parts[1].capitalize()} {parts[2].capitalize()}"
-        exp_name = f"{parts[3].capitalize()} {parts[4].capitalize()} {parts[5].capitalize()}"
+    for model_dir, run_dirs in run_dirs.items():
+        for run_dir in run_dirs:
+            parts = run_dir.split('_')
+            split_name = f"{parts[0].upper()} {parts[1].capitalize()} {parts[2].capitalize()}"
+            exp_name = f"{parts[3].capitalize()} {parts[4].capitalize()} {parts[5].capitalize()}"
+            print(f'{model_dir}, {exp_name}')
 
-        # Plot observed vs simulated trajectory
-        obs_vs_sim_plot(run_dir, epoch)
-        
-        # Plot CDF of NSE
-        nse, cdf = cdf_plot(run_dir, epoch)
-        CDF.append((nse, cdf, exp_name))
+            # Plot observed vs simulated trajectory
+            obs_vs_sim_plot(run_dir, epoch)
+            
+            # Plot CDF of NSE
+            nse, cdf = cdf_plot(model_dir, run_dir, epoch)
+            CDF.append((nse, cdf, exp_name))
 
-        # Plot Median NSE vs Epochs
-        ep, med_nse = NSE_plot(run_dir, epoch)
-        MED_NSE.append((ep, med_nse, exp_name))
+            # Plot Median NSE vs Epochs
+            ep, med_nse = NSE_plot(run_dir, epoch)
+            MED_NSE.append((ep, med_nse, exp_name))
     
     if True:
-        plot_folder = 'increased_capacity'
+        plot_folder = 'lstm_comparison'
         if not os.path.exists(f'plots/{plot_folder}'):
             os.makedirs(f'plots/{plot_folder}')
 
         # Plot all CDFs on the same figure
         plt.figure(1)
         for (nse, cdf, exp_name) in CDF:
-            print(exp_name)
             plt.plot(nse, cdf, label=exp_name)
         plt.xlabel('NSE')
         plt.ylabel('CDF')
