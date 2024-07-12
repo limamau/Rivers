@@ -33,6 +33,8 @@ def obs_vs_sim_plot(model_dir, run_dir, epoch, basin_id = '7050039160', plot_boo
         plt.savefig(fig_path, dpi=300)
         plt.close()
 
+    return qobs, qsim
+
     # print metrics
     # values = metrics.calculate_all_metrics(qobs.isel(time_step=-1), qsim.isel(time_step=-1))
     # for key, val in values.items():

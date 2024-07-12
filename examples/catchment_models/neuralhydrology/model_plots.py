@@ -12,69 +12,89 @@ if __name__ == "__main__":
                 'lstm_training' :
                     ['usa_time_split_adj_0807_170652'],   
                 'neuralhydrology':
-                    ['usa_time_split_128nhid_35epochs_1007_144118',
-                    'usa_time_split_256nhid_35epochs_1007_143541',
-                    'usa_time_split_512nhid_35epochs_1007_143728',
-                    'usa_time_split_nonlinear_4_1007_143728']
+                    ['usa_time_split_512nhid_35epochs_1007_143728']
                 }
-    epoch = '35'
 
+    OvS = []
     CDF = []
     MED_NSE = []
     for model_dir, run_dirs in run_dirs.items():
         for run_dir in run_dirs:
+            if model_dir == 'lstm_training':
+                model = 'LSTM'
+                epoch = '14'
+            else:
+                model = 'coRNN'
+                epoch = '35'
             parts = run_dir.split('_')
             split_name = f"{parts[0].upper()} {parts[1].capitalize()} {parts[2].capitalize()}"
-            exp_name = f"{parts[3].capitalize()} {parts[4].capitalize()} {parts[5].capitalize()}"
-            print(f'{model_dir}, {exp_name}')
+            exp_name = f"{model}"
 
             # Plot observed vs simulated trajectory
-            obs_vs_sim_plot(run_dir, epoch)
-            
-            # Plot CDF of NSE
-            nse, cdf = cdf_plot(model_dir, run_dir, epoch)
-            CDF.append((nse, cdf, exp_name))
+            qobs, qsim = obs_vs_sim_plot(model_dir, run_dir, epoch, basin_id = '7070737080')
+            OvS.append((qobs, qsim, exp_name))
 
-            # Plot Median NSE vs Epochs
-            ep, med_nse = NSE_plot(run_dir, epoch)
-            MED_NSE.append((ep, med_nse, exp_name))
+            # # Plot CDF of NSE
+            # nse, cdf = cdf_plot(model_dir, run_dir, epoch)
+            # CDF.append((nse, cdf, exp_name))
+
+            # # Plot Median NSE vs Epochs
+            # ep, med_nse = NSE_plot(model_dir, run_dir, epoch)
+            # MED_NSE.append((ep, med_nse, exp_name))
     
     if True:
-        plot_folder = 'lstm_comparison'
+        plot_folder = 'lstm_v_cornn'
         if not os.path.exists(f'plots/{plot_folder}'):
             os.makedirs(f'plots/{plot_folder}')
 
-        # Plot all CDFs on the same figure
-        plt.figure(1)
-        for (nse, cdf, exp_name) in CDF:
-            plt.plot(nse, cdf, label=exp_name)
-        plt.xlabel('NSE')
-        plt.ylabel('CDF')
-        plt.title(f'{split_name}: CDF of NSE for {epoch} epochs')
-        plt.xlim(0,1)
-        plt.ylim(-0.1,1.1)
-        plt.grid(True)
-        plt.legend()
-        fig_path = f'plots/{plot_folder}/CDF_NSE.png'
-        plt.savefig(fig_path, dpi=300)
-        plt.close()
+        # # Plot all CDFs on the same figure
+        # plt.figure(1)
+        # for (nse, cdf, exp_name) in CDF:
+        #     plt.plot(nse, cdf, label=exp_name)
+        # plt.xlabel('NSE')
+        # plt.ylabel('CDF')
+        # plt.title(f'{split_name}: CDF of NSE for {epoch} epochs')
+        # plt.xlim(0,1)
+        # plt.ylim(-0.1,1.1)
+        # plt.grid(True)
+        # plt.legend()
+        # fig_path = f'plots/{plot_folder}/CDF_NSE.png'
+        # plt.savefig(fig_path, dpi=300)
+        # plt.close()
 
-        # Plot all median NSE on the same figure
-        min_nse = 0
-        max_nse = 0
-        plt.figure(2)
-        for (ep, med_nse, exp_name) in MED_NSE:
-            print(exp_name)
-            plt.plot(ep, med_nse, '-o', label=exp_name)
-            min_nse = min(min_nse, min(med_nse))
-            max_nse = max(max_nse, max(med_nse))
-        plt.xlabel('Epoch')
-        plt.ylabel('NSE') 
-        plt.title(split_name + ': Median NSE vs Epoch')
-        plt.grid(True)
-        plt.xlim(0, int(epoch) + 1)
-        plt.ylim(0.1, 0.6)
+        # # Plot all median NSE on the same figure
+        # min_nse = 0
+        # max_nse = 0
+        # plt.figure(2)
+        # for (ep, med_nse, exp_name) in MED_NSE:
+        #     print(exp_name)
+        #     plt.plot(ep, med_nse, '-o', label=exp_name)
+        #     min_nse = min(min_nse, min(med_nse))
+        #     max_nse = max(max_nse, max(med_nse))
+        # plt.xlabel('Epoch')
+        # plt.ylabel('NSE') 
+        # plt.title(split_name + ': Median NSE vs Epoch')
+        # plt.grid(True)
+        # plt.xlim(0, int(epoch) + 1)
+        # plt.ylim(0.1, 0.6)
+        # plt.legend()
+        # fig_path = f'plots/{plot_folder}/NSE_per_epoch.png'
+        # plt.savefig(fig_path, dpi=300)
+        # plt.close()
+
+
+        # Plot observed vs simulated trajecory
+        plt.figure(3, figsize=(16,10))
+        qobs, _, _ = OvS[0]
+        colors = ['#fa0bfb', '#04fb09']
+        i = 0
+        for (qobs, qsim, exp_name) in OvS:
+            plt.plot(qsim['date'], qsim, label=f'{exp_name}', color=colors[i])
+            i += 1
+        plt.plot(qobs['date'], qobs, label='Observed', color='#0093ff')
         plt.legend()
-        fig_path = f'plots/{plot_folder}/NSE_per_epoch.png'
+        plt.ylabel("Discharge (mm/d)")
+        plt.title(f"Observed vs Simulated Trajectory")
+        fig_path = f'plots/{plot_folder}/obs_vs_sim.png'
         plt.savefig(fig_path, dpi=300)
         plt.close()
