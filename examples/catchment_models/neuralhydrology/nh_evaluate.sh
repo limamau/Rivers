@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=usa_time_split_nonlinear_4_1007_143728_eval
+#SBATCH --job-name=usa_time_split_softplus_eval
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
 #SBATCH --tasks-per-node=1
@@ -14,5 +14,5 @@
 
 set -euo pipefail # kill the job if anything fails
 set -x # echo script
-nh-run evaluate --run-dir /home/achiang/CliMA/Rivers/examples/catchment_models/neuralhydrology/runs/usa_time_split_nonlinear_4_1007_143728
+nh-run evaluate --run-dir /home/achiang/CliMA/Rivers/examples/catchment_models/neuralhydrology/runs/usa_time_split_softplus_1207_162116
 echo done

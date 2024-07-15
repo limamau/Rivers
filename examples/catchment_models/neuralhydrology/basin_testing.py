@@ -3,7 +3,8 @@ import pandas as pd
 
 def get_df(model_dir, run_dir, epoch):
     path_to_csv = f'/home/achiang/CliMA/Rivers/examples/catchment_models/{model_dir}/runs/{run_dir}/test/model_epoch0{epoch}/test_metrics.csv'
-
+    if model_dir == 'neuralhydrology':
+        path_to_csv = 'test_metrics_adj.csv'
     df = pd.read_csv(path_to_csv)
     df = df.dropna()
     return df
