@@ -12,7 +12,7 @@ def obs_vs_sim_plot(model_dir, run_dir, epoch, basin_id = '7050039160', plot_boo
 
     with open(pickle_file, "rb") as fp:
         results = pickle.load(fp)
-
+    
     # extract observations and simulations. First key is basin number
     qobs = results[basin_id]['1D']['xr']['streamflow_obs']
     qsim = results[basin_id]['1D']['xr']['streamflow_sim']
@@ -39,3 +39,6 @@ def obs_vs_sim_plot(model_dir, run_dir, epoch, basin_id = '7050039160', plot_boo
     # values = metrics.calculate_all_metrics(qobs.isel(time_step=-1), qsim.isel(time_step=-1))
     # for key, val in values.items():
     #     print(f"{key}: {val:.3f}")
+
+if __name__ == '__main__':
+    qobs, qsim = obs_vs_sim_plot('neuralhydrology', 'usa_time_split_learn_dt_1807_121428', '06', basin_id = '7050039160', plot_bool = True)

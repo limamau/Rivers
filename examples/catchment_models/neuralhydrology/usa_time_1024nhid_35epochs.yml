@@ -1,7 +1,7 @@
 # --- Experiment configurations --------------------------------------------------------------------
 
 # experiment name, used as folder name
-experiment_name: usa_time_split_512nhid_adjloss
+experiment_name: usa_time_split_1024nhid_35epochs
 
 # files to specify training, validation and test basins (relative to code root or absolute path)
 train_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/usa_time_split_list.txt
@@ -53,7 +53,7 @@ head: regression
 # ----> General xsettings <----
 
 # Number of cell states of the LSTM
-hidden_size: 512
+hidden_size: 1024
 
 # Initial bias value of the forget gate
 initial_forget_bias: 3

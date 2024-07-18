@@ -6,18 +6,21 @@ from NSE_vs_epochs import NSE_plot
 from collections import defaultdict
 import matplotlib.pyplot as plt
 import os
+import numpy as np
 
 if __name__ == "__main__":
     run_dirs = { 
+                'lstm_training':
+                    ['usa_time_split_adj_0807_170652'],
                 'neuralhydrology':
-                    ['usa_time_split_512nhid_35epochs_1007_143728',
-                    'usa_time_split_relu_1207_162102',
-                    'usa_time_split_softplus_1207_162116']
+                    ['usa_time_split_512nhid_positive_1707_105911']
                 }
 
     OvS = []
     CDF = []
     MED_NSE = []
+    metric = 'NSE'
+
     for model_dir, run_dirs in run_dirs.items():
         for run_dir in run_dirs:
             if model_dir == 'lstm_training':
@@ -28,14 +31,16 @@ if __name__ == "__main__":
                 epoch = '35'
             parts = run_dir.split('_')
             split_name = f"{parts[0].upper()} {parts[1].capitalize()} {parts[2].capitalize()}"
-            exp_name = f"{parts[3]}"
+            exp_name = f"{model}: {parts[3]} {parts[4]}"
 
             # Plot observed vs simulated trajectory
             qobs, qsim = obs_vs_sim_plot(model_dir, run_dir, epoch)
+            if model == 'coRNN':
+                qsim = np.square(qsim)
             OvS.append((qobs, qsim, exp_name))
 
-            # Plot CDF of NSE
-            nse, cdf = cdf_plot(model_dir, run_dir, epoch)
+            # Plot CDF of test metric (default: 'NSE')            
+            nse, cdf = cdf_plot(model_dir, run_dir, epoch, metric)
             CDF.append((nse, cdf, exp_name))
 
             # Plot Median NSE vs Epochs
@@ -43,7 +48,7 @@ if __name__ == "__main__":
             MED_NSE.append((ep, med_nse, exp_name))
     
     if True:
-        plot_folder = 'activation_func'
+        plot_folder = 'enforced_positivity'
         if not os.path.exists(f'plots/{plot_folder}'):
             os.makedirs(f'plots/{plot_folder}')
 
@@ -51,14 +56,14 @@ if __name__ == "__main__":
         plt.figure(1)
         for (nse, cdf, exp_name) in CDF:
             plt.plot(nse, cdf, label=exp_name)
-        plt.xlabel('NSE')
+        plt.xlabel(metric)
         plt.ylabel('CDF')
-        plt.title(f'{split_name}: CDF of NSE for {epoch} epochs')
-        plt.xlim(0,1)
-        plt.ylim(-0.1,1.1)
+        plt.title(f'{split_name}: CDF of {metric} for {epoch} epochs')
+        # plt.xlim(0,1)
+        # plt.ylim(-0.1,1.1)
         plt.grid(True)
         plt.legend()
-        fig_path = f'plots/{plot_folder}/CDF_NSE.png'
+        fig_path = f'plots/{plot_folder}/CDF_{metric}.png'
         plt.savefig(fig_path, dpi=300)
         plt.close()
 
@@ -75,8 +80,8 @@ if __name__ == "__main__":
         plt.ylabel('NSE') 
         plt.title(split_name + ': Median NSE vs Epoch')
         plt.grid(True)
-        # plt.xlim(0, int(epoch) + 1)
-        # plt.ylim(0.1, 0.6)
+        plt.xlim(0, int(epoch) + 1)
+        plt.ylim(0.1, 0.6)
         plt.legend()
         fig_path = f'plots/{plot_folder}/NSE_per_epoch.png'
         plt.savefig(fig_path, dpi=300)

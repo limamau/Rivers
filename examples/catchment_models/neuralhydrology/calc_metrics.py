@@ -7,7 +7,7 @@ def calc_metrics(model_dir, run_dir, epoch):
     df = pd.read_csv(path_to_csv)
     df = df.dropna()
 
-    nse = df['NSE']
+    nse = df['MSE']
     nse_lt0 = nse[nse < 0]
     nse_gt0 = nse[nse > 0]
 
@@ -18,11 +18,12 @@ def calc_metrics(model_dir, run_dir, epoch):
     return pct_nse_lt0, mean_nse_gt0, median_nse
 
 if __name__=="__main__":
+    metric = 'MSE'
     run_dict = { 
+                'lstm_training':
+                    ['usa_time_split_adj_0807_170652'],
                 'neuralhydrology':
-                    ['usa_time_split_512nhid_35epochs_1007_143728',
-                    'usa_time_split_relu_1207_162102',
-                    'usa_time_split_softplus_1207_162116']
+                    ['usa_time_split_512nhid_35epochs_1007_143728']
                 }
 
     for model_dir, run_dirs in run_dict.items():
@@ -35,9 +36,9 @@ if __name__=="__main__":
 
         for run_dir in run_dirs:
             parts = run_dir.split('_')
-            exp_name = f"{parts[3]}"
+            exp_name = f"{model}: {parts[3]} {parts[4]}"
             pct_nse_lt0, mean_nse_gt0, median_nse = calc_metrics(model_dir, run_dir, epoch)
             print(exp_name)
-            print(f'%_NSE<0 : {pct_nse_lt0}%')
-            print(f'Mean_NSE>0 : {mean_nse_gt0}')
-            print(f'Median : {median_nse} \n')
+            print(f'%_{metric}<0 : {pct_nse_lt0}%')
+            print(f'Mean_{metric}>0 : {mean_nse_gt0}')
+            print(f'Median {metric}: {median_nse} \n')
