@@ -13,7 +13,8 @@ if __name__ == "__main__":
                 'lstm_training':
                     ['usa_time_split_adj_0807_170652'],
                 'neuralhydrology':
-                    ['usa_time_split_512nhid_positive_1707_105911']
+                    ['usa_time_split_512nhid_35epochs_1007_143728',
+                    'usa_time_split_512nhid_positive_1807_121830']
                 }
 
     OvS = []
@@ -35,8 +36,6 @@ if __name__ == "__main__":
 
             # Plot observed vs simulated trajectory
             qobs, qsim = obs_vs_sim_plot(model_dir, run_dir, epoch)
-            if model == 'coRNN':
-                qsim = np.square(qsim)
             OvS.append((qobs, qsim, exp_name))
 
             # Plot CDF of test metric (default: 'NSE')            
@@ -48,7 +47,7 @@ if __name__ == "__main__":
             MED_NSE.append((ep, med_nse, exp_name))
     
     if True:
-        plot_folder = 'enforced_positivity'
+        plot_folder = 'enforced positivity'
         if not os.path.exists(f'plots/{plot_folder}'):
             os.makedirs(f'plots/{plot_folder}')
 
@@ -59,8 +58,8 @@ if __name__ == "__main__":
         plt.xlabel(metric)
         plt.ylabel('CDF')
         plt.title(f'{split_name}: CDF of {metric} for {epoch} epochs')
-        # plt.xlim(0,1)
-        # plt.ylim(-0.1,1.1)
+        plt.xlim(0,1)
+        plt.ylim(-0.1,1.1)
         plt.grid(True)
         plt.legend()
         fig_path = f'plots/{plot_folder}/CDF_{metric}.png'
@@ -81,7 +80,7 @@ if __name__ == "__main__":
         plt.title(split_name + ': Median NSE vs Epoch')
         plt.grid(True)
         plt.xlim(0, int(epoch) + 1)
-        plt.ylim(0.1, 0.6)
+        # plt.ylim(0.1, 0.6)
         plt.legend()
         fig_path = f'plots/{plot_folder}/NSE_per_epoch.png'
         plt.savefig(fig_path, dpi=300)
