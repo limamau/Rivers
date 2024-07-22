@@ -17,15 +17,15 @@ def obs_vs_sim_plot(model_dir, run_dir, epoch, basin_id = '7050039160', plot_boo
     qobs = results[basin_id]['1D']['xr']['streamflow_obs']
     qsim = results[basin_id]['1D']['xr']['streamflow_sim']
 
-    if plot_bool:
+    if True:
         # plot figure
         fig, ax = plt.subplots(figsize=(16,10))
-        ax.plot(qobs['date'], qobs, label='Observed')
-        ax.plot(qsim['date'], qsim, label='Simulated')
+        # ax.plot(qobs['date'], qobs, label='Observed')
+        ax.plot(qsim['date'][3*365 + 200:4*365], qsim[3*365 + 200:4*365], label='Simulated')
         ax.legend()
         ax.set_ylabel("Discharge (mm/d)")
         ax.set_title(f"Test period - NSE {results[basin_id]['1D']['NSE']:.3f}")
-
+        ax.set_ylim(93, 94)
         if not os.path.exists(f'plots/{run_dir}'):
             os.makedirs(f'plots/{run_dir}')
 
@@ -41,4 +41,24 @@ def obs_vs_sim_plot(model_dir, run_dir, epoch, basin_id = '7050039160', plot_boo
     #     print(f"{key}: {val:.3f}")
 
 if __name__ == '__main__':
-    qobs, qsim = obs_vs_sim_plot('neuralhydrology', 'usa_time_split_learn_dt_1807_121428', '06', basin_id = '7050039160', plot_bool = True)
+    qobs, qsim = obs_vs_sim_plot('neuralhydrology', 'usa_time_split_512nhid_positive_1807_121830', '35', basin_id = '7050039160', plot_bool = True)
+    print(qsim)
+    # qsim.dropna
+    # # min_sim = min(qsim)
+
+    # print(f"qsim: {qsim}\n")
+    # print(f"min_qsim: {qsim.min()}\n")
+    # print(f"qsim size: {qsim.size}")
+
+    # qmin = qsim.min()
+
+    # # count = 0
+    # for s in qsim:
+    #     print(s)
+        # if s.values == qsim.min():
+        #     count += 1
+    
+    # print(count)
+        
+    # mask = (qsim == min_sim)
+    # print(f"count: {len(qsim == min_sim)}")

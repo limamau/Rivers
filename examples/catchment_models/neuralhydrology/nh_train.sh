@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=usa_time_learn_dt.yml
+#SBATCH --job-name=usa_time_512nhid_positive.yml
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
 #SBATCH --tasks-per-node=1
@@ -14,5 +14,5 @@
 
 set -euo pipefail # kill the job if anything fails
 set -x # echo script
-nh-run train --config-file /home/achiang/CliMA/Rivers/examples/catchment_models/neuralhydrology/usa_time_learn_dt.yml
+nh-run train --config-file /home/achiang/CliMA/Rivers/examples/catchment_models/neuralhydrology/usa_time_512nhid_positive.yml
 echo done

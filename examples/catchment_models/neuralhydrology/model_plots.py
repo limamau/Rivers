@@ -10,10 +10,10 @@ import numpy as np
 
 if __name__ == "__main__":
     run_dirs = { 
-                'lstm_training':
-                    ['usa_time_split_adj_0807_170652'],
+                # 'lstm_training':
+                #     ['usa_time_split_adj_0807_170652'],
                 'neuralhydrology':
-                    ['usa_time_split_512nhid_35epochs_1007_143728',
+                    ['usa_time_split_512nhid_positive_1907_152520',
                     'usa_time_split_512nhid_positive_1807_121830']
                 }
 
@@ -32,7 +32,7 @@ if __name__ == "__main__":
                 epoch = '35'
             parts = run_dir.split('_')
             split_name = f"{parts[0].upper()} {parts[1].capitalize()} {parts[2].capitalize()}"
-            exp_name = f"{model}: {parts[3]} {parts[4]}"
+            exp_name = f"{model}: {parts[4]} {parts[5]}"
 
             # Plot observed vs simulated trajectory
             qobs, qsim = obs_vs_sim_plot(model_dir, run_dir, epoch)
@@ -47,7 +47,7 @@ if __name__ == "__main__":
             MED_NSE.append((ep, med_nse, exp_name))
     
     if True:
-        plot_folder = 'enforced positivity'
+        plot_folder = 'enforced_positivity2'
         if not os.path.exists(f'plots/{plot_folder}'):
             os.makedirs(f'plots/{plot_folder}')
 
