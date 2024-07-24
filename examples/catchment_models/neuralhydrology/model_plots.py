@@ -13,8 +13,8 @@ if __name__ == "__main__":
                 # 'lstm_training':
                 #     ['usa_time_split_adj_0807_170652'],
                 'neuralhydrology':
-                    ['usa_time_split_512nhid_positive_1907_152520',
-                    'usa_time_split_512nhid_positive_1807_121830']
+                    ['usa_time_split_512nhid_35epochs_1007_143728',
+                    'usa_time_split_checkpoint_nse_2307_190034']
                 }
 
     OvS = []
@@ -29,10 +29,13 @@ if __name__ == "__main__":
                 epoch = '14'
             else:
                 model = 'coRNN'
-                epoch = '35'
+                if run_dir == 'usa_time_split_512nhid_35epochs_1007_143728':
+                    epoch = '35'
+                else:
+                    epoch = '10'
             parts = run_dir.split('_')
             split_name = f"{parts[0].upper()} {parts[1].capitalize()} {parts[2].capitalize()}"
-            exp_name = f"{model}: {parts[4]} {parts[5]}"
+            exp_name = f"{model}: {parts[3]} {parts[4]}"
 
             # Plot observed vs simulated trajectory
             qobs, qsim = obs_vs_sim_plot(model_dir, run_dir, epoch)
@@ -47,7 +50,7 @@ if __name__ == "__main__":
             MED_NSE.append((ep, med_nse, exp_name))
     
     if True:
-        plot_folder = 'enforced_positivity2'
+        plot_folder = 'nse_on_trained_mse_model'
         if not os.path.exists(f'plots/{plot_folder}'):
             os.makedirs(f'plots/{plot_folder}')
 
@@ -79,7 +82,7 @@ if __name__ == "__main__":
         plt.ylabel('NSE') 
         plt.title(split_name + ': Median NSE vs Epoch')
         plt.grid(True)
-        plt.xlim(0, int(epoch) + 1)
+        # plt.xlim(0, int(epoch) + 1)
         # plt.ylim(0.1, 0.6)
         plt.legend()
         fig_path = f'plots/{plot_folder}/NSE_per_epoch.png'

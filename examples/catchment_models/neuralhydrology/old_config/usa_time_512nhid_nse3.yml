@@ -1,7 +1,7 @@
 # --- Experiment configurations --------------------------------------------------------------------
 
 # experiment name, used as folder name
-experiment_name: usa_time_split_512nhid_35epochs
+experiment_name: usa_time_split_512nhid_nse3
 
 # files to specify training, validation and test basins (relative to code root or absolute path)
 train_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/usa_time_split_list.txt
@@ -46,6 +46,7 @@ model: cornn
 dt : 0.1
 gamma : 5
 eps : 1
+adaptive_learning : False
 
 # prediction head [regression, mdn, umal]. Define the head specific parameters below
 head: regression
@@ -61,7 +62,7 @@ initial_forget_bias: 3
 # Dropout applied to the output of the LSTM
 output_dropout: 0.4
 
-output_activation: linear
+output_activation: linear #try relu
 
 # --- Training configuration -----------------------------------------------------------------------
 
@@ -69,7 +70,8 @@ output_activation: linear
 optimizer: Adam
 
 # specify loss [MSE, NSE, RMSE, UMALLoss, MDNLoss]
-loss: MSE
+loss: NSE
+loss_eps: 0.001
 
 # specify learning rates to use starting at specific epochs (0 is the initial learning rate)
 learning_rate:

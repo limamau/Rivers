@@ -1,7 +1,7 @@
 # --- Experiment configurations --------------------------------------------------------------------
 
 # experiment name, used as folder name
-experiment_name: usa_time_split_512nhid_35epochs
+experiment_name: usa_time_split_512nhid_noGradClip
 
 # files to specify training, validation and test basins (relative to code root or absolute path)
 train_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/usa_time_split_list.txt
@@ -46,6 +46,7 @@ model: cornn
 dt : 0.1
 gamma : 5
 eps : 1
+adaptive_learning : False
 
 # prediction head [regression, mdn, umal]. Define the head specific parameters below
 head: regression
@@ -61,7 +62,7 @@ initial_forget_bias: 3
 # Dropout applied to the output of the LSTM
 output_dropout: 0.4
 
-output_activation: linear
+output_activation: linear #try relu
 
 # --- Training configuration -----------------------------------------------------------------------
 
@@ -84,7 +85,7 @@ batch_size: 256
 epochs: 35
 
 # If True, clips norm of gradients
-clip_gradient_norm: 1
+# clip_gradient_norm: None
 
 # Defines which time steps are used to calculate the loss. Can't be larger than seq_length
 predict_last_n: 1

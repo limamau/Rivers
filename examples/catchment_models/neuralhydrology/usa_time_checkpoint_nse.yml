@@ -1,7 +1,7 @@
 # --- Experiment configurations --------------------------------------------------------------------
 
 # experiment name, used as folder name
-experiment_name: usa_time_split_512nhid_35epochs
+experiment_name: usa_time_split_checkpoint_nse
 
 # files to specify training, validation and test basins (relative to code root or absolute path)
 train_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/usa_time_split_list.txt
@@ -47,6 +47,8 @@ dt : 0.1
 gamma : 5
 eps : 1
 
+checkpoint_path : "runs/usa_time_split_512nhid_35epochs_1007_143728/model_epoch035.pt"
+
 # prediction head [regression, mdn, umal]. Define the head specific parameters below
 head: regression
 
@@ -61,7 +63,7 @@ initial_forget_bias: 3
 # Dropout applied to the output of the LSTM
 output_dropout: 0.4
 
-output_activation: linear
+output_activation: linear #try relu
 
 # --- Training configuration -----------------------------------------------------------------------
 
@@ -69,19 +71,17 @@ output_activation: linear
 optimizer: Adam
 
 # specify loss [MSE, NSE, RMSE, UMALLoss, MDNLoss]
-loss: MSE
+loss: NSE
 
 # specify learning rates to use starting at specific epochs (0 is the initial learning rate)
 learning_rate:
-    0: 1e-3
-    21: 1e-4
-    31: 1e-5
+    0: 1e-5
 
 # Mini-batch size
 batch_size: 256
 
 # Number of training epochs
-epochs: 35
+epochs: 10
 
 # If True, clips norm of gradients
 clip_gradient_norm: 1
