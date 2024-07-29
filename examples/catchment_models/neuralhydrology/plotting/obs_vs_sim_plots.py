@@ -8,7 +8,7 @@ def obs_vs_sim_plot(model_dir, run_dir, epoch, basin_id = '7050039160', plot_boo
     split_name = f"{parts[0].upper()} {parts[1].capitalize()} {parts[2].capitalize()}"
 
     # Load the CSV file
-    pickle_file = os.path.join(f'/home/achiang/CliMA/Rivers/examples/catchment_models/{model_dir}/runs/{run_dir}/test/model_epoch0{epoch}/test_results.p')
+    pickle_file = os.path.join(f'/groups/esm/achiang/Rivers/examples/catchment_models/{model_dir}/runs/{run_dir}/test/model_epoch0{epoch}/test_results.p')
 
     with open(pickle_file, "rb") as fp:
         results = pickle.load(fp)

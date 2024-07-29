@@ -13,8 +13,11 @@ if __name__ == "__main__":
                 # 'lstm_training':
                 #     ['usa_time_split_adj_0807_170652'],
                 'neuralhydrology':
-                    ['usa_time_split_512nhid_35epochs_1007_143728',
-                    'usa_time_split_checkpoint_nse_2307_190034']
+                    ['usa_time_split_nse_lr1_2807_223043',
+                    'usa_time_split_nse_lr2_2807_223530',
+                    'usa_time_split_nse_lr3_2807_224643',
+                    'usa_time_split_nse_lr4_2807_224643',
+                    'usa_time_split_nse_lr5_2807_224901']
                 }
 
     OvS = []
@@ -29,10 +32,8 @@ if __name__ == "__main__":
                 epoch = '14'
             else:
                 model = 'coRNN'
-                if run_dir == 'usa_time_split_512nhid_35epochs_1007_143728':
-                    epoch = '35'
-                else:
-                    epoch = '10'
+                epoch = '35'
+
             parts = run_dir.split('_')
             split_name = f"{parts[0].upper()} {parts[1].capitalize()} {parts[2].capitalize()}"
             exp_name = f"{model}: {parts[3]} {parts[4]}"
@@ -50,7 +51,7 @@ if __name__ == "__main__":
             MED_NSE.append((ep, med_nse, exp_name))
     
     if True:
-        plot_folder = 'nse_on_trained_mse_model'
+        plot_folder = 'nse_LR_tuning'
         if not os.path.exists(f'plots/{plot_folder}'):
             os.makedirs(f'plots/{plot_folder}')
 

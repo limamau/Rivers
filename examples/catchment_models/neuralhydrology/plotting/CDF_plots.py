@@ -7,7 +7,7 @@ def cdf_plot(mdoel_dir, run_dir, epoch, metric = 'NSE', plot_bool = False):
     split_name = f"{parts[0].upper()} {parts[1].capitalize()} {parts[2].capitalize()}"
 
     # Load the CSV file
-    csv_path = os.path.join(f'/home/achiang/CliMA/Rivers/examples/catchment_models/{mdoel_dir}/runs/{run_dir}/test/model_epoch0{epoch}/test_metrics.csv')
+    csv_path = os.path.join(f'/groups/esm/achiang/Rivers/examples/catchment_models/{mdoel_dir}/runs/{run_dir}/test/model_epoch0{epoch}/test_metrics.csv')
     df = pd.read_csv(csv_path)
 
     # Sort the data by NSE

@@ -8,7 +8,7 @@ def NSE_plot(model_dir, run_dir, epoch, plot_bool = False):
     parts = run_dir.split('_')
     split_name = f"{parts[0].upper()} {parts[1].capitalize()} {parts[2].capitalize()}"
 
-    base_dir = os.path.join(f'/home/achiang/CliMA/Rivers/examples/catchment_models/{model_dir}/runs/{run_dir}/validation')
+    base_dir = os.path.join(f'/groups/esm/achiang/Rivers/examples/catchment_models/{model_dir}/runs/{run_dir}/validation')
 
     # Get median NSE per epoch
     for item in os.listdir(base_dir):

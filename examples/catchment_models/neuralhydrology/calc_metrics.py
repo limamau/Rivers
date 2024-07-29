@@ -2,12 +2,12 @@ import os
 import pandas as pd
 
 def calc_metrics(model_dir, run_dir, epoch):
-    path_to_csv = f'/home/achiang/CliMA/Rivers/examples/catchment_models/{model_dir}/runs/{run_dir}/test/model_epoch0{epoch}/test_metrics.csv'
+    path_to_csv = f'/groups/esm/achiang/Rivers/examples/catchment_models/{model_dir}/runs/{run_dir}/test/model_epoch0{epoch}/test_metrics.csv'
 
     df = pd.read_csv(path_to_csv)
     df = df.dropna()
 
-    nse = df['MSE']
+    nse = df['NSE']
     nse_lt0 = nse[nse < 0]
     nse_gt0 = nse[nse > 0]
 
@@ -18,12 +18,16 @@ def calc_metrics(model_dir, run_dir, epoch):
     return pct_nse_lt0, mean_nse_gt0, median_nse
 
 if __name__=="__main__":
-    metric = 'MSE'
+    metric = 'NSE'
     run_dict = { 
-                'lstm_training':
-                    ['usa_time_split_adj_0807_170652'],
+                # 'lstm_training':
+                #     ['usa_time_split_adj_0807_170652'],
                 'neuralhydrology':
-                    ['usa_time_split_512nhid_35epochs_1007_143728']
+                    ['usa_time_split_nse_lr1_2807_223043',
+                    'usa_time_split_nse_lr2_2807_223530',
+                    'usa_time_split_nse_lr3_2807_224643',
+                    'usa_time_split_nse_lr4_2807_224643',
+                    'usa_time_split_nse_lr5_2807_224901']
                 }
 
     for model_dir, run_dirs in run_dict.items():
