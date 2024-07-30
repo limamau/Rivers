@@ -13,11 +13,10 @@ if __name__ == "__main__":
                 # 'lstm_training':
                 #     ['usa_time_split_adj_0807_170652'],
                 'neuralhydrology':
-                    ['usa_time_split_nse_lr1_2807_223043',
-                    'usa_time_split_nse_lr2_2807_223530',
-                    'usa_time_split_nse_lr3_2807_224643',
-                    'usa_time_split_nse_lr4_2807_224643',
-                    'usa_time_split_nse_lr5_2807_224901']
+                    ['usa_time_split_nse_lr4_2807_224643',
+                    'usa_time_split_nse_lr5_2807_224901',
+                    'usa_time_split_nse_lr10_2907_225141',
+                    'usa_time_split_nse_lr11_2907_225221']
                 }
 
     OvS = []
@@ -51,7 +50,7 @@ if __name__ == "__main__":
             MED_NSE.append((ep, med_nse, exp_name))
     
     if True:
-        plot_folder = 'nse_LR_tuning'
+        plot_folder = 'nse_LR_tuning3'
         if not os.path.exists(f'plots/{plot_folder}'):
             os.makedirs(f'plots/{plot_folder}')
 
@@ -84,7 +83,7 @@ if __name__ == "__main__":
         plt.title(split_name + ': Median NSE vs Epoch')
         plt.grid(True)
         # plt.xlim(0, int(epoch) + 1)
-        # plt.ylim(0.1, 0.6)
+        # plt.ylim(-1.5, 0.6)
         plt.legend()
         fig_path = f'plots/{plot_folder}/NSE_per_epoch.png'
         plt.savefig(fig_path, dpi=300)
