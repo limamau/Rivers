@@ -9,7 +9,7 @@ from config import Config
 
 from pathlib import Path
 
-run_dir = 'usa_time_split_512nhid_35epochs_1007_143728'
+run_dir = 'usa_time_split_nse_adaDT1_3107_125025'
 run_path = Path(f'/groups/esm/achiang/Rivers/examples/catchment_models/neuralhydrology/runs/{run_dir}/config.yml')
 cfg = Config(run_path)
 
@@ -20,9 +20,9 @@ model.load_state_dict(torch.load(weight_file))
 
 for param_tensor in model.state_dict():
 
-    print(f"{param_tensor}: {model.state_dict()[param_tensor].size()}")
-    # if param_tensor == 'cell.c':
-    #     c = model.state_dict()[param_tensor]
-    #     print(param_tensor, "\t", c)
-    #     sigma_hat = 1/6 + 1/6 * torch.tanh(c / 2)
-    #     print(f'sigma_hat : {sigma_hat}')
+    # print(f"{param_tensor}: {model.state_dict()[param_tensor].size()}")
+    if param_tensor == 'cell.c':
+        c = model.state_dict()[param_tensor]
+        print(param_tensor, "\t", c)
+        sigma_hat = 1/12 + 1/12 * torch.tanh(c / 2)
+        print(f'sigma_hat : {sigma_hat}')

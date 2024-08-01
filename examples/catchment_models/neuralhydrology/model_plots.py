@@ -13,10 +13,11 @@ if __name__ == "__main__":
                 # 'lstm_training':
                 #     ['usa_time_split_adj_0807_170652'],
                 'neuralhydrology':
-                    ['usa_time_split_nse_lr4_2807_224643',
-                    'usa_time_split_nse_lr5_2807_224901',
-                    'usa_time_split_nse_lr10_2907_225141',
-                    'usa_time_split_nse_lr11_2907_225221']
+                    [
+                    'usa_time_split_nse_lr11_2907_225221',
+                    'usa_time_split_nse_adaDT1_3107_125025',
+                    'usa_time_split_nse_adaDT2_3107_125434'
+                    ]
                 }
 
     OvS = []
@@ -50,7 +51,7 @@ if __name__ == "__main__":
             MED_NSE.append((ep, med_nse, exp_name))
     
     if True:
-        plot_folder = 'nse_LR_tuning3'
+        plot_folder = 'nse_adaDT'
         if not os.path.exists(f'plots/{plot_folder}'):
             os.makedirs(f'plots/{plot_folder}')
 

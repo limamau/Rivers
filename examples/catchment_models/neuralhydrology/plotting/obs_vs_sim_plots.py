@@ -17,6 +17,8 @@ def obs_vs_sim_plot(model_dir, run_dir, epoch, basin_id = '7050039160', plot_boo
     qobs = results[basin_id]['1D']['xr']['streamflow_obs']
     qsim = results[basin_id]['1D']['xr']['streamflow_sim']
 
+    print(results[basin_id])
+
     if plot_bool:
         # plot figure
         fig, ax = plt.subplots(figsize=(16,10))
@@ -41,7 +43,7 @@ def obs_vs_sim_plot(model_dir, run_dir, epoch, basin_id = '7050039160', plot_boo
     #     print(f"{key}: {val:.3f}")
 
 if __name__ == '__main__':
-    qobs, qsim = obs_vs_sim_plot('neuralhydrology', 'usa_time_split_512nhid_positive_1807_121830', '35', basin_id = '7050039160', plot_bool = True)
+    qobs, qsim = obs_vs_sim_plot('neuralhydrology', 'usa_time_split_nse_adaDT1_3107_125025', '35', basin_id = '7050039160', plot_bool = False)
     print(qsim)
     # qsim.dropna
     # # min_sim = min(qsim)

@@ -11,7 +11,7 @@ def calc_metrics(model_dir, run_dir, epoch):
     nse = df['NSE']
     nse_lt0 = nse[nse < 0]
     nse_gt0 = nse[nse > 0]
-    nse_gt0_ci = round(1.96 * (nse_gt0.std()/sqrt(len(nse_gt0))),2)
+    nse_gt0_ci = 1.96 * (nse_gt0.std()/sqrt(len(nse_gt0)))
 
     pct_nse_lt0 = round(100 * len(nse_lt0)/len(nse), 2)
     mean_nse_gt0 = round(nse_gt0.mean(), 2)
@@ -25,10 +25,11 @@ if __name__=="__main__":
                 # 'lstm_training':
                 #     ['usa_time_split_adj_0807_170652'],
                 'neuralhydrology':
-                    ['usa_time_split_nse_lr4_2807_224643',
-                    'usa_time_split_nse_lr5_2807_224901',
-                    'usa_time_split_nse_lr10_2907_225141',
-                    'usa_time_split_nse_lr11_2907_225221']
+                    [
+                    'usa_time_split_nse_lr11_2907_225221',
+                    'usa_time_split_nse_adaDT1_3107_125025',
+                    'usa_time_split_nse_adaDT2_3107_125434'
+                    ]
                 }
 
     for model_dir, run_dirs in run_dict.items():
@@ -46,5 +47,5 @@ if __name__=="__main__":
             print(exp_name)
             print(f'%_{metric}<0 : {pct_nse_lt0}%')
             print(f'Mean_{metric}>0 : {mean_nse_gt0}')
-            print(f'95% CI: ({round(mean_nse_gt0 - nse_gt0_ci,2)}, {round(mean_nse_gt0 + nse_gt0_ci,2)})')
+            print(f'95% CI: ({round(mean_nse_gt0 - nse_gt0_ci,3)}, {round(mean_nse_gt0 + nse_gt0_ci,3)})')
             print(f'Median {metric}: {median_nse} \n')

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=usa_time_split_nse_lr5_256nhid_2907_225317
+#SBATCH --job-name=usa_time_split_nse_adaDT1_3107_125025
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
 #SBATCH --tasks-per-node=1
@@ -14,5 +14,5 @@
 
 set -euo pipefail # kill the job if anything fails
 set -x # echo script
-nh-run evaluate --run-dir /groups/esm/achiang/Rivers/examples/catchment_models/neuralhydrology/runs/usa_time_split_nse_lr5_256nhid_2907_225317
+nh-run evaluate --run-dir /groups/esm/achiang/Rivers/examples/catchment_models/neuralhydrology/runs/usa_time_split_nse_adaDT1_3107_125025
 echo done

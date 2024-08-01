@@ -8,7 +8,8 @@ import matplotlib.pyplot as plt
 import os
 
 if __name__ == "__main__":
-    run_dirs = ['usa_time_split_adj_0807_170652']
+    run_dirs = ['usa_time_split_adj_0807_170652',
+                'usa_time_split_mse_3007_154911']
     epoch = '35'
 
     CDF = []
@@ -29,8 +30,8 @@ if __name__ == "__main__":
         ep, med_nse = NSE_plot(run_dir, epoch)
         MED_NSE.append((ep, med_nse, exp_name))
     
-    if False:
-        plot_folder = 'hidden_states'
+    if True:
+        plot_folder = 'mse_loss'
         if not os.path.exists(f'plots/{plot_folder}'):
             os.makedirs(f'plots/{plot_folder}')
 
