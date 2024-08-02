@@ -17,8 +17,6 @@ def obs_vs_sim_plot(model_dir, run_dir, epoch, basin_id = '7050039160', plot_boo
     qobs = results[basin_id]['1D']['xr']['streamflow_obs']
     qsim = results[basin_id]['1D']['xr']['streamflow_sim']
 
-    print(results[basin_id])
-
     if plot_bool:
         # plot figure
         fig, ax = plt.subplots(figsize=(16,10))
