@@ -15,7 +15,8 @@ if __name__ == "__main__":
                 'neuralhydrology':
                     [
                     'usa_time_split_nse_adaDT1_3107_125025',
-                    'usa_time_split_nseMse_adaDT1_0108_121334'
+                    'usa_time_split_customnse_adaDT1_0208_103432',
+                    'usa_time_split_scalednse_adaDT1_0208_104239'
                     ]
                 }
 
@@ -50,7 +51,7 @@ if __name__ == "__main__":
             MED_NSE.append((ep, med_nse, exp_name))
     
     if True:
-        plot_folder = 'adaDT_lossfunc'
+        plot_folder = 'adaDT_scaled_custom_nse'
         if not os.path.exists(f'plots/{plot_folder}'):
             os.makedirs(f'plots/{plot_folder}')
 
