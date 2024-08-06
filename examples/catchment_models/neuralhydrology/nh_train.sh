@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=usa_time_nse_sqrt2.yml
+#SBATCH --job-name=usa_time_512nhid_35epochs.yml
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
 #SBATCH --tasks-per-node=1
@@ -14,5 +14,5 @@
 
 set -euo pipefail # kill the job if anything fails
 set -x # echo script
-nh-run train --config-file /groups/esm/achiang/Rivers/examples/catchment_models/neuralhydrology/usa_time_nse_sqrt2.yml
+nh-run train --config-file /groups/esm/achiang/Rivers/examples/catchment_models/neuralhydrology/usa_time_512nhid_35epochs.yml
 echo done

@@ -15,9 +15,7 @@ if __name__ == "__main__":
                 'neuralhydrology':
                     [
                     'usa_time_split_nse_adaDT1_3107_125025',
-                    'usa_time_split_nse_adaDT3_0508_103534',
-                    'usa_time_split_nse_adaDT4_0508_103630',
-                    'usa_time_split_nse_adaDT5_0508_103715'
+                    'usa_time_split_nse_sqrt_0508_155125'
                     ]
                 }
 
@@ -52,7 +50,7 @@ if __name__ == "__main__":
             MED_NSE.append((ep, med_nse, exp_name))
     
     if True:
-        plot_folder = 'adaDT_increased_dt_bound'
+        plot_folder = 'nse_sqrt'
         if not os.path.exists(f'plots/{plot_folder}'):
             os.makedirs(f'plots/{plot_folder}')
 
