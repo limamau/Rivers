@@ -26,9 +26,9 @@ if __name__=="__main__":
                 #     ['usa_time_split_adj_0807_170652'],
                 'neuralhydrology':
                     [
-                    'usa_time_split_nse_lr11_2907_225221',
                     'usa_time_split_nse_adaDT1_3107_125025',
-                    'usa_time_split_nse_adaDT2_3107_125434'
+                    'usa_time_split_nse_adaDT4_0508_103630',
+                    'usa_time_split_nse_adaDT5_0508_103715'
                     ]
                 }
 
