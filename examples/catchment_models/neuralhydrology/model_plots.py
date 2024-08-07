@@ -14,8 +14,8 @@ if __name__ == "__main__":
                 #     ['usa_time_split_adj_0807_170652'],
                 'neuralhydrology':
                     [
-                    'usa_time_split_nse_adaDT1_3107_125025',
-                    'usa_time_split_nse_sqrt_0508_155125'
+                    'usa_time_split_nse_sqrt_0508_155125',
+                    'usa_time_split_nse_sqrt2_0608_102118'
                     ]
                 }
 
@@ -99,6 +99,6 @@ if __name__ == "__main__":
         plt.legend()
         plt.ylabel("Discharge (mm/d)")
         plt.title(f"Observed vs Simulated Trajectory")
-        fig_path = f'plots/{plot_folder}/obs_vs_sim.png'
+        fig_path = f'plots/{plot_folder}/obs_vs_sim3.png'
         plt.savefig(fig_path, dpi=300)
         plt.close()
