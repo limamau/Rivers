@@ -14,8 +14,8 @@ if __name__ == "__main__":
                 #     ['usa_time_split_adj_0807_170652'],
                 'neuralhydrology':
                     [
-                    'usa_time_split_nse_sqrt_0508_155125',
-                    'usa_time_split_nse_sqrt2_0608_102118'
+                    'usa_time_split_nse_adaDT5_0708_133848',
+                    'usa_time_split_nse_adaDT5_0508_103715'
                     ]
                 }
 
@@ -31,43 +31,43 @@ if __name__ == "__main__":
                 epoch = '14'
             else:
                 model = 'coRNN'
-                epoch = '35'
+                epoch = '02'
 
             parts = run_dir.split('_')
             split_name = f"{parts[0].upper()} {parts[1].capitalize()} {parts[2].capitalize()}"
-            exp_name = f"{model}: {parts[3]} {parts[4]}"
+            exp_name = f"{model}: {parts[3]} {parts[4]} {parts[5]}"
 
-            # Plot observed vs simulated trajectory
-            qobs, qsim = obs_vs_sim_plot(model_dir, run_dir, epoch)
-            OvS.append((qobs, qsim, exp_name))
+            # # Plot observed vs simulated trajectory
+            # qobs, qsim = obs_vs_sim_plot(model_dir, run_dir, epoch)
+            # OvS.append((qobs, qsim, exp_name))
 
-            # Plot CDF of test metric (default: 'NSE')            
-            nse, cdf = cdf_plot(model_dir, run_dir, epoch, metric)
-            CDF.append((nse, cdf, exp_name))
+            # # Plot CDF of test metric (default: 'NSE')            
+            # nse, cdf = cdf_plot(model_dir, run_dir, epoch, metric)
+            # CDF.append((nse, cdf, exp_name))
 
             # Plot Median NSE vs Epochs
             ep, med_nse = NSE_plot(model_dir, run_dir, epoch)
             MED_NSE.append((ep, med_nse, exp_name))
     
     if True:
-        plot_folder = 'nse_sqrt'
+        plot_folder = 'log_dist'
         if not os.path.exists(f'plots/{plot_folder}'):
             os.makedirs(f'plots/{plot_folder}')
 
-        # Plot all CDFs on the same figure
-        plt.figure(1)
-        for (nse, cdf, exp_name) in CDF:
-            plt.plot(nse, cdf, label=exp_name)
-        plt.xlabel(metric)
-        plt.ylabel('CDF')
-        plt.title(f'{split_name}: CDF of {metric} for {epoch} epochs')
-        plt.xlim(0,1)
-        plt.ylim(-0.1,1.1)
-        plt.grid(True)
-        plt.legend()
-        fig_path = f'plots/{plot_folder}/CDF_{metric}.png'
-        plt.savefig(fig_path, dpi=300)
-        plt.close()
+        # # Plot all CDFs on the same figure
+        # plt.figure(1)
+        # for (nse, cdf, exp_name) in CDF:
+        #     plt.plot(nse, cdf, label=exp_name)
+        # plt.xlabel(metric)
+        # plt.ylabel('CDF')
+        # plt.title(f'{split_name}: CDF of {metric} for {epoch} epochs')
+        # plt.xlim(0,1)
+        # plt.ylim(-0.1,1.1)
+        # plt.grid(True)
+        # plt.legend()
+        # fig_path = f'plots/{plot_folder}/CDF_{metric}.png'
+        # plt.savefig(fig_path, dpi=300)
+        # plt.close()
 
         # Plot all median NSE on the same figure
         min_nse = 0
@@ -91,14 +91,14 @@ if __name__ == "__main__":
 
 
         # Plot observed vs simulated trajecory
-        plt.figure(3, figsize=(16,10))
-        qobs, _, _ = OvS[0]
-        for (qobs, qsim, exp_name) in OvS:
-            plt.plot(qsim['date'], qsim, label=f'{exp_name}')
-        plt.plot(qobs['date'], qobs, label='Observed')
-        plt.legend()
-        plt.ylabel("Discharge (mm/d)")
-        plt.title(f"Observed vs Simulated Trajectory")
-        fig_path = f'plots/{plot_folder}/obs_vs_sim3.png'
-        plt.savefig(fig_path, dpi=300)
-        plt.close()
+        # plt.figure(3, figsize=(16,10))
+        # qobs, _, _ = OvS[0]
+        # for (qobs, qsim, exp_name) in OvS:
+        #     plt.plot(qsim['date'], qsim, label=f'{exp_name}')
+        # plt.plot(qobs['date'], qobs, label='Observed')
+        # plt.legend()
+        # plt.ylabel("Discharge (mm/d)")
+        # plt.title(f"Observed vs Simulated Trajectory")
+        # fig_path = f'plots/{plot_folder}/obs_vs_sim3.png'
+        # plt.savefig(fig_path, dpi=300)
+        # plt.close()
