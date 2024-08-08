@@ -6,48 +6,67 @@ from NSE_vs_epochs import NSE_plot
 from collections import defaultdict
 import matplotlib.pyplot as plt
 import os
+import numpy as np
 
 if __name__ == "__main__":
-    run_dirs = ['usa_time_split_adj_0807_170652',
-                'usa_time_split_mse_3007_154911']
-    epoch = '35'
+    run_dirs = { 
+                'lstm_training':
+                    ['usa_time_split_adj_0807_170652',
+                    'usa_time_split_mse_3007_154911']
+                # 'neuralhydrology':
+                #     [
+                #     'usa_time_split_nse_adaDT5_0708_133848',
+                #     'usa_time_split_nse_adaDT5_0508_103715'
+                #     ]
+                }
 
+    OvS = []
     CDF = []
     MED_NSE = []
-    for run_dir in run_dirs:
-        parts = run_dir.split('_')
-        split_name = f"{parts[0].upper()} {parts[1].capitalize()} {parts[2].capitalize()}"
-        exp_name = f"{parts[3].capitalize()}"
+    metric = 'NSE'
 
-        # Plot observed vs simulated trajectory
-        obs_vs_sim_plot(run_dir, epoch)
-        
-        # Plot CDF of NSE
-        nse, cdf = cdf_plot(run_dir, epoch)
-        CDF.append((nse, cdf, exp_name))
+    for model_dir, run_dirs in run_dirs.items():
+        for run_dir in run_dirs:
+            if model_dir == 'lstm_training':
+                model = 'LSTM'
+                epoch = '35'
+            else:
+                model = 'coRNN'
+                epoch = '02'
 
-        # Plot Median NSE vs Epochs
-        ep, med_nse = NSE_plot(run_dir, epoch)
-        MED_NSE.append((ep, med_nse, exp_name))
+            parts = run_dir.split('_')
+            split_name = f"{parts[0].upper()} {parts[1].capitalize()} {parts[2].capitalize()}"
+            exp_name = f"{model}: {parts[3]} {parts[4]}"
+
+            # Plot observed vs simulated trajectory
+            qobs, qsim = obs_vs_sim_plot(model_dir, run_dir, epoch)
+            OvS.append((qobs, qsim, exp_name))
+
+            # Plot CDF of test metric (default: 'NSE')            
+            nse, cdf = cdf_plot(model_dir, run_dir, epoch, metric)
+            CDF.append((nse, cdf, exp_name))
+
+            # Plot Median NSE vs Epochs
+            ep, med_nse = NSE_plot(model_dir, run_dir, epoch)
+            MED_NSE.append((ep, med_nse, exp_name))
     
     if True:
-        plot_folder = 'mse_loss'
+        plot_folder = 'nse_vs_mse'
         if not os.path.exists(f'plots/{plot_folder}'):
             os.makedirs(f'plots/{plot_folder}')
 
-        # Plot all CDFs on the same figure
+        # # Plot all CDFs on the same figure
         plt.figure(1)
         for (nse, cdf, exp_name) in CDF:
-            print(exp_name)
             plt.plot(nse, cdf, label=exp_name)
-        plt.xlabel('NSE')
+        plt.xlabel(metric)
         plt.ylabel('CDF')
-        plt.title(f'{split_name}: CDF of NSE for {epoch} epochs')
+        plt.title(f'{split_name}: CDF of {metric} for {epoch} epochs')
         plt.xlim(0,1)
         plt.ylim(-0.1,1.1)
         plt.grid(True)
         plt.legend()
-        fig_path = f'plots/{plot_folder}/CDF_NSE.png'
+        fig_path = f'plots/{plot_folder}/CDF_{metric}.png'
         plt.savefig(fig_path, dpi=300)
         plt.close()
 
@@ -64,9 +83,23 @@ if __name__ == "__main__":
         plt.ylabel('NSE') 
         plt.title(split_name + ': Median NSE vs Epoch')
         plt.grid(True)
-        plt.xlim(0, int(epoch) + 1)
-        plt.ylim(0.1, 0.6)
+        # plt.xlim(0, int(epoch) + 1)
+        # plt.ylim(-1.5, 0.6)
         plt.legend()
         fig_path = f'plots/{plot_folder}/NSE_per_epoch.png'
+        plt.savefig(fig_path, dpi=300)
+        plt.close()
+
+
+        # Plot observed vs simulated trajecory
+        plt.figure(3, figsize=(16,10))
+        qobs, _, _ = OvS[0]
+        for (qobs, qsim, exp_name) in OvS:
+            plt.plot(qsim['date'], qsim, label=f'{exp_name}')
+        plt.plot(qobs['date'], qobs, label='Observed')
+        plt.legend()
+        plt.ylabel("Discharge (mm/d)")
+        plt.title(f"Observed vs Simulated Trajectory")
+        fig_path = f'plots/{plot_folder}/obs_vs_sim3.png'
         plt.savefig(fig_path, dpi=300)
         plt.close()

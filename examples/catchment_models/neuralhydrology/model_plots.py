@@ -11,11 +11,14 @@ import numpy as np
 if __name__ == "__main__":
     run_dirs = { 
                 # 'lstm_training':
-                #     ['usa_time_split_adj_0807_170652'],
+                #     [
+                #     'usa_time_split_adj_0807_170652',
+                #     'usa_time_split_mse_3007_154911'
+                #     ],
                 'neuralhydrology':
                     [
                     'usa_time_split_nse_adaDT5_0708_133848',
-                    'usa_time_split_nse_adaDT5_0508_103715'
+                    'usa_time_split_nse_adaDT5_logQ_0708_160549',
                     ]
                 }
 
@@ -28,10 +31,10 @@ if __name__ == "__main__":
         for run_dir in run_dirs:
             if model_dir == 'lstm_training':
                 model = 'LSTM'
-                epoch = '14'
+                epoch = '35'
             else:
                 model = 'coRNN'
-                epoch = '02'
+                epoch = '35'
 
             parts = run_dir.split('_')
             split_name = f"{parts[0].upper()} {parts[1].capitalize()} {parts[2].capitalize()}"
@@ -54,7 +57,7 @@ if __name__ == "__main__":
         if not os.path.exists(f'plots/{plot_folder}'):
             os.makedirs(f'plots/{plot_folder}')
 
-        # # Plot all CDFs on the same figure
+        # Plot all CDFs on the same figure
         # plt.figure(1)
         # for (nse, cdf, exp_name) in CDF:
         #     plt.plot(nse, cdf, label=exp_name)

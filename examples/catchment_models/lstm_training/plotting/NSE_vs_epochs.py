@@ -2,13 +2,13 @@ import pandas as pd
 import os
 import matplotlib.pyplot as plt
 
-def NSE_plot(run_dir, epoch):
+def NSE_plot(model_dir, run_dir, epoch, plot_bool = False):
     model_NSE = {}
 
     parts = run_dir.split('_')
     split_name = f"{parts[0].upper()} {parts[1].capitalize()} {parts[2].capitalize()}"
 
-    base_dir = os.path.join('runs', run_dir, 'validation')
+    base_dir = os.path.join(f'/groups/esm/achiang/Rivers/examples/catchment_models/{model_dir}/runs/{run_dir}/validation')
 
     # Get median NSE per epoch
     for item in os.listdir(base_dir):
@@ -25,22 +25,23 @@ def NSE_plot(run_dir, epoch):
     x = sorted(model_NSE.keys())
     y = [model_NSE[key] for key in x]
 
-    # Create a plot
-    plt.figure(figsize=(8, 5))
-    plt.plot(x, y, 'o-')
-    plt.xlabel('Epoch')
-    plt.ylabel('NSE') 
-    plt.title(split_name + ': Median NSE vs Epoch')
-    plt.grid(True)
+    if plot_bool:
+        # Create a plot
+        plt.figure(figsize=(8, 5))
+        plt.plot(x, y, 'o-')
+        plt.xlabel('Epoch')
+        plt.ylabel('NSE') 
+        plt.title(split_name + ': Median NSE vs Epoch')
+        plt.grid(True)
 
-    plt.xlim(min(x) - 1, max(x) + 1)
-    plt.ylim(min(y) - 0.1, max(y) + 0.1)
+        plt.xlim(min(x) - 1, max(x) + 1)
+        plt.ylim(min(y) - 0.1, max(y) + 0.1)
 
-    if not os.path.exists(f'plots/{run_dir}'):
-        os.makedirs(f'plots/{run_dir}')
+        if not os.path.exists(f'plots/{run_dir}'):
+            os.makedirs(f'plots/{run_dir}')
 
-    fig_path = f'plots/{run_dir}/NSE_per_epoch_{epoch}.png'
-    plt.savefig(fig_path, dpi=300)
-    plt.close()
+        fig_path = f'plots/{run_dir}/NSE_per_epoch_{epoch}.png'
+        plt.savefig(fig_path, dpi=300)
+        plt.close()
 
     return x, y

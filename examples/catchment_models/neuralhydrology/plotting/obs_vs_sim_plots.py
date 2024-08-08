@@ -41,24 +41,4 @@ def obs_vs_sim_plot(model_dir, run_dir, epoch, basin_id = '7050039160', plot_boo
     #     print(f"{key}: {val:.3f}")
 
 if __name__ == '__main__':
-    qobs, qsim = obs_vs_sim_plot('neuralhydrology', 'usa_time_split_nse_adaDT1_3107_125025', '35', basin_id = '7050039160', plot_bool = False)
-    print(qsim)
-    # qsim.dropna
-    # # min_sim = min(qsim)
-
-    # print(f"qsim: {qsim}\n")
-    # print(f"min_qsim: {qsim.min()}\n")
-    # print(f"qsim size: {qsim.size}")
-
-    # qmin = qsim.min()
-
-    # # count = 0
-    # for s in qsim:
-    #     print(s)
-        # if s.values == qsim.min():
-        #     count += 1
-    
-    # print(count)
-        
-    # mask = (qsim == min_sim)
-    # print(f"count: {len(qsim == min_sim)}")
+    qobs, qsim = obs_vs_sim_plot('neuralhydrology', 'usa_time_split_nse_adaDT5_0508_103715', '35', basin_id = '7050039160', plot_bool = False)
