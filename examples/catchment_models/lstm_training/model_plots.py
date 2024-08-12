@@ -12,6 +12,7 @@ if __name__ == "__main__":
     run_dirs = { 
                 'lstm_training':
                     ['usa_time_split_adj_0807_170652',
+                    'usa_time_split_nse_0908_233247',
                     'usa_time_split_mse_3007_154911']
                 # 'neuralhydrology':
                 #     [
@@ -40,6 +41,8 @@ if __name__ == "__main__":
 
             # Plot observed vs simulated trajectory
             qobs, qsim = obs_vs_sim_plot(model_dir, run_dir, epoch)
+            if run_dir == 'usa_time_split_nse_0908_233247':
+                qsim = np.exp(qsim) - 0.001
             OvS.append((qobs, qsim, exp_name))
 
             # Plot CDF of test metric (default: 'NSE')            

@@ -27,15 +27,15 @@ def calc_metrics(model_dir, run_dir, epoch):
 if __name__=="__main__":
     metric = 'NSE'
     run_dict = { 
-                'lstm_training':
-                    [
-                    'usa_time_split_adj_0807_170652',
-                    'usa_time_split_mse_3007_154911'
-                    ],
+                # 'lstm_training':
+                #     [
+                #     'usa_time_split_adj_0807_170652',
+                #     'usa_time_split_nse_0908_233247'
+                #     ],
                 'neuralhydrology':
                     [
-                    'usa_time_split_mse_adaDT5_0708_105957',
-                    'usa_time_split_nse_adaDT5_0508_103715',
+                    'usa_time_split_nse_adaDT5_layers_0908_114923',
+                    'usa_time_split_nse_adaDT5_layers2_0908_132202'
                     ]
                 }
 
@@ -49,7 +49,7 @@ if __name__=="__main__":
 
         for run_dir in run_dirs:
             parts = run_dir.split('_')
-            exp_name = f"{model}: {parts[3]} {parts[4]}"
+            exp_name = f"{model}: {parts[3]} {parts[4]} {parts[5]}"
             pct_nse_lt0, mean_nse_gt0, median_nse, nse_gt0_ci, Q1, Q3 = calc_metrics(model_dir, run_dir, epoch)
             print(exp_name)
             print(f'%_{metric}<0 : {pct_nse_lt0}%')
