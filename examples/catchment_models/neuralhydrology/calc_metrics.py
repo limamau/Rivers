@@ -34,8 +34,11 @@ if __name__=="__main__":
                 #     ],
                 'neuralhydrology':
                     [
-                    'usa_time_split_nse_adaDT5_layers_0908_114923',
-                    'usa_time_split_nse_adaDT5_layers2_0908_132202'
+                    'usa_time_split_nse_adaDT5_logQ_0908_233724',
+                    'usa_time_split_nse_adaDT5_logQ2_1208_143106',
+                    'usa_time_split_nse_adaDT5_logQ3_1208_143346',
+                    'usa_time_split_nse_adaDT5_logQ4_1208_143503',
+                    'usa_time_split_nse_adaDT5_logQlayers_1208_140938'
                     ]
                 }
 

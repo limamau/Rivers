@@ -17,8 +17,11 @@ if __name__ == "__main__":
                 #     ],
                 'neuralhydrology':
                     [
-                    'usa_time_split_nse_adaDT5_0508_103715',
-                    'usa_time_split_nse_adaDT5_logQ_0908_233724'
+                    'usa_time_split_nse_adaDT5_logQ_0908_233724',
+                    'usa_time_split_nse_adaDT5_logQ2_1208_143106',
+                    'usa_time_split_nse_adaDT5_logQ3_1208_143346',
+                    'usa_time_split_nse_adaDT5_logQ4_1208_143503',
+                    'usa_time_split_nse_adaDT5_logQlayers_1208_140938'
                     ]
                 }
 
@@ -42,9 +45,8 @@ if __name__ == "__main__":
 
             # Plot observed vs simulated trajectory
             qobs, qsim = obs_vs_sim_plot(model_dir, run_dir, epoch)
-            if run_dir in ('usa_time_split_nse_adaDT5_logQ_0908_233724', 'usa_time_split_nse_0908_233247'):
-                qsim = np.exp(qsim) - 0.001
-                qobs = np.exp(qobs) - 0.001
+            qsim = np.exp(qsim) - 0.001
+            qobs = np.exp(qobs) - 0.001
             OvS.append((qobs, qsim, exp_name))
 
             # Plot CDF of test metric (default: 'NSE')            
@@ -56,7 +58,7 @@ if __name__ == "__main__":
             MED_NSE.append((ep, med_nse, exp_name))
     
     if True:
-        plot_folder = 'logQ'
+        plot_folder = 'logQ_exp'
         if not os.path.exists(f'plots/{plot_folder}'):
             os.makedirs(f'plots/{plot_folder}')
 
