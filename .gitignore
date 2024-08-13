@@ -10,8 +10,7 @@ eng_*
 examples/catchment_models/neuralhydrology/runs/*
 examples/catchment_models/neuralhydrology/*.out
 examples/catchment_models/lstm_training/runs/*
-
-
+examples/catchment_models/lstm_training/*.out
 
 # code in development
 dev/
