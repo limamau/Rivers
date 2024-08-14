@@ -17,11 +17,8 @@ if __name__ == "__main__":
                 #     ],
                 'neuralhydrology':
                     [
-                    'usa_time_split_nse_adaDT5_logQ_0908_233724',
-                    'usa_time_split_nse_adaDT5_logQ2_1208_143106',
-                    'usa_time_split_nse_adaDT5_logQ3_1208_143346',
-                    'usa_time_split_nse_adaDT5_logQ4_1208_143503',
-                    'usa_time_split_nse_adaDT5_logQlayers_1208_140938'
+                    'usa_time_split_mse_adaDT5_logQ3_1308_113840',
+                    'usa_time_split_nse_adaDT5_logQ3_1208_143346'
                     ]
                 }
 
@@ -58,7 +55,7 @@ if __name__ == "__main__":
             MED_NSE.append((ep, med_nse, exp_name))
     
     if True:
-        plot_folder = 'logQ_exp'
+        plot_folder = 'logQ_nse_vs_mse'
         if not os.path.exists(f'plots/{plot_folder}'):
             os.makedirs(f'plots/{plot_folder}')
 

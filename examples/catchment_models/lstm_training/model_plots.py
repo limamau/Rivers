@@ -11,9 +11,9 @@ import numpy as np
 if __name__ == "__main__":
     run_dirs = { 
                 'lstm_training':
-                    ['usa_time_split_adj_0807_170652',
-                    'usa_time_split_nse_0908_233247',
-                    'usa_time_split_mse_3007_154911']
+                    ['usa_time_split_nse_0908_233247',
+                    'usa_time_split_nseLR_1308_113449',
+                    'usa_time_split_mseLR_1308_131920']
                 # 'neuralhydrology':
                 #     [
                 #     'usa_time_split_nse_adaDT5_0708_133848',
@@ -41,8 +41,9 @@ if __name__ == "__main__":
 
             # Plot observed vs simulated trajectory
             qobs, qsim = obs_vs_sim_plot(model_dir, run_dir, epoch)
-            if run_dir == 'usa_time_split_nse_0908_233247':
-                qsim = np.exp(qsim) - 0.001
+            qsim = np.exp(qsim) - 0.001
+            qobs = np.exp(qobs) - 0.001
+
             OvS.append((qobs, qsim, exp_name))
 
             # Plot CDF of test metric (default: 'NSE')            
@@ -54,11 +55,11 @@ if __name__ == "__main__":
             MED_NSE.append((ep, med_nse, exp_name))
     
     if True:
-        plot_folder = 'nse_vs_mse'
+        plot_folder = 'log_nse_mse_lr'
         if not os.path.exists(f'plots/{plot_folder}'):
             os.makedirs(f'plots/{plot_folder}')
 
-        # # Plot all CDFs on the same figure
+        # Plot all CDFs on the same figure
         plt.figure(1)
         for (nse, cdf, exp_name) in CDF:
             plt.plot(nse, cdf, label=exp_name)
@@ -73,10 +74,23 @@ if __name__ == "__main__":
         plt.savefig(fig_path, dpi=300)
         plt.close()
 
+        # Plot observed vs simulated trajecory
+        plt.figure(2, figsize=(16,10))
+        qobs, _, _ = OvS[0]
+        for (qobs, qsim, exp_name) in OvS:
+            plt.plot(qsim['date'], qsim, label=f'{exp_name}')
+        plt.plot(qobs['date'], qobs, label='Observed')
+        plt.legend()
+        plt.ylabel("Discharge (mm/d)")
+        plt.title(f"Observed vs Simulated Trajectory")
+        fig_path = f'plots/{plot_folder}/obs_vs_sim3.png'
+        plt.savefig(fig_path, dpi=300)
+        plt.close()
+
         # Plot all median NSE on the same figure
         min_nse = 0
         max_nse = 0
-        plt.figure(2)
+        plt.figure(3)
         for (ep, med_nse, exp_name) in MED_NSE:
             print(exp_name)
             plt.plot(ep, med_nse, '-o', label=exp_name)
@@ -90,19 +104,5 @@ if __name__ == "__main__":
         # plt.ylim(-1.5, 0.6)
         plt.legend()
         fig_path = f'plots/{plot_folder}/NSE_per_epoch.png'
-        plt.savefig(fig_path, dpi=300)
-        plt.close()
-
-
-        # Plot observed vs simulated trajecory
-        plt.figure(3, figsize=(16,10))
-        qobs, _, _ = OvS[0]
-        for (qobs, qsim, exp_name) in OvS:
-            plt.plot(qsim['date'], qsim, label=f'{exp_name}')
-        plt.plot(qobs['date'], qobs, label='Observed')
-        plt.legend()
-        plt.ylabel("Discharge (mm/d)")
-        plt.title(f"Observed vs Simulated Trajectory")
-        fig_path = f'plots/{plot_folder}/obs_vs_sim3.png'
         plt.savefig(fig_path, dpi=300)
         plt.close()
