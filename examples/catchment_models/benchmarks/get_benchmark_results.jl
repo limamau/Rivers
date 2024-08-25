@@ -5,9 +5,10 @@ using Statistics
 
 include("utils.jl")
 
-let
+function main()
     # Base
-    base = "/central/scratch/mdemoura/Rivers"
+    base = "/users/mlima/data_for_revisions"
+    analysis_dir = normpath(joinpath(@__DIR__, "../analysis"))
 
     # Read base csv file as DataFrame
     base_csv = "examples/catchment_models/analysis/csv_files/globe_all_daily.csv"
@@ -30,41 +31,30 @@ let
     other_attributes_df = vcat(other_attributes_lv05_df, other_attributes_lv06_df, other_attributes_lv07_df)
 
     # Define basins to calculate scores
-    basins = base_df.basin
+    basins = base_df.basin_id
 
     # Basins used in all simulations (from LSTM, and GloFAS)
     selected_basins = []
 
     for model in ["glofas"]
-        # Define array to allocate scores
         nses = []
         kges = []
-
-        # Define directory
-        if model == "glofas"
-            base_dir = "/central/scratch/mdemoura/Rivers/post_data/glofas_timeseries"
-        else
-            base_dir = "/central/scratch/mdemoura/Rivers/post_data/pcr_timeseries_old"
-        end
+        model_dir = joinpath(base, "post_data/$model"*"_timeseries")
 
         for i in eachindex(basins)
             basin_id = basins[i]
             gauge_id = mapping_dict[string(basin_id)][1]
-            file = joinpath(base_dir, "sim_$basin_id.csv")
+            file = joinpath(model_dir, "basin_$basin_id.csv")
 
             # Get timeseries as Data Frame if the file exists
             if isfile(file)
-                # Confirm areas are the same # TODO: investigate this cases
+                # Confirm areas are the same
                 lstm_area = other_attributes_df[other_attributes_df.basin_id .== basin_id, :area][1]
                 if haskey(gauge_area_dict, string(gauge_id))
                     glofas_area = gauge_area_dict[string(gauge_id)]
                     if !is_area_within_threshold(lstm_area, glofas_area)
-                        println(basin_id)
                         continue
                     end
-                else
-                    println(basin_id)
-                    continue
                 end
 
                 # Get DataFrame
@@ -94,19 +84,22 @@ let
         end
 
         # Write results
-        if model == "pcr"
-            CSV.write("examples/catchment_models/analysis/csv_files/pcr_monthly.csv", DataFrame(basin=selected_basins[idx], nse=nses[idx], kge=kges[idx]))
-        elseif model == "glofas"
-            CSV.write("examples/catchment_models/analysis/csv_files/glofas_daily.csv", DataFrame(basin=selected_basins[idx], 
-                                                                      nse=nses[idx], 
-                                                                      kge=kges[idx]))
-        end
+        mkpath(joinpath(analysis_dir, "csv_files"))
+        CSV.write(
+            joinpath(analysis_dir, "csv_files/$model"*"_daily.csv"), 
+            DataFrame(basin=selected_basins[idx], nse=nses[idx], kge=kges[idx])
+        )
     end
 
     # Write selected basins in analysis/ folder
-    selected_basins_file = open("examples/catchment_models/analysis/selected_basins.txt", "w")
+    selected_basins_file = open(joinpath(analysis_dir, "selected_basins.txt"), "w")
     for basin_id in selected_basins
         write(selected_basins_file, "$basin_id\n")
     end
     close(selected_basins_file)
+end
+
+
+if abspath(PROGRAM_FILE) == @__FILE__
+    main()
 end

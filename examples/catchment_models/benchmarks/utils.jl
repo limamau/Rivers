@@ -50,6 +50,7 @@ function isvalid(coord)
     return -180 <= coord <= 360
 end
 
+# deprecated function
 function find_closest_index(grdc_coords, coords, delta)
     # Sort GRDC coordinates saving original index
     indexed_grdc = [(element, index) for (index, element) in enumerate(grdc_coords)]
@@ -78,6 +79,54 @@ function find_closest_index(grdc_coords, coords, delta)
     end
 
     return closest_idx
+end
+
+# Function to match the calibration file with the GRDC and GloFAS coordinates
+function get_corresponding_idxs(
+    calibration_df, 
+    grdc_lons, 
+    grdc_lats, 
+    glofas_lons, 
+    glofas_lats,
+    margin=0.0001,
+)
+    # Instantiate return arrays
+    grdc_idxs = Vector{Int}()
+    glofas_lat_idxs = Vector{Int}()
+    glofas_lon_idxs = Vector{Int}()
+    glofas_areas = Vector{Float64}()
+
+    # Iterate over calibration DataFrame
+    for row in eachrow(calibration_df)
+        # Get coordinates
+        station_lon = row.StationLon
+        station_lat = row.StationLat
+        lisflood_lon = row.LisfloodX
+        lisflood_lat = row.LisfloodY
+
+        # Find closest indexes
+        grdc_idxs_vec1 = findall(x -> abs(x - station_lon) <= margin, grdc_lons)
+        grdc_idxs_vec2 = findall(x -> abs(x - station_lat) <= margin, grdc_lats)
+        glofas_lat_idx_vec = findall(x -> abs(x - lisflood_lat) <= margin, glofas_lats)
+        glofas_lon_idx_vec = findall(x -> abs(x - lisflood_lon) <= margin, glofas_lons)
+
+        # Consistency check
+        if length(grdc_idxs_vec1) != 1 || length(grdc_idxs_vec2) != 1 || # only one index should be found
+        length(glofas_lat_idx_vec) != 1 || length(glofas_lon_idx_vec) != 1 || # only one index should be found
+        grdc_idxs_vec1[1] != grdc_idxs_vec2[1] # grdc indexes should match
+            continue
+        end
+
+        # Save indexes
+        push!(grdc_idxs, grdc_idxs_vec1[1])
+        push!(glofas_lat_idxs, glofas_lat_idx_vec[1])
+        push!(glofas_lon_idxs, glofas_lon_idx_vec[1])
+        push!(glofas_areas, row["DrainingArea.km2.LDD"])
+    end
+
+    println("Matchs from calibration file: ", length(grdc_idxs))
+
+    return grdc_idxs, glofas_lat_idxs, glofas_lon_idxs, glofas_areas
 end
 
 function first_dates_of_months(min_date, max_date)
