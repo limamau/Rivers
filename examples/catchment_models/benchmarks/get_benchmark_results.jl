@@ -31,7 +31,7 @@ function main()
     other_attributes_df = vcat(other_attributes_lv05_df, other_attributes_lv06_df, other_attributes_lv07_df)
 
     # Define basins to calculate scores
-    basins = base_df.basin_id
+    basins = base_df.basin
 
     # Basins used in all simulations (from LSTM, and GloFAS)
     selected_basins = []
