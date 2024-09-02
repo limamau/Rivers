@@ -1,11 +1,12 @@
 # engineering tests
 eng_*
 
-# images and csvs
+# images, csvs, txts and checkpoints
 */png_files/*
 *.png
 */csv_files/*
 *.csv
+*.txt
 */runs/*
 
 # code in development

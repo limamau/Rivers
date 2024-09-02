@@ -2,6 +2,7 @@ using CSV
 using DataFrames
 using JSON
 using Statistics
+using ProgressMeter
 
 include("utils.jl")
 
@@ -11,7 +12,7 @@ function main()
     analysis_dir = normpath(joinpath(@__DIR__, "../analysis"))
 
     # Read base csv file as DataFrame
-    base_csv = "examples/catchment_models/analysis/csv_files/globe_all_daily.csv"
+    base_csv = joinpath(analysis_dir, "csv_files/globe_all_daily.csv")
     base_df = CSV.read(base_csv, DataFrame)
 
     # Get gauges list

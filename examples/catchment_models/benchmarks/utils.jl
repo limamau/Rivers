@@ -81,15 +81,16 @@ function find_closest_index(grdc_coords, coords, delta)
     return closest_idx
 end
 
-# Function to match the calibration file with the GRDC and GloFAS coordinates
+# Function to find the closest GRDC gauge to the reported station coordinates
 function get_corresponding_idxs(
     calibration_df, 
     grdc_lons, 
     grdc_lats, 
     glofas_lons, 
     glofas_lats,
-    margin=0.0001,
+    margin=1e-2,
 )
+    println("Margin: ", margin)
     # Instantiate return arrays
     grdc_idxs = Vector{Int}()
     glofas_lat_idxs = Vector{Int}()
@@ -97,34 +98,48 @@ function get_corresponding_idxs(
     glofas_areas = Vector{Float64}()
 
     # Iterate over calibration DataFrame
-    for row in eachrow(calibration_df)
+    multiple_gauges_count = 0
+    no_gauge_count = 0
+    multiple_latlon_count = 0
+    gauge_idx_dont_match_count = 0
+
+    msg = "Iterating over calibration DataFrame..."
+    @showprogress msg for row in eachrow(calibration_df)
         # Get coordinates
         station_lon = row.StationLon
         station_lat = row.StationLat
         lisflood_lon = row.LisfloodX
         lisflood_lat = row.LisfloodY
 
-        # Find closest indexes
-        grdc_idxs_vec1 = findall(x -> abs(x - station_lon) <= margin, grdc_lons)
-        grdc_idxs_vec2 = findall(x -> abs(x - station_lat) <= margin, grdc_lats)
-        glofas_lat_idx_vec = findall(x -> abs(x - lisflood_lat) <= margin, glofas_lats)
-        glofas_lon_idx_vec = findall(x -> abs(x - lisflood_lon) <= margin, glofas_lons)
+        # Calculate distances from the station to all GRDC gauges
+        distances = sqrt.((grdc_lons .- station_lon).^2 .+ (grdc_lats .- station_lat).^2)
 
-        # Consistency check
-        if length(grdc_idxs_vec1) != 1 || length(grdc_idxs_vec2) != 1 || # only one index should be found
-        length(glofas_lat_idx_vec) != 1 || length(glofas_lon_idx_vec) != 1 || # only one index should be found
-        grdc_idxs_vec1[1] != grdc_idxs_vec2[1] # grdc indexes should match
+        # Find indexes of the gauges within the margin
+        close_gauges_idxs = findall(x -> x < margin, distances)
+
+        if length(close_gauges_idxs) == 0
+            # No close gauge found
+            no_gauge_count += 1
             continue
         end
 
-        # Save indexes
-        push!(grdc_idxs, grdc_idxs_vec1[1])
-        push!(glofas_lat_idxs, glofas_lat_idx_vec[1])
-        push!(glofas_lon_idxs, glofas_lon_idx_vec[1])
-        push!(glofas_areas, row["DrainingArea.km2.LDD"])
+        # Get the closest gauge
+        closest_idx = close_gauges_idxs[argmin(distances[close_gauges_idxs])]
+        
+        # Find closest GloFAS lat/lon indexes
+        glofas_lat_idx_vec = findall(x -> abs(x - lisflood_lat) < margin, glofas_lats)
+        glofas_lon_idx_vec = findall(x -> abs(x - lisflood_lon) < margin, glofas_lons)
+        
+        # Ensure exactly one index is found for both lat and lon
+        if length(glofas_lat_idx_vec) == 1 && length(glofas_lon_idx_vec) == 1
+            push!(grdc_idxs, closest_idx)
+            push!(glofas_lat_idxs, glofas_lat_idx_vec[1])
+            push!(glofas_lon_idxs, glofas_lon_idx_vec[1])
+            push!(glofas_areas, row["DrainingArea.km2.LDD"])
+        else
+            multiple_latlon_count += 1
+        end
     end
-
-    println("Matchs from calibration file: ", length(grdc_idxs))
 
     return grdc_idxs, glofas_lat_idxs, glofas_lon_idxs, glofas_areas
 end

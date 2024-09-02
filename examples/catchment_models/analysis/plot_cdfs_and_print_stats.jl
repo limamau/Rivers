@@ -19,7 +19,7 @@ function print_stats(experiment_name::String, arr::Vector{Float64}, metric::Stri
           porc_bad = round(100*length([x for x in arr if x < threshold])/length(arr), digits=2)
           
           # Unbounded mean
-          arr_mean = round(mean(arr), digits=2)
+          # arr_mean = round(mean(arr), digits=2)
           
           # Mean of good performances
           arr_good_mean = round(mean([x for x in arr if x > threshold]), digits=2)
@@ -28,10 +28,10 @@ function print_stats(experiment_name::String, arr::Vector{Float64}, metric::Stri
           arr_median = round(median(arr), digits=2)
 
           # Length
-          arr_len = length(arr)
+          # arr_len = length(arr)
           
           # Print
-          println("$experiment_name & $porc_bad% & $arr_mean & $arr_good_mean & $arr_median & $arr_len")
+          println("$experiment_name & $porc_bad% & $arr_good_mean & $arr_median")
      
      else
           # Print
@@ -45,7 +45,7 @@ function main()
 
      # Read used basins from the folder
      selected_basins = Int[]
-     file_path = "examples/catchment_models/analysis/selected_basins.txt" 
+     file_path = joinpath(@__DIR__, "selected_basins.txt")
      open(file_path) do file
           for line in eachline(file)
                push!(selected_basins, parse(Int, line))
@@ -68,28 +68,28 @@ function main()
 
 
      # Get scores in USA
-     csv_file = "examples/catchment_models/analysis/csv_files/us_split_daily_runoff.csv"
+     csv_file = joinpath(@__DIR__, "csv_files/us_split_daily_runoff.csv")
      us_results_df = CSV.read(csv_file, DataFrame)
      basin_us_nse_values = us_results_df[:,:nse]
      print_stats("US, basin-split", basin_us_nse_values, "nse")
 
-     csv_file = "examples/catchment_models/analysis/csv_files/us_all_daily_runoff.csv"
+     csv_file = joinpath(@__DIR__, "csv_files/us_all_daily_runoff.csv")
      us_results_df = CSV.read(csv_file, DataFrame)
      time_us_nse_values = us_results_df[:,:nse]
      print_stats("US, time-split", time_us_nse_values, "nse")
 
-     csv_file = "examples/catchment_models/analysis/csv_files/us_all_daily_precip.csv"
+     csv_file = joinpath(@__DIR__, "csv_files/us_all_daily_precip.csv")
      us_results_df = CSV.read(csv_file, DataFrame)
      precip_time_us_nse_values = us_results_df[:,:nse]
      print_stats("US, time-split (precip.)", precip_time_us_nse_values, "nse")
 
      # Get global scores
-     csv_file = "examples/catchment_models/analysis/csv_files/globe_split_daily.csv"
+     csv_file = joinpath(@__DIR__, "csv_files/globe_split_daily.csv")
      global_results_df = CSV.read(csv_file, DataFrame)
      basin_global_nse_values = global_results_df[:,:nse]
      print_stats("Globe, basin-split", basin_global_nse_values, "nse")
 
-     csv_file = "examples/catchment_models/analysis/csv_files/globe_all_daily.csv"
+     csv_file = joinpath(@__DIR__, "csv_files/globe_all_daily.csv")
      global_results_df = CSV.read(csv_file, DataFrame)
      time_global_nse_values = global_results_df[:,:nse]
      print_stats("Globe, time-split", time_global_nse_values, "nse")
@@ -104,7 +104,7 @@ function main()
      hidedecorations!(ax, ticklabels=false, ticks=false, label=false)
 
      # Save
-     output_file = "examples/catchment_models/analysis/png_files/us_vs_global.png"
+     output_file = joinpath(@__DIR__, "png_files/us_vs_global.png")
      mkpath(dirname(output_file))
      save(output_file, fig, px_per_unit=px_per_unit)
 
@@ -122,7 +122,7 @@ function main()
      ax.ylabelcolor = :white
 
      # Global model scores in time-split
-     csv_file = "examples/catchment_models/analysis/csv_files/globe_all_daily.csv"
+     csv_file = joinpath(@__DIR__, "csv_files/globe_all_daily.csv")
      results_df = CSV.read(csv_file, DataFrame)
      lv05_nse_values = filter(row -> string(row.basin)[3] == '5', results_df)[:,:nse]
      print_stats("lv 05", lv05_nse_values, "nse")
@@ -150,7 +150,7 @@ function main()
                yticks = 0:0.25:1)
 
      # Global model scores in time-split
-     csv_file = "examples/catchment_models/analysis/csv_files/globe_split_daily.csv"
+     csv_file = joinpath(@__DIR__, "csv_files/globe_split_daily.csv")
      results_df = CSV.read(csv_file, DataFrame)
      lv05_nse_values = filter(row -> string(row.basin)[3] == '5', results_df)[:,:nse]
      print_stats("lv 05", lv05_nse_values, "nse")
@@ -167,7 +167,7 @@ function main()
      hidedecorations!(ax, ticklabels=false, ticks=false, label=false)
      
      # Save
-     output_file = "examples/catchment_models/analysis/png_files/global_hydro_lvs.png"
+     output_file = joinpath(@__DIR__, "png_files/global_hydro_lvs.png")
      mkpath(dirname(output_file))
      save(output_file, fig, px_per_unit=px_per_unit)
 
@@ -208,7 +208,7 @@ function main()
                yticks = 0:0.25:1)
 
      # Get LSTM scores
-     csv_file = "examples/catchment_models/analysis/csv_files/globe_all_daily.csv"
+     csv_file = joinpath(@__DIR__, "csv_files/globe_all_daily.csv")
      time_lstm_results_df = CSV.read(csv_file, DataFrame)
      time_lstm_results_df = filter(row -> row.basin in selected_basins, time_lstm_results_df)
      # time_lstm_nse_values = filter(row -> string(row.basin)[3] != '7', time_lstm_results_df)[:,:nse]
@@ -216,7 +216,7 @@ function main()
      print_stats("LSTM, time-split", time_lstm_nse_values, "nse")
 
      # Get LSTM scores
-     csv_file = "examples/catchment_models/analysis/csv_files/globe_split_daily.csv"
+     csv_file = joinpath(@__DIR__, "csv_files/globe_split_daily.csv")
      basin_lstm_results_df = CSV.read(csv_file, DataFrame)
      basin_lstm_results_df = filter(row -> row.basin in selected_basins, basin_lstm_results_df)
      # basin_lstm_nse_values = filter(row -> string(row.basin)[3] != '7', basin_lstm_results_df)[:,:nse]
@@ -224,7 +224,7 @@ function main()
      print_stats("LSTM, basin-split", basin_lstm_nse_values, "nse")
 
      # Get GloFAS scores
-     csv_file = "examples/catchment_models/analysis/csv_files/glofas_daily.csv"
+     csv_file = joinpath(@__DIR__, "csv_files/glofas_daily.csv")
      glofas_results_df = CSV.read(csv_file, DataFrame)
      glofas_results_df = filter(row -> row.basin in selected_basins, glofas_results_df)
      # glofas_nse_values = filter(row -> string(row.basin)[3] != '7', glofas_results_df)[:,:nse]
@@ -252,7 +252,7 @@ function main()
      ax.ylabelcolor = :white
 
      # Get LSTM scores
-     csv_file = "examples/catchment_models/analysis/csv_files/globe_all_daily.csv"
+     csv_file = joinpath(@__DIR__, "csv_files/globe_all_daily.csv")
      time_lstm_results_df = CSV.read(csv_file, DataFrame)
      time_lstm_results_df = filter(row -> row.basin in selected_basins, time_lstm_results_df)
      # time_lstm_kge_values = filter(row -> string(row.basin)[3] != '7', time_lstm_results_df)[:,:kge]
@@ -260,7 +260,7 @@ function main()
      print_stats("LSTM, time-split", time_lstm_kge_values, "kge")
 
      # Get LSTM scores
-     csv_file = "examples/catchment_models/analysis/csv_files/globe_split_daily.csv"
+     csv_file = joinpath(@__DIR__, "csv_files/globe_split_daily.csv")
      basin_lstm_results_df = CSV.read(csv_file, DataFrame)
      basin_lstm_results_df = filter(row -> row.basin in selected_basins, basin_lstm_results_df)
      # basin_lstm_kge_values = filter(row -> string(row.basin)[3] != '7', basin_lstm_results_df)[:,:nse]
@@ -268,7 +268,7 @@ function main()
      print_stats("LSTM, basin-split", basin_lstm_kge_values, "kge")
 
      # Get GloFAS scores
-     csv_file = "examples/catchment_models/analysis/csv_files/glofas_daily.csv"
+     csv_file = joinpath(@__DIR__, "csv_files/glofas_daily.csv")
      glofas_results_df = CSV.read(csv_file, DataFrame)
      glofas_results_df = filter(row -> row.basin in selected_basins, glofas_results_df)
      # glofas_kge_values = filter(row -> string(row.basin)[3] != '7', glofas_results_df)[:,:kge]
@@ -283,15 +283,17 @@ function main()
      hidedecorations!(ax, ticklabels=false, ticks=false, label=false)
 
      # Save
-     output_file = "examples/catchment_models/analysis/png_files/lstm_vs_benchmarks.png"
+     output_file = joinpath(@__DIR__, "png_files/lstm_vs_benchmarks.png")
      mkpath(dirname(output_file))
      save(output_file, fig, px_per_unit=px_per_unit)
 
      # Print lengths
      println("----- L -----")
      println("Length LSTM (basin-split): ", length(basin_lstm_nse_values))
-     println("Length LST(time-split): ", length(time_lstm_nse_values))
+     println("Length LSTM(time-split): ", length(time_lstm_nse_values))
      println("Length GloFAS: ", length(glofas_nse_values))
 end
 
-main()
+if abspath(PROGRAM_FILE) == @__FILE__
+     main()
+end

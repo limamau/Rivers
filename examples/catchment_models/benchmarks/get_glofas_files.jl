@@ -11,7 +11,7 @@ include("utils.jl")
 function main()
     # Files
     base = "/users/mlima/data_for_revisions"
-    glofas_dir = joinpath(base, "source_data/era5/river_year_month_nc")
+    glofas_dir = joinpath("/scratch/mlima/river_year_month_nc")
     grdc_file = joinpath(base, "midway_data/GRDC-Globe/grdc-merged.nc")
     gauge_dict_lv05_file = joinpath(base, "midway_data/mapping_dicts/gauge_to_basin_dict_lv05_max.json")
     gauge_dict_lv06_file = joinpath(base, "midway_data/mapping_dicts/gauge_to_basin_dict_lv06_max.json")
@@ -61,6 +61,7 @@ function main()
     gauge_area_dict = Dict()
 
     # Write csvs
+    rm(output_dir; force=true, recursive=true)
     mkpath(output_dir)
     msg = "Writing GloFAS timeseries..."
     key_gauges_cutoff = 0
