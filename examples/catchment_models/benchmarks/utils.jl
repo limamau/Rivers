@@ -50,7 +50,6 @@ function isvalid(coord)
     return -180 <= coord <= 360
 end
 
-# deprecated function
 function find_closest_index(grdc_coords, coords, delta)
     # Sort GRDC coordinates saving original index
     indexed_grdc = [(element, index) for (index, element) in enumerate(grdc_coords)]
@@ -81,8 +80,46 @@ function find_closest_index(grdc_coords, coords, delta)
     return closest_idx
 end
 
-# Function to find the closest GRDC gauge to the reported station coordinates
-function get_corresponding_idxs(
+function get_ungauged_matches(
+    grdc_lons,
+    grdc_lats,
+    glofas_lons,
+    glofas_lats,
+    already_matched_grdc_idxs,
+    up_areas,
+)
+    # Instantiate return arrays
+    grdc_idxs = Vector{Int}()
+    glofas_lat_idxs = Vector{Int}()
+    glofas_lon_idxs = Vector{Int}()
+    glofas_areas = Vector{Float64}()
+
+    # Get closest GloFAS coordinates to GRDC coordinates
+    closest_lons = find_closest_index(grdc_lons, glofas_lons, glofas_lons[2]-glofas_lons[1])
+    closest_lats = find_closest_index(grdc_lats, glofas_lats, glofas_lats[1]-glofas_lats[2])
+
+    msg = "Iterating over already matched indexes..."
+    @showprogress msg for grdc_idx in 1:length(grdc_lons)
+        if (grdc_idx in already_matched_grdc_idxs ||
+            ismissing(closest_lons[grdc_idx]) ||
+            ismissing(closest_lats[grdc_idx]) ||
+            ismissing(up_areas[closest_lons[grdc_idx], closest_lats[grdc_idx]])
+        )
+            continue
+        else
+            push!(grdc_idxs, grdc_idx)
+            push!(glofas_lat_idxs, closest_lats[grdc_idx])
+            push!(glofas_lon_idxs, closest_lons[grdc_idx])
+            push!(glofas_areas, up_areas[closest_lons[grdc_idx], closest_lats[grdc_idx]] / 10^6)
+        end
+    end
+
+    return grdc_idxs, glofas_lat_idxs, glofas_lon_idxs, glofas_areas
+
+end
+
+# Function to find the closest GRDC gauge to the reported station coordinates from GloFAS calibration file
+function get_gauged_matches(
     calibration_df, 
     grdc_lons, 
     grdc_lats, 
@@ -90,7 +127,6 @@ function get_corresponding_idxs(
     glofas_lats,
     margin=1e-2,
 )
-    println("Margin: ", margin)
     # Instantiate return arrays
     grdc_idxs = Vector{Int}()
     glofas_lat_idxs = Vector{Int}()
