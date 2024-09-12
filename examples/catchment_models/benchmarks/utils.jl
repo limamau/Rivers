@@ -142,10 +142,10 @@ function get_gauged_matches(
     msg = "Iterating over calibration DataFrame..."
     @showprogress msg for row in eachrow(calibration_df)
         # Get coordinates
-        station_lon = row.StationLon
-        station_lat = row.StationLat
-        lisflood_lon = row.LisfloodX
-        lisflood_lat = row.LisfloodY
+        station_lon = row.lon_provid
+        station_lat = row.lat_provid
+        lisflood_lon = row.LisfloodX_
+        lisflood_lat = row.LisfloodY_
 
         # Calculate distances from the station to all GRDC gauges
         distances = sqrt.((grdc_lons .- station_lon).^2 .+ (grdc_lats .- station_lat).^2)
@@ -171,7 +171,7 @@ function get_gauged_matches(
             push!(grdc_idxs, closest_idx)
             push!(glofas_lat_idxs, glofas_lat_idx_vec[1])
             push!(glofas_lon_idxs, glofas_lon_idx_vec[1])
-            push!(glofas_areas, row["DrainingArea.km2.LDD"])
+            push!(glofas_areas, row["DrainingLDD"])
         else
             multiple_latlon_count += 1
         end
