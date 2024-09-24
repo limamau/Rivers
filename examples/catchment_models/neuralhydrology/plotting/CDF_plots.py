@@ -2,12 +2,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 
-def cdf_plot(mdoel_dir, run_dir, epoch, metric = 'NSE', plot_bool = False):
+def cdf_plot(mdoel_dir, run_dir, epoch, metric = 'NSE', test_csv = 'test_metrics.csv', plot_bool = False):
     parts = run_dir.split('_')
     split_name = f"{parts[0].upper()} {parts[1].capitalize()} {parts[2].capitalize()}"
 
     # Load the CSV file
-    csv_path = os.path.join(f'/groups/esm/achiang/Rivers/examples/catchment_models/{mdoel_dir}/runs/{run_dir}/test/model_epoch0{epoch}/test_metrics.csv')
+    csv_path = os.path.join(f'/groups/esm/achiang/Rivers/examples/catchment_models/{mdoel_dir}/runs/{run_dir}/test/model_epoch0{epoch}/{test_csv}')
     df = pd.read_csv(csv_path)
 
     # Sort the data by NSE

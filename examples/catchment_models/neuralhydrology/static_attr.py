@@ -5,14 +5,16 @@ import seaborn as sns
 
 # Compares NSE to Static Attributes
 run_dict = { 
-    'lstm_training': [
-        'usa_time_split_nse_0908_233247',
-        'usa_time_split_mseLR_1308_131920'
-    ],
-    'neuralhydrology': [
-        'usa_time_split_nse_adaDT5_logQ3_1208_143346',
-        'usa_time_split_mse_adaDT5_logQ3_1308_113840'
-    ]
+            'lstm_training':
+                [
+                'usa_time_split_nse_log_1508_140939',
+                'usa_time_split_mse_log_1508_140556'
+                ],
+            'neuralhydrology':
+                [
+                'usa_time_split_nse_adaDT5_logQ3_1208_143346',
+                'usa_time_split_mse_adaDT5_logQ3_1308_113840'
+                ]
 }
 
 df_stat = pd.read_csv("static_attributes_usa_time_split.csv")
@@ -33,9 +35,9 @@ for attribute in attributes:
             # Determine model and experiment name for current subplot
             if model_dir == 'lstm_training':
                 model = 'LSTM'
-                if run_dir == 'usa_time_split_nse_0908_233247':
+                if run_dir == 'usa_time_split_nse_log_1508_140939':
                     exp_name = f"{model}: NSE"
-                if run_dir == 'usa_time_split_mseLR_1308_131920':
+                if run_dir == 'usa_time_split_mse_log_1508_140556':
                     exp_name = f"{model}: MSE"
             else:
                 model = 'coRNN'
@@ -71,7 +73,7 @@ for attribute in attributes:
     fig.colorbar(h[3], ax=axs, orientation='vertical', label='Number of basins')
 
     # Save the figure
-    plt.savefig(f"nse_vs_attr_plots2/{attribute}_vs_NSE.png")
+    plt.savefig(f"nse_vs_attr_plots/{attribute}_vs_NSE.png")
 
     # Close the figure to avoid memory issues
     plt.close(fig)

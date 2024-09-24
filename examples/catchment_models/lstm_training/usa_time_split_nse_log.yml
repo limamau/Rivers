@@ -1,7 +1,7 @@
 # --- Experiment configurations --------------------------------------------------------------------
 
 # experiment name, used as folder name
-experiment_name: usa_time_split_nse_adaDT5_logQ4
+experiment_name: usa_time_split_nse_log
 
 # files to specify training, validation and test basins (relative to code root or absolute path)
 train_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model_data/basin_lists/usa_time_split_list.txt
@@ -11,8 +11,8 @@ test_basin_file: /home/achiang/CliMA/Rivers_odunbar/data_from_sampo/single_model
 # training, validation and test time periods (format = 'dd/mm/yyyy')
 train_start_date: '01/10/1999'
 train_end_date: '30/09/2009'
-validation_start_date: '01/10/2009'
-validation_end_date: '30/09/2019'
+validation_start_date: '01/10/1989'
+validation_end_date: '30/09/1999'
 test_start_date: '01/10/1989'
 test_end_date: '30/09/1999'
 
@@ -40,19 +40,12 @@ metrics:
 
 # base model type [lstm, ealstm, cudalstm, embcudalstm, shortcutlstm, dropoutlstm, cudalstminitialh]
 # (has to match the if statement in modelzoo/__init__.py)
-model: cornn
-
-# coRNN hyperparameters
-dt : 1
-gamma : 5
-eps : 1
-adaptive_learning : True
-dt_bound : 0.2
+model: cudalstm
 
 # prediction head [regression, mdn, umal]. Define the head specific parameters below
 head: regression
 
-# ----> General xsettings <----
+# ----> General settings <----
 
 # Number of cell states of the LSTM
 hidden_size: 128
@@ -75,9 +68,9 @@ loss: NSE
 
 # specify learning rates to use starting at specific epochs (0 is the initial learning rate)
 learning_rate:
-    0: 1e-4
-    21: 1e-5
-    31: 1e-6
+    0: 1e-3
+    21: 1e-4
+    31: 1e-5
 
 # Mini-batch size
 batch_size: 256

@@ -26,17 +26,17 @@ def calc_metrics(model_dir, run_dir, epoch):
 
 if __name__=="__main__":
     metric = 'NSE'
-    run_dict = { 
-                'lstm_training':
-                    ['usa_time_split_nse_0908_233247',
-                    'usa_time_split_nseLR_1308_113449',
-                    'usa_time_split_mseLR_1308_131920'],
-                'neuralhydrology':
+    run_dict = {'lstm_training':
                     [
-                    'usa_time_split_nse_adaDT5_logQ3_1208_143346',
-                    'usa_time_split_mse_adaDT5_logQ3_1308_113840'
-                    ]
-                }
+                    'usa_time_split_nse_0908_233247',
+                    'usa_time_split_mse_3007_154911'
+                    ],
+                # 'neuralhydrology':
+                #     [
+                #     'usa_time_split_nse_adaDT5_logQ3_1208_143346',
+                #     'usa_time_split_mse_adaDT5_logQ3_1308_113840'
+                #     ]
+    }
 
     for model_dir, run_dirs in run_dict.items():
         if model_dir == 'lstm_training':
