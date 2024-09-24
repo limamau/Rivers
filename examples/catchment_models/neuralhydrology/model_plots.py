@@ -10,11 +10,11 @@ import numpy as np
 
 if __name__ == "__main__":
     run_dirs = { 
-                # 'lstm_training':
-                #     [
-                #     'usa_time_split_nse_log_1508_140939',
-                #     'usa_time_split_mse_log_1508_140556'
-                #     ],
+                'lstm_training':
+                    [
+                    'usa_time_split_nse_log_1508_140939',
+                    'usa_time_split_mse_log_1508_140556'
+                    ],
                 'neuralhydrology':
                     [
                     'usa_time_split_nse_adaDT5_logQ3_1208_143346',
@@ -32,13 +32,22 @@ if __name__ == "__main__":
             if model_dir == 'lstm_training':
                 model = 'LSTM'
                 epoch = '35'
+                if run_dir == 'usa_time_split_nse_log_1508_140939':
+                    exp_name = f"LSTM: NSE"
+                if run_dir == 'usa_time_split_mse_log_1508_140556':
+                    exp_name = f"LSTM: MSE"
             else:
                 model = 'coRNN'
                 epoch = '35'
+                if run_dir == 'usa_time_split_nse_adaDT5_logQ3_1208_143346':
+                    exp_name = f"coRNN: NSE"
+                if run_dir == 'usa_time_split_mse_adaDT5_logQ3_1308_113840':
+                    exp_name = f"coRNN: MSE"
 
             parts = run_dir.split('_')
             split_name = f"{parts[0].upper()} {parts[1].capitalize()} {parts[2].capitalize()}"
-            exp_name = f"{model}: {parts[3]} {parts[4]} {parts[5]}"
+
+            # exp_name = f"{model}: {parts[3]} {parts[4]} {parts[5]}"
 
             # Plot observed vs simulated trajectory
             qobs, qsim = obs_vs_sim_plot(model_dir, run_dir, epoch)
@@ -53,7 +62,7 @@ if __name__ == "__main__":
             MED_NSE.append((ep, med_nse, exp_name))
     
     if True:
-        plot_folder = 'presentation'
+        plot_folder = 'final_report'
         if not os.path.exists(f'plots/{plot_folder}'):
             os.makedirs(f'plots/{plot_folder}')
 
