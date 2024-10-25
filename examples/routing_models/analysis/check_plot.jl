@@ -4,7 +4,7 @@ using Dates
 using CairoMakie
 
 function main()
-    base = "/central/scratch/mdemoura/Rivers"
+    base = "/groups/esm/achiang/Rivers/data_from_sampo"
     # 6050344660 -> source basin (ok)
     # 7050675400 -> rout_lv = 05 (?)
     # 3050639250 -> rout_lv = 05 (ok)
