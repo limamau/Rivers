@@ -1,5 +1,5 @@
 using Distributed
-@everywhere using CSV, DataFrames, Dates, JSON, NCDatasets, ProgressMeter, Statistics
+using CSV, DataFrames, Dates, JSON, NCDatasets, ProgressMeter, Statistics
 
 @everywhere """
     compute_basins_year_month(grid_to_basins_dir, ncfile, variables_operations_dict_file output_dir, year, month)

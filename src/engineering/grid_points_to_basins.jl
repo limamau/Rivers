@@ -1,5 +1,5 @@
 using Distributed
-@everywhere using DataFrames, JSON, NetCDF, ProgressMeter, Shapefile
+using DataFrames, JSON, NetCDF, ProgressMeter, Shapefile
 
 @everywhere """
     subdivide_dataframe(df, num_parts)

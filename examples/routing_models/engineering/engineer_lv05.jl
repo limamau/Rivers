@@ -54,4 +54,4 @@ function main()
     write_routing_attributes(hydroatlas_shp_file, attributes_dir)
 end
 
-
+main()

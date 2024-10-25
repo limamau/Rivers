@@ -1,4 +1,4 @@
-# using Flux
+using Flux
 
 abstract type AbstractModel end
 
@@ -7,6 +7,6 @@ struct AbstractPhysicalModel <: AbstractModel
     params::Vector{AbstractFloat}
 end
 
-# struct AbstractNeuralModel <: AbstractModel
-#    model::Chain
-# end
+struct AbstractNeuralModel <: AbstractModel
+   model::Chain
+end

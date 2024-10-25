@@ -1,5 +1,5 @@
 [base]
-base = "/central/scratch/mdemoura/Rivers"
+base = "/groups/esm/achiang/Rivers/data_from_sampo"
 
 [level]
 hydro_lv = "05"
