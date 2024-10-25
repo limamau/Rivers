@@ -32,7 +32,7 @@ function main()
         title="Descendent basin"
     )
     lines!(obs_df[:,:streamflow], label="Observed")
-    lines!(mizu_df[:,:streamflow], label="LSTM-IRF")
+    lines!(mizu_df[:,:streamflow], label="gamma-IRF")
     axislegend(ax)
 
     # save("../analysis/png_files/source_basin.png", fig)
